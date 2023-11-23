@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tokens",
+  "info": {
+    "singularName": "token",
+    "pluralName": "tokens",
+    "displayName": "token"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "token": {
+      "type": "text",
+      "required": true
+    },
+    "type": {
+      "type": "integer"
+    },
+    "expirationDate": {
+      "type": "date",
+      "required": true
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

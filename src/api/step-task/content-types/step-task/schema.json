@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "step_tasks",
+  "info": {
+    "singularName": "step-task",
+    "pluralName": "step-tasks",
+    "displayName": "step_task"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "budget": {
+      "type": "float",
+      "required": false
+    },
+    "status": {
+      "type": "integer",
+      "required": true
+    },
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    },
+    "project_step": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project-step.project-step"
+    },
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "step_tasks"
+    }
+  }
+}

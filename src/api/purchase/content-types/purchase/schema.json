@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchases",
+  "info": {
+    "singularName": "purchase",
+    "pluralName": "purchases",
+    "displayName": "purchase"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "ref": {
+      "type": "string",
+      "required": true
+    },
+    "price": {
+      "type": "float"
+    },
+    "commandDate": {
+      "type": "date",
+      "required": true
+    },
+    "deliveryDate": {
+      "type": "date"
+    },
+    "status": {
+      "type": "integer",
+      "required": true
+    },
+    "project": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::project.project"
+    }
+  }
+}
