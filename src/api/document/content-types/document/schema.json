@@ -16,14 +16,14 @@
       "type": "string",
       "required": true
     },
-    "type": {
-      "type": "integer",
-      "required": true
-    },
     "project": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::project.project"
+    },
+    "type": {
+      "type": "string",
+      "required": true
     }
   }
 }

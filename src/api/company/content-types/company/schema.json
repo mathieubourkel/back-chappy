@@ -4,7 +4,8 @@
   "info": {
     "singularName": "company",
     "pluralName": "companies",
-    "displayName": "company"
+    "displayName": "company",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -22,16 +23,16 @@
     "description": {
       "type": "text"
     },
-    "users_permissions_user": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
-    },
     "projects": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::project.project",
       "mappedBy": "companies"
+    },
+    "app_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::app-user.app-user"
     }
   }
 }

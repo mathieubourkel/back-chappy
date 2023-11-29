@@ -29,22 +29,27 @@
       "required": true,
       "unique": false
     },
-    "users_permissions_user": {
+    "app_user": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
-    },
-    "users": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "mappedBy": "projects"
+      "target": "api::app-user.app-user"
     },
     "companies": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::company.company",
       "inversedBy": "projects"
+    },
+    "app_users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::app-user.app-user",
+      "mappedBy": "projects"
+    },
+    "project_steps": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-step.project-step"
     }
   }
 }

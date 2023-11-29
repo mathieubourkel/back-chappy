@@ -482,6 +482,50 @@ export interface PluginUploadFolder extends Schema.CollectionType {
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<{
+        min: 1;
+        max: 50;
+      }>;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -615,28 +659,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
-    firstName: Attribute.String;
-    lastName: Attribute.String;
-    zip: Attribute.String;
-    city: Attribute.String;
-    status: Attribute.Integer;
-    address: Attribute.Text & Attribute.Required;
-    phone: Attribute.String;
-    company: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToOne',
-      'api::company.company'
-    >;
-    projects: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::project.project'
-    >;
-    step_tasks: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::step-task.step-task'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -654,43 +676,51 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
+export interface ApiAppUserAppUser extends Schema.CollectionType {
+  collectionName: 'app_users';
   info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
+    singularName: 'app-user';
+    pluralName: 'app-users';
+    displayName: 'app_user';
     description: '';
   };
   options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
+    draftAndPublish: true;
   };
   attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
-    code: Attribute.String & Attribute.Unique;
+    firstName: Attribute.String & Attribute.Required;
+    lastName: Attribute.String & Attribute.Required;
+    email: Attribute.Email & Attribute.Required;
+    city: Attribute.String;
+    address: Attribute.String;
+    zip: Attribute.Integer;
+    status: Attribute.Enumeration<['en attente', 'actif']>;
+    company: Attribute.Relation<
+      'api::app-user.app-user',
+      'oneToOne',
+      'api::company.company'
+    >;
+    projects: Attribute.Relation<
+      'api::app-user.app-user',
+      'manyToMany',
+      'api::project.project'
+    >;
+    step_tasks: Attribute.Relation<
+      'api::app-user.app-user',
+      'manyToMany',
+      'api::step-task.step-task'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'api::app-user.app-user',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'api::app-user.app-user',
       'oneToOne',
       'admin::user'
     > &
@@ -704,6 +734,7 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
     singularName: 'category';
     pluralName: 'categories';
     displayName: 'category';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -711,10 +742,10 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   attributes: {
     name: Attribute.String & Attribute.Required;
     visibility: Attribute.Integer & Attribute.Required;
-    users_permissions_user: Attribute.Relation<
+    app_user: Attribute.Relation<
       'api::category.category',
       'oneToOne',
-      'plugin::users-permissions.user'
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -740,6 +771,7 @@ export interface ApiCommentComment extends Schema.CollectionType {
     singularName: 'comment';
     pluralName: 'comments';
     displayName: 'comment';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -748,10 +780,10 @@ export interface ApiCommentComment extends Schema.CollectionType {
     content: Attribute.Text & Attribute.Required;
     refId: Attribute.Integer;
     refTable: Attribute.String & Attribute.Required;
-    users_permissions_user: Attribute.Relation<
+    app_user: Attribute.Relation<
       'api::comment.comment',
       'oneToOne',
-      'plugin::users-permissions.user'
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -777,6 +809,7 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
     singularName: 'company';
     pluralName: 'companies';
     displayName: 'company';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -785,15 +818,15 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
     name: Attribute.String & Attribute.Required;
     siret: Attribute.BigInteger & Attribute.Required;
     description: Attribute.Text;
-    users_permissions_user: Attribute.Relation<
-      'api::company.company',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
     projects: Attribute.Relation<
       'api::company.company',
       'manyToMany',
       'api::project.project'
+    >;
+    app_user: Attribute.Relation<
+      'api::company.company',
+      'oneToOne',
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -826,12 +859,12 @@ export interface ApiDocumentDocument extends Schema.CollectionType {
   };
   attributes: {
     path: Attribute.String & Attribute.Required;
-    type: Attribute.Integer & Attribute.Required;
     project: Attribute.Relation<
       'api::document.document',
       'oneToOne',
       'api::project.project'
     >;
+    type: Attribute.String & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -856,6 +889,7 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
     singularName: 'notification';
     pluralName: 'notifications';
     displayName: 'notification';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -863,10 +897,10 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
   attributes: {
     content: Attribute.Text & Attribute.Required;
     status: Attribute.Integer & Attribute.Required;
-    users_permissions_user: Attribute.Relation<
+    app_user: Attribute.Relation<
       'api::notification.notification',
       'oneToOne',
-      'plugin::users-permissions.user'
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -902,20 +936,25 @@ export interface ApiProjectProject extends Schema.CollectionType {
     budget: Attribute.Float & Attribute.Required;
     description: Attribute.Text & Attribute.Required;
     status: Attribute.Integer & Attribute.Required;
-    users_permissions_user: Attribute.Relation<
+    app_user: Attribute.Relation<
       'api::project.project',
       'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    users: Attribute.Relation<
-      'api::project.project',
-      'manyToMany',
-      'plugin::users-permissions.user'
+      'api::app-user.app-user'
     >;
     companies: Attribute.Relation<
       'api::project.project',
       'manyToMany',
       'api::company.company'
+    >;
+    app_users: Attribute.Relation<
+      'api::project.project',
+      'manyToMany',
+      'api::app-user.app-user'
+    >;
+    project_steps: Attribute.Relation<
+      'api::project.project',
+      'oneToMany',
+      'api::project-step.project-step'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -941,6 +980,7 @@ export interface ApiProjectStepProjectStep extends Schema.CollectionType {
     singularName: 'project-step';
     pluralName: 'project-steps';
     displayName: 'project_step';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -951,11 +991,6 @@ export interface ApiProjectStepProjectStep extends Schema.CollectionType {
     budget: Attribute.Float;
     startDate: Attribute.Date & Attribute.Required;
     endDate: Attribute.Date;
-    project: Attribute.Relation<
-      'api::project-step.project-step',
-      'oneToOne',
-      'api::project.project'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1020,6 +1055,7 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
     singularName: 'step-task';
     pluralName: 'step-tasks';
     displayName: 'step_task';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1031,15 +1067,20 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
     status: Attribute.Integer & Attribute.Required;
     startDate: Attribute.Date & Attribute.Required;
     endDate: Attribute.Date & Attribute.Required;
+    app_users: Attribute.Relation<
+      'api::step-task.step-task',
+      'manyToMany',
+      'api::app-user.app-user'
+    >;
     project_step: Attribute.Relation<
       'api::step-task.step-task',
       'oneToOne',
       'api::project-step.project-step'
     >;
-    users: Attribute.Relation<
+    category: Attribute.Relation<
       'api::step-task.step-task',
-      'manyToMany',
-      'plugin::users-permissions.user'
+      'oneToOne',
+      'api::category.category'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1065,6 +1106,7 @@ export interface ApiTokenToken extends Schema.CollectionType {
     singularName: 'token';
     pluralName: 'tokens';
     displayName: 'token';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1073,10 +1115,10 @@ export interface ApiTokenToken extends Schema.CollectionType {
     token: Attribute.Text & Attribute.Required;
     type: Attribute.Integer;
     expirationDate: Attribute.Date & Attribute.Required;
-    users_permissions_user: Attribute.Relation<
+    app_user: Attribute.Relation<
       'api::token.token',
       'oneToOne',
-      'plugin::users-permissions.user'
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1108,10 +1150,11 @@ declare module '@strapi/types' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
+      'api::app-user.app-user': ApiAppUserAppUser;
       'api::category.category': ApiCategoryCategory;
       'api::comment.comment': ApiCommentComment;
       'api::company.company': ApiCompanyCompany;

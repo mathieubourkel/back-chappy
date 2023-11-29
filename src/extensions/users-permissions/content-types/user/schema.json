@@ -64,45 +64,6 @@
       "target": "plugin::users-permissions.role",
       "inversedBy": "users",
       "configurable": false
-    },
-    "firstName": {
-      "type": "string"
-    },
-    "lastName": {
-      "type": "string"
-    },
-    "zip": {
-      "type": "string"
-    },
-    "city": {
-      "type": "string"
-    },
-    "status": {
-      "type": "integer"
-    },
-    "address": {
-      "type": "text",
-      "required": true
-    },
-    "phone": {
-      "type": "string"
-    },
-    "company": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::company.company"
-    },
-    "projects": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::project.project",
-      "inversedBy": "users"
-    },
-    "step_tasks": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::step-task.step-task",
-      "inversedBy": "users"
     }
   }
 }

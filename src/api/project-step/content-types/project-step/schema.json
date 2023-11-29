@@ -4,7 +4,8 @@
   "info": {
     "singularName": "project-step",
     "pluralName": "project-steps",
-    "displayName": "project_step"
+    "displayName": "project_step",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -30,11 +31,6 @@
     "endDate": {
       "type": "date",
       "required": false
-    },
-    "project": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::project.project"
     }
   }
 }

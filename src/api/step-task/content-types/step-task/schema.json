@@ -4,7 +4,8 @@
   "info": {
     "singularName": "step-task",
     "pluralName": "step-tasks",
-    "displayName": "step_task"
+    "displayName": "step_task",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -35,16 +36,21 @@
       "type": "date",
       "required": true
     },
+    "app_users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::app-user.app-user",
+      "mappedBy": "step_tasks"
+    },
     "project_step": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::project-step.project-step"
     },
-    "users": {
+    "category": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "mappedBy": "step_tasks"
+      "relation": "oneToOne",
+      "target": "api::category.category"
     }
   }
 }
