@@ -933,9 +933,9 @@ export interface ApiProjectProject extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
-    budget: Attribute.Float & Attribute.Required;
+    budget: Attribute.Float;
     description: Attribute.Text & Attribute.Required;
-    status: Attribute.Integer & Attribute.Required;
+    status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
     app_user: Attribute.Relation<
       'api::project.project',
       'oneToOne',
@@ -956,6 +956,7 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'oneToMany',
       'api::project-step.project-step'
     >;
+    estimEndDate: Attribute.Date;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -989,8 +990,8 @@ export interface ApiProjectStepProjectStep extends Schema.CollectionType {
     name: Attribute.String & Attribute.Required;
     description: Attribute.Text & Attribute.Required;
     budget: Attribute.Float;
-    startDate: Attribute.Date & Attribute.Required;
-    endDate: Attribute.Date;
+    estimEndDate: Attribute.Date;
+    status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1064,9 +1065,9 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
     name: Attribute.String & Attribute.Required;
     description: Attribute.Text & Attribute.Required;
     budget: Attribute.Float;
-    status: Attribute.Integer & Attribute.Required;
-    startDate: Attribute.Date & Attribute.Required;
-    endDate: Attribute.Date & Attribute.Required;
+    status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
+    startDate: Attribute.Date;
+    estimEndDate: Attribute.Date;
     app_users: Attribute.Relation<
       'api::step-task.step-task',
       'manyToMany',

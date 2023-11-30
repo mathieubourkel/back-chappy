@@ -26,15 +26,16 @@
     },
     "status": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "default": 0
     },
     "startDate": {
       "type": "date",
-      "required": true
+      "required": false
     },
-    "endDate": {
+    "estimEndDate": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "app_users": {
       "type": "relation",

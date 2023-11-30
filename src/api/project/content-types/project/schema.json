@@ -18,7 +18,7 @@
     },
     "budget": {
       "type": "float",
-      "required": true
+      "required": false
     },
     "description": {
       "type": "text",
@@ -27,7 +27,8 @@
     "status": {
       "type": "integer",
       "required": true,
-      "unique": false
+      "unique": false,
+      "default": 0
     },
     "app_user": {
       "type": "relation",
@@ -50,6 +51,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-step.project-step"
+    },
+    "estimEndDate": {
+      "type": "date"
     }
   }
 }

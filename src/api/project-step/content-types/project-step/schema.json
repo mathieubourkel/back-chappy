@@ -24,13 +24,14 @@
       "type": "float",
       "required": false
     },
-    "startDate": {
-      "type": "date",
-      "required": true
-    },
-    "endDate": {
+    "estimEndDate": {
       "type": "date",
       "required": false
+    },
+    "status": {
+      "required": true,
+      "default": 0,
+      "type": "integer"
     }
   }
 }
