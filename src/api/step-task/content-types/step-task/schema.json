@@ -33,7 +33,7 @@
       "type": "date",
       "required": false
     },
-    "estimEndDate": {
+    "endDate": {
       "type": "date",
       "required": false
     },
@@ -52,6 +52,11 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::category.category"
+    },
+    "app_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::app-user.app-user"
     }
   }
 }

@@ -951,12 +951,12 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'manyToMany',
       'api::app-user.app-user'
     >;
+    estimEndDate: Attribute.Date;
     project_steps: Attribute.Relation<
       'api::project.project',
       'oneToMany',
       'api::project-step.project-step'
     >;
-    estimEndDate: Attribute.Date;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -992,6 +992,11 @@ export interface ApiProjectStepProjectStep extends Schema.CollectionType {
     budget: Attribute.Float;
     estimEndDate: Attribute.Date;
     status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
+    project: Attribute.Relation<
+      'api::project-step.project-step',
+      'manyToOne',
+      'api::project.project'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1016,17 +1021,18 @@ export interface ApiPurchasePurchase extends Schema.CollectionType {
     singularName: 'purchase';
     pluralName: 'purchases';
     displayName: 'purchase';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
-    ref: Attribute.String & Attribute.Required;
+    ref: Attribute.String;
     price: Attribute.Float;
-    commandDate: Attribute.Date & Attribute.Required;
+    commandDate: Attribute.Date;
     deliveryDate: Attribute.Date;
-    status: Attribute.Integer & Attribute.Required;
+    status: Attribute.Integer;
     project: Attribute.Relation<
       'api::purchase.purchase',
       'oneToOne',
@@ -1067,7 +1073,7 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
     budget: Attribute.Float;
     status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
     startDate: Attribute.Date;
-    estimEndDate: Attribute.Date;
+    endDate: Attribute.Date;
     app_users: Attribute.Relation<
       'api::step-task.step-task',
       'manyToMany',
@@ -1082,6 +1088,11 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
       'api::step-task.step-task',
       'oneToOne',
       'api::category.category'
+    >;
+    app_user: Attribute.Relation<
+      'api::step-task.step-task',
+      'oneToOne',
+      'api::app-user.app-user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

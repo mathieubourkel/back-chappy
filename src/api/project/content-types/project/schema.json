@@ -47,13 +47,14 @@
       "target": "api::app-user.app-user",
       "mappedBy": "projects"
     },
+    "estimEndDate": {
+      "type": "date"
+    },
     "project_steps": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::project-step.project-step"
-    },
-    "estimEndDate": {
-      "type": "date"
+      "target": "api::project-step.project-step",
+      "mappedBy": "project"
     }
   }
 }

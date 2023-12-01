@@ -32,6 +32,12 @@
       "required": true,
       "default": 0,
       "type": "integer"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "inversedBy": "project_steps"
     }
   }
 }

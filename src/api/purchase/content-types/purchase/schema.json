@@ -4,7 +4,8 @@
   "info": {
     "singularName": "purchase",
     "pluralName": "purchases",
-    "displayName": "purchase"
+    "displayName": "purchase",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -17,21 +18,21 @@
     },
     "ref": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "price": {
       "type": "float"
     },
     "commandDate": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "deliveryDate": {
       "type": "date"
     },
     "status": {
       "type": "integer",
-      "required": true
+      "required": false
     },
     "project": {
       "type": "relation",
