@@ -37,12 +37,6 @@
       "type": "date",
       "required": false
     },
-    "app_users": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::app-user.app-user",
-      "mappedBy": "step_tasks"
-    },
     "project_step": {
       "type": "relation",
       "relation": "oneToOne",
@@ -53,10 +47,16 @@
       "relation": "oneToOne",
       "target": "api::category.category"
     },
-    "app_user": {
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "step_tasks"
+    },
+    "user": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::app-user.app-user"
+      "target": "plugin::users-permissions.user"
     }
   }
 }

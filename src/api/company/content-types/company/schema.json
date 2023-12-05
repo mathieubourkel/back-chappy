@@ -29,10 +29,10 @@
       "target": "api::project.project",
       "mappedBy": "companies"
     },
-    "app_user": {
+    "user": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::app-user.app-user"
+      "target": "plugin::users-permissions.user"
     }
   }
 }

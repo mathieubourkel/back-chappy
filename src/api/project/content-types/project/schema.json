@@ -30,22 +30,11 @@
       "unique": false,
       "default": 0
     },
-    "app_user": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::app-user.app-user"
-    },
     "companies": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::company.company",
       "inversedBy": "projects"
-    },
-    "app_users": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::app-user.app-user",
-      "mappedBy": "projects"
     },
     "estimEndDate": {
       "type": "date"
@@ -55,6 +44,17 @@
       "relation": "oneToMany",
       "target": "api::project-step.project-step",
       "mappedBy": "project"
+    },
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "projects"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
