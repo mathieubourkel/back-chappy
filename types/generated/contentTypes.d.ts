@@ -955,6 +955,11 @@ export interface ApiProjectStepProjectStep extends Schema.CollectionType {
       'manyToOne',
       'api::project.project'
     >;
+    step_tasks: Attribute.Relation<
+      'api::project-step.project-step',
+      'oneToMany',
+      'api::step-task.step-task'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1032,11 +1037,6 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
     status: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
     startDate: Attribute.Date;
     endDate: Attribute.Date;
-    project_step: Attribute.Relation<
-      'api::step-task.step-task',
-      'oneToOne',
-      'api::project-step.project-step'
-    >;
     category: Attribute.Relation<
       'api::step-task.step-task',
       'oneToOne',
@@ -1051,6 +1051,11 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
       'api::step-task.step-task',
       'oneToOne',
       'plugin::users-permissions.user'
+    >;
+    project_step: Attribute.Relation<
+      'api::step-task.step-task',
+      'manyToOne',
+      'api::project-step.project-step'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

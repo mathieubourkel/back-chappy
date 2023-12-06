@@ -38,6 +38,12 @@
       "relation": "manyToOne",
       "target": "api::project.project",
       "inversedBy": "project_steps"
+    },
+    "step_tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::step-task.step-task",
+      "mappedBy": "project_step"
     }
   }
 }

@@ -37,11 +37,6 @@
       "type": "date",
       "required": false
     },
-    "project_step": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::project-step.project-step"
-    },
     "category": {
       "type": "relation",
       "relation": "oneToOne",
@@ -57,6 +52,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
+    },
+    "project_step": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project-step.project-step",
+      "inversedBy": "step_tasks"
     }
   }
 }
