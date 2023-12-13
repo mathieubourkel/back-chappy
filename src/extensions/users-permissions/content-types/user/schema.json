@@ -9,7 +9,7 @@
     "displayName": "User"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "username": {
@@ -88,13 +88,7 @@
       "relation": "oneToOne",
       "target": "api::company.company"
     },
-    "step_tasks": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::step-task.step-task",
-      "inversedBy": "users"
-    },
-    "projects_collab": {
+    "projects": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::project.project",

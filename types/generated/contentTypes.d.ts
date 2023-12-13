@@ -586,7 +586,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     displayName: 'User';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     username: Attribute.String &
@@ -625,32 +625,15 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::company.company'
     >;
+    projects: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::project.project'
+    >;
     step_tasks: Attribute.Relation<
       'plugin::users-permissions.user',
       'manyToMany',
       'api::step-task.step-task'
-    >;
-    projects_collab: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::project.project'
-    >;
-    projects: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToMany',
-      'api::project.project'
-    >;
-    city: Attribute.String;
-    phone: Attribute.String;
-    companies: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToMany',
-      'api::company.company'
-    >;
-    companies: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::company.company'
     >;
     companies: Attribute.Relation<
       'plugin::users-permissions.user',
@@ -659,7 +642,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToOne',
@@ -809,7 +791,7 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
       'manyToMany',
       'api::project.project'
     >;
-    owner: Attribute.Relation<
+    user: Attribute.Relation<
       'api::company.company',
       'oneToOne',
       'plugin::users-permissions.user'
@@ -945,16 +927,9 @@ export interface ApiProjectProject extends Schema.CollectionType {
     >;
     user: Attribute.Relation<
       'api::project.project',
-      'manyToOne',
+      'oneToOne',
       'plugin::users-permissions.user'
     >;
-    code: Attribute.String &
-      Attribute.Required &
-      Attribute.Unique &
-      Attribute.SetMinMaxLength<{
-        minLength: 16;
-        maxLength: 16;
-      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

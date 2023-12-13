@@ -29,7 +29,7 @@
       "target": "api::project.project",
       "mappedBy": "companies"
     },
-    "owner": {
+    "user": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
