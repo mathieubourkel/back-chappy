@@ -100,23 +100,17 @@
       "target": "api::project.project",
       "inversedBy": "users"
     },
-    "projects": {
+    "step_tasks": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::project.project",
-      "mappedBy": "user"
-    },
-    "city": {
-      "type": "string"
-    },
-    "phone": {
-      "type": "string"
+      "relation": "manyToMany",
+      "target": "api::step-task.step-task",
+      "inversedBy": "users"
     },
     "companies": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::company.company",
-      "mappedBy": "employee"
+      "mappedBy": "users"
     }
   }
 }

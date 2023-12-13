@@ -647,6 +647,16 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::company.company'
     >;
+    companies: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::company.company'
+    >;
+    companies: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::company.company'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -804,9 +814,9 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
-    employee: Attribute.Relation<
+    users: Attribute.Relation<
       'api::company.company',
-      'manyToOne',
+      'manyToMany',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;

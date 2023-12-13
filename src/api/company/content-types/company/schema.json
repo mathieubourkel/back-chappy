@@ -34,9 +34,9 @@
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
     },
-    "employee": {
+    "users": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
       "inversedBy": "companies"
     }
