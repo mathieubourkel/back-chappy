@@ -635,6 +635,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToMany',
       'api::step-task.step-task'
     >;
+    companies: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::company.company'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -741,8 +746,13 @@ export interface ApiCommentComment extends Schema.CollectionType {
   };
   attributes: {
     content: Attribute.Text & Attribute.Required;
-    refId: Attribute.Integer;
-    refTable: Attribute.String & Attribute.Required;
+    idParent: Attribute.Integer;
+    table: Attribute.String & Attribute.Required;
+    author: Attribute.Relation<
+      'api::comment.comment',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -784,6 +794,11 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
     user: Attribute.Relation<
       'api::company.company',
       'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    users: Attribute.Relation<
+      'api::company.company',
+      'manyToMany',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;

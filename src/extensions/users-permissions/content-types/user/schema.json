@@ -99,6 +99,12 @@
       "relation": "manyToMany",
       "target": "api::step-task.step-task",
       "inversedBy": "users"
+    },
+    "companies": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::company.company",
+      "mappedBy": "users"
     }
   }
 }
