@@ -930,6 +930,11 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
+    code: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        minLength: 16;
+        maxLength: 16;
+      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
