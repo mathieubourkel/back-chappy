@@ -586,7 +586,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     displayName: 'User';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     username: Attribute.String &
@@ -625,18 +625,31 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::company.company'
     >;
-    projects: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'manyToMany',
-      'api::project.project'
-    >;
     step_tasks: Attribute.Relation<
       'plugin::users-permissions.user',
       'manyToMany',
       'api::step-task.step-task'
     >;
+    projects_collab: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::project.project'
+    >;
+    projects: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::project.project'
+    >;
+    city: Attribute.String;
+    phone: Attribute.String;
+    companies: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::company.company'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToOne',
@@ -741,8 +754,13 @@ export interface ApiCommentComment extends Schema.CollectionType {
   };
   attributes: {
     content: Attribute.Text & Attribute.Required;
-    refId: Attribute.Integer;
-    refTable: Attribute.String & Attribute.Required;
+    idParent: Attribute.Integer;
+    table: Attribute.String & Attribute.Required;
+    author: Attribute.Relation<
+      'api::comment.comment',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -781,9 +799,14 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
       'manyToMany',
       'api::project.project'
     >;
-    user: Attribute.Relation<
+    owner: Attribute.Relation<
       'api::company.company',
       'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    employee: Attribute.Relation<
+      'api::company.company',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
@@ -912,9 +935,16 @@ export interface ApiProjectProject extends Schema.CollectionType {
     >;
     user: Attribute.Relation<
       'api::project.project',
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
+    code: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        minLength: 16;
+        maxLength: 16;
+      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

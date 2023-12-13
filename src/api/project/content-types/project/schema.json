@@ -49,12 +49,20 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "projects"
+      "mappedBy": "projects_collab"
     },
     "user": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "projects"
+    },
+    "code": {
+      "type": "string",
+      "unique": true,
+      "required": true,
+      "minLength": 16,
+      "maxLength": 16
     }
   }
 }
