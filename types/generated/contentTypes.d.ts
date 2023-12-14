@@ -647,6 +647,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     >;
     city: Attribute.String;
     phone: Attribute.String;
+    notifications: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::notification.notification'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -876,12 +881,21 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
   };
   attributes: {
     content: Attribute.Text & Attribute.Required;
-    status: Attribute.Integer & Attribute.Required;
-    user: Attribute.Relation<
+    sender: Attribute.Relation<
       'api::notification.notification',
       'oneToOne',
       'plugin::users-permissions.user'
     >;
+    receivers: Attribute.Relation<
+      'api::notification.notification',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    timestamp: Attribute.BigInteger;
+    isView: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    path: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'/dashboard'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
