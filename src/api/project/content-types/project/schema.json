@@ -45,21 +45,22 @@
       "target": "api::project-step.project-step",
       "mappedBy": "project"
     },
-    "users": {
+    "owner": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "projects"
-    },
-    "user": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "inversedBy": "projects"
     },
     "code": {
       "type": "string",
       "minLength": 16,
       "maxLength": 16
+    },
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "projects_collab"
     }
   }
 }

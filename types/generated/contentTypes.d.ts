@@ -625,7 +625,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::company.company'
     >;
-    projects: Attribute.Relation<
+    projects_collab: Attribute.Relation<
       'plugin::users-permissions.user',
       'manyToMany',
       'api::project.project'
@@ -640,6 +640,13 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToMany',
       'api::company.company'
     >;
+    projects: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::project.project'
+    >;
+    city: Attribute.String;
+    phone: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -920,14 +927,9 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'oneToMany',
       'api::project-step.project-step'
     >;
-    users: Attribute.Relation<
+    owner: Attribute.Relation<
       'api::project.project',
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
-    user: Attribute.Relation<
-      'api::project.project',
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
     code: Attribute.String &
@@ -935,6 +937,11 @@ export interface ApiProjectProject extends Schema.CollectionType {
         minLength: 16;
         maxLength: 16;
       }>;
+    users: Attribute.Relation<
+      'api::project.project',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
