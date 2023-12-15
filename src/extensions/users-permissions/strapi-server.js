@@ -140,19 +140,22 @@ module.exports = (plugin) => {
                     httpOnly: true,
                     secure: false,
                     overwrite:true,
-                    signed:true
+                    signed:true,
+                    sameSite:"strict"
                     // domain:
                     //     process.env.NODE_ENV === "development"
                     //         ? "localhost"
                     //         : process.env.PRODUCTION_URL,
                     // sameSite: "strict"
                 });
+                console.log("j'ia fais un cookie avc refresh toke,")
                 ctx.send({
                     status: 'Authenticated',
                     jwt: issueJWT({ id: user.id }, { expiresIn: process.env.JWT_SECRET_EXPIRES }),
                     refreshToken: refreshToken,
                     user: await sanitizeUser(user, ctx),
                   });
+                  console.log("je l'envoie")
             }
         } else {
             if (!_.get(await store.get({ key: 'grant' }), [provider, 'enabled'])) {
@@ -243,7 +246,7 @@ module.exports = (plugin) => {
                 domain:
                     process.env.NODE_ENV === "development"
                         ? "localhost"
-                        : process.env.PRODUCTION_URL,
+                        : "localhost",
                 sameSite: "strict"
             });
             ctx.send({

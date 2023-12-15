@@ -1116,39 +1116,6 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
   };
 }
 
-export interface ApiTokenToken extends Schema.CollectionType {
-  collectionName: 'tokens';
-  info: {
-    singularName: 'token';
-    pluralName: 'tokens';
-    displayName: 'token';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    token: Attribute.Text & Attribute.Required;
-    type: Attribute.Integer;
-    expirationDate: Attribute.Date & Attribute.Required;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::token.token',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::token.token',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1174,7 +1141,6 @@ declare module '@strapi/types' {
       'api::project-step.project-step': ApiProjectStepProjectStep;
       'api::purchase.purchase': ApiPurchasePurchase;
       'api::step-task.step-task': ApiStepTaskStepTask;
-      'api::token.token': ApiTokenToken;
     }
   }
 }

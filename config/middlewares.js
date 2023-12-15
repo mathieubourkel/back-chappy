@@ -7,7 +7,7 @@ module.exports = [
      config: {
        enabled: true,
        headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-       origin: '*',
+       origin: ['*'],
        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
   //     keepHeaderOnError: true,
      }
