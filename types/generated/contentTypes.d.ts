@@ -625,7 +625,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::company.company'
     >;
-    projects: Attribute.Relation<
+    projects_collab: Attribute.Relation<
       'plugin::users-permissions.user',
       'manyToMany',
       'api::project.project'
@@ -634,6 +634,23 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.user',
       'manyToMany',
       'api::step-task.step-task'
+    >;
+    companies: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::company.company'
+    >;
+    projects: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::project.project'
+    >;
+    city: Attribute.String;
+    phone: Attribute.String;
+    notifications: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::notification.notification'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -741,8 +758,13 @@ export interface ApiCommentComment extends Schema.CollectionType {
   };
   attributes: {
     content: Attribute.Text & Attribute.Required;
-    refId: Attribute.Integer;
-    refTable: Attribute.String & Attribute.Required;
+    idParent: Attribute.Integer;
+    table: Attribute.String & Attribute.Required;
+    author: Attribute.Relation<
+      'api::comment.comment',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -784,6 +806,11 @@ export interface ApiCompanyCompany extends Schema.CollectionType {
     user: Attribute.Relation<
       'api::company.company',
       'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    users: Attribute.Relation<
+      'api::company.company',
+      'manyToMany',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
@@ -854,12 +881,21 @@ export interface ApiNotificationNotification extends Schema.CollectionType {
   };
   attributes: {
     content: Attribute.Text & Attribute.Required;
-    status: Attribute.Integer & Attribute.Required;
-    user: Attribute.Relation<
+    sender: Attribute.Relation<
       'api::notification.notification',
       'oneToOne',
       'plugin::users-permissions.user'
     >;
+    receivers: Attribute.Relation<
+      'api::notification.notification',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    timestamp: Attribute.BigInteger;
+    isView: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    path: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'/dashboard'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -905,14 +941,19 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'oneToMany',
       'api::project-step.project-step'
     >;
+    owner: Attribute.Relation<
+      'api::project.project',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    code: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        minLength: 16;
+        maxLength: 16;
+      }>;
     users: Attribute.Relation<
       'api::project.project',
       'manyToMany',
-      'plugin::users-permissions.user'
-    >;
-    user: Attribute.Relation<
-      'api::project.project',
-      'oneToOne',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
@@ -1075,39 +1116,6 @@ export interface ApiStepTaskStepTask extends Schema.CollectionType {
   };
 }
 
-export interface ApiTokenToken extends Schema.CollectionType {
-  collectionName: 'tokens';
-  info: {
-    singularName: 'token';
-    pluralName: 'tokens';
-    displayName: 'token';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    token: Attribute.Text & Attribute.Required;
-    type: Attribute.Integer;
-    expirationDate: Attribute.Date & Attribute.Required;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::token.token',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::token.token',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1133,7 +1141,6 @@ declare module '@strapi/types' {
       'api::project-step.project-step': ApiProjectStepProjectStep;
       'api::purchase.purchase': ApiPurchasePurchase;
       'api::step-task.step-task': ApiStepTaskStepTask;
-      'api::token.token': ApiTokenToken;
     }
   }
 }

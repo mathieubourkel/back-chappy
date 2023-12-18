@@ -88,7 +88,7 @@
       "relation": "oneToOne",
       "target": "api::company.company"
     },
-    "projects": {
+    "projects_collab": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::project.project",
@@ -99,6 +99,30 @@
       "relation": "manyToMany",
       "target": "api::step-task.step-task",
       "inversedBy": "users"
+    },
+    "companies": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::company.company",
+      "mappedBy": "users"
+    },
+    "projects": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project.project",
+      "mappedBy": "owner"
+    },
+    "city": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "notifications": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::notification.notification",
+      "inversedBy": "receivers"
     }
   }
 }

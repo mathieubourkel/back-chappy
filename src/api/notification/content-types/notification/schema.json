@@ -16,14 +16,29 @@
       "type": "text",
       "required": true
     },
-    "status": {
-      "type": "integer",
-      "required": true
-    },
-    "user": {
+    "sender": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
+    },
+    "receivers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "notifications"
+    },
+    "timestamp": {
+      "type": "biginteger"
+    },
+    "isView": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "path": {
+      "type": "string",
+      "required": true,
+      "default": "/dashboard"
     }
   }
 }

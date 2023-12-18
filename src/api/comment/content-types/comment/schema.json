@@ -16,12 +16,17 @@
       "type": "text",
       "required": true
     },
-    "refId": {
+    "idParent": {
       "type": "integer"
     },
-    "refTable": {
+    "table": {
       "type": "string",
       "required": true
+    },
+    "author": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
