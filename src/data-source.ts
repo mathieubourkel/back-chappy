@@ -1,4 +1,5 @@
 import {DataSource} from "typeorm";
+require('dotenv').config()
 
 export class dataBaseSource {
     static AppDataSource = new DataSource({

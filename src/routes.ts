@@ -1,134 +1,266 @@
-import { ChenilController } from "./controllers/ChenilController";
-import { DogController } from "./controllers/DogController";
-import { GlobalController } from "./controllers/GlobalController";
-import { OwnerController } from "./controllers/OwnerController";
+import { CategoryController } from "./controllers/category.controller";
+import { GlobalController } from "./controllers/controller";
+import { DocumentController } from "./controllers/document.controller";
+import { NotificationController } from "./controllers/notification.controller";
+import { ProjectController } from "./controllers/project.controller";
+import { PurchaseController } from "./controllers/purchase.controller";
+import { StepController } from "./controllers/step.controller";
+import { TaskController } from "./controllers/task.controller";
 
 export const Routes = [ 
-  {
-    //Liste des races dans l’enum
-    method: "get",
-    route: "/breeds",
-    controller: DogController,
-    action: "getBreeds"
-  },
- 
-  {
-    //Liste de tous les chiens d’une race défini dans l’url selon le chenil dans l’url aussi. ex : “localhost:3000/chenils/id_du_chenil/race_du_chien“
-    method: "get",
-    route: "/chenil/:id/breed/:breed",
-    controller: DogController,
-    action: "getDogsByIdChenilAndBreed"
-  },
- 
-  {
-    //Route qui renvoie un pourcentage d’adoption d’un chenil selon l’id du chenil
-    method: "get",
-    route: "/chenil/:id/pourcentage",
-    controller: ChenilController,
-    action: "getPourcentFromChenil"
-  },
-  {
-    //Liste des chenils avec de la place disponible
-    method: "get",
-    route: "/chenils/notbusy",
-    controller: ChenilController,
-    action: "getChenilNotBusy"
-  },
-  
-  {
-    // Liste de tous les chenils qui contiennent au moins un chien. ( seulement le nom du chenil )
-    method: "get",
-    route: "/chenils/noempty",
-    controller: ChenilController,
-    action: "getNameChenilsWithDogs"
-  },
-  
-   {
-     // Route qui va chercher tous les chiens d’un chenil adoptés
-      method: "get",
-      route: "/chenil/:id/adopted",
-      controller: DogController,
-      action: "getDogsAdoptedFromIdChenil"
-    },
-    {
-     // Route qui va chercher tous les chiens d’un chenil non adoptés
-      method: "get",
-      route: "/chenil/:id/unadopted",
-      controller: DogController,
-      action: "getDogsUnadoptedFromIdChenil"
-    },
-    {
-      // Liste de tous les chiens
-       method: "get",
-       route: "/dogs/breed/:breed",
-       controller: DogController,
-       action: "getDogsByBreed"
-     },
 
-    
-     {
-     // 1 chien
-     method: "get",
-     route: "/dogs/:id",
-     controller: DogController,
-     action: "getOne"
-   },
-   {
-    // 1 chenil
+  // PROJECT
+  { 
     method: "get",
-    route: "/chenils/:id",
-    controller: ChenilController,
-    action: "getOne"
+    route: "/myprojects",
+    controller: ProjectController,
+    action: "getProjectsFromOwner"
   },
-  {
-    // Liste de tous les chiens
-     method: "get",
-     route: "/dogs",
-     controller: DogController,
-     action: "getAll"
-   },
+  { 
+    method: "get",
+    route: "/mycollabs",
+    controller: ProjectController,
+    action: "getProjectsFromMembers"
+  },
 
-  // POST PUT 
-  {
-    //Création d’un chenil depuis le body de la requet
+  { 
+    method: "get",
+    route: "/project/:id",
+    controller: ProjectController,
+    action: "getProjectById"
+  },
+
+  { 
+    method: "get",
+    route: "/project/name/:id",
+    controller: ProjectController,
+    action: "getProjectNameById"
+  },
+
+  { 
     method: "post",
-    route: "/chenil",
-    controller: ChenilController,
+    route: "/project",
+    controller: ProjectController,
     action: "create"
-  }, 
-  {
-    // Route qui ajoute un chien à un chenil, je vous laisse structurer l’url et le body comme vous le souhaitez pour contenir les 2 infos.
-      method: "post",
-      route: "/chenil/:id/dog",
-      controller: DogController,
-      action: "create"
-    },
-    {
-      // Route qui ajoute un chien à un chenil, je vous laisse structurer l’url et le body comme vous le souhaitez pour contenir les 2 infos.
-        method: "post",
-        route: "/register",
-        controller: OwnerController,
-        action: "create"
-      },
-    {
-      //Route qui adopte un chien selon son id, on passe is_adopted à 1
-      method: "put",
-      route: "/dogs/:id/adopt",
-      controller: DogController,
-      action: "adoptDog"
-    },
-    {
-      // Modification du chenil selon son id  PUT :” localhost/chenil/:id"
-      method: "put",
-      route: "/chenils/:id",
-      controller: ChenilController,
-      action: "update"
-    },
-    {
-      
+  },
+
+  { 
+    method: "delete",
+    route: "/project/:id",
+    controller: ProjectController,
+    action: "delete"
+  },
+  { 
+    method: "put",
+    route: "/project/addUser/:idProject",
+    controller: ProjectController,
+    action: "addUserToProject"
+  },
+  { 
+    method: "put",
+    route: "/project/:id",
+    controller: ProjectController,
+    action: "modify"
+  },
+
+  
+
+  // STEP
+  { 
+    method: "get",
+    route: "/steps/:idProject",
+    controller: StepController,
+    action: "getStepsByIdProject"
+  },
+  { 
+    method: "get",
+    route: "/step/:idStep",
+    controller: StepController,
+    action: "getStepByIdStep"
+  },
+  { 
+    method: "put",
+    route: "/step/:id",
+    controller: StepController,
+    action: "modify"
+  },
+  { 
+    method: "post",
+    route: "/step/:id",
+    controller: StepController,
+    action: "create"
+  },
+  { 
+    method: "delete",
+    route: "/step/:id",
+    controller: StepController,
+    action: "delete"
+  },
+
+  // TASK
+
+  { 
+    method: "get",
+    route: "/tasks/step/:idStep",
+    controller: TaskController,
+    action: "getTasksByIdStep"
+  },
+
+  { 
+    method: "get",
+    route: "/tasks/project/:idProject",
+    controller: TaskController,
+    action: "getTasksByIdProject"
+  },
+
+  { 
+    method: "get",
+    route: "/tasks/owner",
+    controller: TaskController,
+    action: "getOwnerTasksByIdUser"
+  },
+  { 
+    method: "get",
+    route: "/tasks/member",
+    controller: TaskController,
+    action: "getCollabTasksByIdUser"
+  },
+
+  { 
+    method: "get",
+    route: "/task/:id",
+    controller: TaskController,
+    action: "getTaskById"
+  },
+  { 
+    method: "put",
+    route: "/task/:id",
+    controller: TaskController,
+    action: "modify"
+  },
+  { 
+    method: "post",
+    route: "/task/:id",
+    controller: TaskController,
+    action: "create"
+  },
+  { 
+    method: "delete",
+    route: "/task/:id",
+    controller: TaskController,
+    action: "delete"
+  },
+
+  //PURCHASE
+
+  { 
+    method: "get",
+    route: "/purchases/:idProject",
+    controller: PurchaseController,
+    action: "getPurchasesByIdProject"
+  },
+  { 
+    method: "post",
+    route: "/purchase",
+    controller: PurchaseController,
+    action: "create"
+  },
+  { 
+    method: "put",
+    route: "/purchase/:id",
+    controller: PurchaseController,
+    action: "modify"
+  },
+  { 
+    method: "delete",
+    route: "/purchase/:id",
+    controller: PurchaseController,
+    action: "delete"
+  },
+
+  // DOCUMENT
+  { 
+    method: "get",
+    route: "/documents/:idProject",
+    controller: DocumentController,
+    action: "getDocumentsByIdProject"
+  },
+  { 
+    method: "post",
+    route: "/document",
+    controller: DocumentController,
+    action: "create"
+  },
+  { 
+    method: "put",
+    route: "/document/:id",
+    controller: DocumentController,
+    action: "modify"
+  },
+  { 
+    method: "delete",
+    route: "/document/:id",
+    controller: DocumentController,
+    action: "delete"
+  },
+
+  // CATEGORIE
+  { 
+    method: "get",
+    route: "/categories",
+    controller: CategoryController,
+    action: "getCategories"
+  },
+  { 
+    method: "post",
+    route: "/category",
+    controller: CategoryController,
+    action: "create"
+  },
+  { 
+    method: "delete",
+    route: "/category/:id",
+    controller: CategoryController,
+    action: "delete"
+  },
+
+  // NOTIFICATION
+
+  { 
+    method: "get",
+    route: "/notifications",
+    controller: NotificationController,
+    action: "getNotificationByUser"
+  },
+  { 
+    method: "post",
+    route: "/notification",
+    controller: NotificationController,
+    action: "create"
+  },
+  { 
+    method: "put",
+    route: "/notification/:id",
+    controller: NotificationController,
+    action: "modify"
+  },
+  { 
+    method: "delete",
+    route: "/notification/:id",
+    controller: NotificationController,
+    action: "delete"
+  },
+  
+  // COMMENT
+  // USER
+  // COMPANY
+
+  //GLOBAL
+    { 
       method: "all",
       route: "*",
       controller: GlobalController,
       action: "badRoute"
     },
+    
 ];

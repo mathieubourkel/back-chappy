@@ -32,10 +32,10 @@ export class User {
     @Column({type:"varchar"})
     phone: string;
 
-    @Column({type:"enum"})
+    @Column({type:"enum", enum: UserStatus})
     status: UserStatus;
 
-    @Column({type:"enum"})
+    @Column({type:"enum", enum: UserRole})
     role: UserRole;
 
     @ManyToMany (() => Project, {cascade: true})

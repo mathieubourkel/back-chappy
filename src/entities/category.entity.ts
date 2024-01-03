@@ -13,7 +13,7 @@ export class Category {
     name: string;
 
     // Permet au user de créer une catégorie pour lui
-    @Column({type:"enum"})
+    @Column({type:"enum", enum: CategoryVisibility})
     visibility: CategoryVisibility;
     @ManyToOne (() => User, user => user.myCreateCategories) user:User;
     @OneToMany (() => Task, task => task.category) tasks: Task[];
