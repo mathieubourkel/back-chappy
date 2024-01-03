@@ -7,5 +7,5 @@ import { GlobalController } from "./controller";
 export class CompanyController extends GlobalController {
 
   private companyService = new Service(Company)
-
+    
 }

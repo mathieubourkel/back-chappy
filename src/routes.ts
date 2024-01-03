@@ -20,7 +20,7 @@ export const Routes = [
     method: "get",
     route: "/mycollabs",
     controller: ProjectController,
-    action: "getProjectsFromMembers"
+    action: "getProjectsFromMember"
   },
 
   { 
@@ -104,13 +104,6 @@ export const Routes = [
     route: "/tasks/step/:idStep",
     controller: TaskController,
     action: "getTasksByIdStep"
-  },
-
-  { 
-    method: "get",
-    route: "/tasks/project/:idProject",
-    controller: TaskController,
-    action: "getTasksByIdProject"
   },
 
   { 
@@ -230,7 +223,7 @@ export const Routes = [
     method: "get",
     route: "/notifications",
     controller: NotificationController,
-    action: "getNotificationByUser"
+    action: "getNotificationsByUser"
   },
   { 
     method: "post",

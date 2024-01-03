@@ -24,9 +24,9 @@ export class Service {
     });
   }
 
-  async getOneById(id: number, relations?: Array<string>): Promise<unknown> {
+  async getOneById(id: number, relations?: Array<string>, select?:any): Promise<unknown> {
     return this.handleService("GET-ONEBYID", async () => {
-      return this.repository.findOne({ where:{id}, relations });
+      return this.repository.findOne({ where:{id}, relations, select });
     });
   }
 
