@@ -9,7 +9,7 @@ export class StepController extends GlobalController {
   private stepService = new Service(Step)
 
 
-  async getStepByIdProject(req: Request, res: Response, next: NextFunction) {
+  async getStepsByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: {id: +req.params.idProject} };
     await this.handleGlobal(req, res, next, async () => {
       return this.stepService.getManyBySearchOptions(searchOptions);
@@ -18,7 +18,7 @@ export class StepController extends GlobalController {
 
   async getStepByIdStep(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.stepService.getOneById(+req.params.id, ["tasks", "project"]);
+      return this.stepService.getOneById(+req.params.idStep, ["tasks", "project"]);
     });
   }
 

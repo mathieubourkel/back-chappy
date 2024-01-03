@@ -3,22 +3,26 @@ import { Project } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
+import { CreateProjectDto } from "../dto/project.dto";
+import { plainToClass } from "class-transformer";
+import { validate } from "class-validator";
+import { CustomError } from "../utils/CustomError";
 
 export class ProjectController extends GlobalController {
   private projectService = new Service(Project);
   private userService = new Service(User);
 
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { owner: {id: +req.body.idUser} };
+    const searchOptions = { owner: { id: +req.body.idUser } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
-        "steps"
+        "steps",
       ]);
     });
   }
 
   async getProjectsFromMember(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { users: {id: +req.body.idUser} };
+    const searchOptions = { users: { id: +req.body.idUser } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
@@ -41,13 +45,21 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.create(req.body);
+      const userDto: CreateProjectDto = new CreateProjectDto(req.body);
+      const errors = await validate(userDto);
+      if (errors.length > 0) {
+        throw new CustomError("PC-DTO-CHECK", 400);
+      }
+      return this.projectService.create(userDto);
     });
   }
 
   async addUserToProject(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const project: any = await this.projectService.getOneById(+req.params.idProject, ["users"]);
+      const project: any = await this.projectService.getOneById(
+        +req.params.idProject,
+        ["users"]
+      );
       const user: any = await this.userService.getOneById(req.body.idUser);
       project.users.push(user);
       return this.projectService.update(+req.params.idProject, project);
