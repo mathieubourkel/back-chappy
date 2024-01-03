@@ -1,7 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
 import { Status } from "../enums/status.enum";
-import { User } from "./user.entity";
+import { Task } from "./task.entity";
 
 @Entity()
 export class Step {
@@ -24,11 +24,7 @@ export class Step {
     @Column({type:"date"})
     estimEndDate: Date;
 
-    @ManyToMany (() => User, {cascade: true})
-    @JoinTable()
-    users: User[]
+    @ManyToOne (() => Project, project => project.steps) project:Project;
+    @OneToMany(() => Task, task => task.step) tasks: Task[];
 
-    @ManyToOne (type => Project, Project => Project.steps) Project:Project;
-
-    //@JoinColumn() owner:Owner
 }

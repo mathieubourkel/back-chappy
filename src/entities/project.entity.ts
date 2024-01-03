@@ -1,7 +1,10 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Status } from "../enums/status.enum";
 import { Step } from "./step.entity";
 import { User } from "./user.entity";
+import { Purchase } from "./purchase.entity";
+import { Company } from "./company.entity";
+import { Document } from "./document.entity";
 
 @Entity()
 export class Project {
@@ -31,6 +34,14 @@ export class Project {
     @JoinTable()
     users: User[]
 
-    @OneToMany (type => Step, Step => Step.project) Steps: Step[];
+    @ManyToMany (() => Company, {cascade: true})
+    @JoinTable()
+    companies: Company[]
+
+    @ManyToOne (() => User, owner => owner.projects) owner:User;
+
+    @OneToMany (() => Purchase, purchase => purchase.project) purchases: Purchase[];
+    @OneToMany (() => Step, step => step.project) steps: Step[];
+    @OneToMany (() => Document, document => document.project) documents: Document[];
 
 }

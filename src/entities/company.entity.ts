@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
 import { User } from "./user.entity";
 
@@ -20,8 +20,8 @@ export class Company {
     @ManyToMany (() => Project, {cascade: true})
     @JoinTable()
     projects: Project[]
-    
-    @ManyToOne (type => User, User => User.comments) User:User[];
-    @OneToOne (type => User, User => User.comments) User:User;
+
+    @OneToMany (() => User, user => user.company) users:User[];
+    @OneToOne (() => User, owner => owner.company) owner:User;
 
 }

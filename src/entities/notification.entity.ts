@@ -23,7 +23,6 @@ export class Notification {
     @JoinTable()
     receivers: User[]
 
-    // A corriger
-    @ManyToOne (type => User, User => User.sender) User:User;
+    @ManyToOne (() => User, sender => sender.mySentNotifications) sender:User;
 
 }

@@ -27,6 +27,6 @@ export class Purchase {
     @Column({type:"date"})
     deliveryDate: Date;
 
-    @ManyToOne (type => Project, Project => Project.purchases) Project:Project;
+    @ManyToOne (() => Project, project => project.purchases) project:Project;
 
 }
