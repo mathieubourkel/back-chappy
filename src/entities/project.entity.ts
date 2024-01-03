@@ -34,10 +34,6 @@ export class Project {
     @JoinTable()
     users: User[]
 
-    @ManyToMany (() => Company, {cascade: true})
-    @JoinTable()
-    companies: Company[]
-
     @ManyToOne (() => User, owner => owner.projects) owner:User;
 
     @OneToMany (() => Purchase, purchase => purchase.project) purchases: Purchase[];

@@ -38,22 +38,6 @@ export class User {
     @Column({type:"enum", enum: UserRole})
     role: UserRole;
 
-    @ManyToMany (() => Project, {cascade: true})
-    @JoinTable()
-    myProjects: Project[]
-
-    @ManyToMany (() => Project, {cascade: true})
-    @JoinTable()
-    collabs: Project[]
-
-    @ManyToMany (() => Task, {cascade: true})
-    @JoinTable()
-    tasks: Task[]
-
-    @ManyToMany (() => Notification, {cascade: true})
-    @JoinTable()
-    notifications: Notification[]
-
     @ManyToOne (() => Company, company => company.users) company: Company;
     @OneToOne  (() => Company, company => company.owner) myCompany: Company
 

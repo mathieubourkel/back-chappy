@@ -6,6 +6,7 @@ import { ProjectController } from "./controllers/project.controller";
 import { PurchaseController } from "./controllers/purchase.controller";
 import { StepController } from "./controllers/step.controller";
 import { TaskController } from "./controllers/task.controller";
+import { UserController } from "./controllers/user.controller";
 
 export const Routes = [ 
 
@@ -60,7 +61,7 @@ export const Routes = [
     method: "put",
     route: "/project/:id",
     controller: ProjectController,
-    action: "modify"
+    action: "update"
   },
 
   
@@ -82,11 +83,11 @@ export const Routes = [
     method: "put",
     route: "/step/:id",
     controller: StepController,
-    action: "modify"
+    action: "update"
   },
   { 
     method: "post",
-    route: "/step/:id",
+    route: "/step",
     controller: StepController,
     action: "create"
   },
@@ -129,11 +130,11 @@ export const Routes = [
     method: "put",
     route: "/task/:id",
     controller: TaskController,
-    action: "modify"
+    action: "update"
   },
   { 
     method: "post",
-    route: "/task/:id",
+    route: "/task",
     controller: TaskController,
     action: "create"
   },
@@ -162,7 +163,7 @@ export const Routes = [
     method: "put",
     route: "/purchase/:id",
     controller: PurchaseController,
-    action: "modify"
+    action: "update"
   },
   { 
     method: "delete",
@@ -188,7 +189,7 @@ export const Routes = [
     method: "put",
     route: "/document/:id",
     controller: DocumentController,
-    action: "modify"
+    action: "update"
   },
   { 
     method: "delete",
@@ -202,7 +203,7 @@ export const Routes = [
     method: "get",
     route: "/categories",
     controller: CategoryController,
-    action: "getCategories"
+    action: "getAll"
   },
   { 
     method: "post",
@@ -235,7 +236,7 @@ export const Routes = [
     method: "put",
     route: "/notification/:id",
     controller: NotificationController,
-    action: "modify"
+    action: "update"
   },
   { 
     method: "delete",
@@ -246,6 +247,13 @@ export const Routes = [
   
   // COMMENT
   // USER
+  { 
+    method: "post",
+    route: "/user",
+    controller: UserController,
+    action: "create"
+  },
+
   // COMPANY
 
   //GLOBAL

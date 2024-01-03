@@ -50,7 +50,7 @@ export class Service {
 
   async delete(id: number): Promise<unknown> {
     return this.handleService("DELETE", async () => {
-      return this.repository.remove(id);
+      return this.repository.delete(id);
     });
   }
 

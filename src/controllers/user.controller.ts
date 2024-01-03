@@ -8,4 +8,10 @@ export class UserController extends GlobalController {
 
   private userService = new Service(User)
 
+
+  async create(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      return this.userService.create(req.body);
+    });
+  }
 }
