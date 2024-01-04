@@ -1,7 +1,8 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
 import { Status } from "../enums/status.enum";
 import { User } from "./user.entity";
+import { Step } from "./step.entity";
+import { Category } from "./category.entity";
 
 @Entity()
 export class Task {
@@ -31,6 +32,8 @@ export class Task {
     @JoinTable()
     users: User[]
 
-    @ManyToOne (type => Project, Project => Project.steps) Project:Project;
+    @ManyToOne (() => Step, step => step.tasks) step:Step;
+    @ManyToOne (() => User, owner => owner.myOwnTasks) owner:User;
+    @ManyToOne (() => Category, category => category.tasks) category:Category;
 
 }

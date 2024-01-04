@@ -13,6 +13,6 @@ export class Document {
     @Column({type:"varchar"})
     type: string;
 
-    @ManyToOne (type => Project, Project => Project.documents) Project:Project;
+    @ManyToOne (() => Project, project => project.documents) project:Project;
 
 }

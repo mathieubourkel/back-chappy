@@ -6,6 +6,7 @@ import { dataBaseSource } from "./data-source";
 import { errorHandler } from "./middlewares/ErrorHandler";
 import { CustomError } from "./utils/CustomError";
 
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -29,6 +30,7 @@ dataBaseSource.AppDataSource.initialize()
         }
       );
     });
+    // middleware gestion des erreurs
     app.use((err: CustomError, req: Request, res: Response, next: Function) => {
       errorHandler(err, res);
     });

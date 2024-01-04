@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 @Entity()
@@ -16,6 +16,6 @@ export class Comment {
     @Column({type:"int"})
     idParent: number;
 
-    @ManyToOne (type => User, User => User.comments) User:User;
+    @ManyToOne (() => User, author => author.comments) author: User;
 
 }
