@@ -1,11 +1,12 @@
 import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsString, ValidateNested} from "class-validator";
+import { IsArray, IsEnum, IsInt, IsNumber, IsString, ValidateNested} from "class-validator";
 import { Status } from "../enums/status.enum";
 
 export class CheckIdDto {
     @IsInt()
     id: number
 }
+
 export class CreateProjectDto {
     @IsString()
     name:string;
@@ -17,14 +18,14 @@ export class CreateProjectDto {
     status:Status;
     @IsInt()
     budget:number;
+    @IsString()
     estimEndDate:Date;
     @IsInt()
     owner:number;
 
     @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => CheckIdDto)
-    users:CheckIdDto[];
+    @IsNumber({}, {each: true})
+    users:number[];
 
     constructor(body:CreateProjectDto) {
         this.name = body.name,

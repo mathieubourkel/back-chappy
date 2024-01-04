@@ -4,7 +4,6 @@ import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
 import { CreateProjectDto } from "../dto/project.dto";
-import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
 
@@ -45,11 +44,15 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto: CreateProjectDto = new CreateProjectDto(req.body);
-      const errors = await validate(userDto);
+      const userDto:any = new CreateProjectDto(req.body);
+      const errors = await validate(userDto, {whitelist: true});
+      console.log(errors)
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
+      userDto.users = userDto.users.map((elem: number) => {
+        return { id: elem };
+      });
       return this.projectService.create(userDto);
     });
   }

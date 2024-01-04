@@ -30,6 +30,7 @@ dataBaseSource.AppDataSource.initialize()
         }
       );
     });
+    // middleware gestion des erreurs
     app.use((err: CustomError, req: Request, res: Response, next: Function) => {
       errorHandler(err, res);
     });
