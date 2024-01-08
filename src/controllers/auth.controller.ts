@@ -29,8 +29,8 @@ export class AuthController extends GlobalController {
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "4w" }
     );
-    await this.userService.update(userId, { refreshToken });
-    return { token, refreshToken };
+    const user = await this.userService.update(userId, { refreshToken });
+    return { token, refreshToken, user };
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +43,7 @@ export class AuthController extends GlobalController {
       );
 
       if (!isPasswordMatched) throw new Error("bad pwd");
-      return this.__createTokens(user.userId, req.body.email);
+      return this.__createTokens(user.id, req.body.email);
     });
   }
 
