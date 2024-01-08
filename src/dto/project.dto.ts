@@ -14,8 +14,8 @@ export class CreateProjectDto {
     description:string;
     @IsString()
     code:string;
-    @IsEnum(Status)
-    status:Status;
+    @IsInt()
+    status:number;
     @IsInt()
     budget:number;
     @IsString()

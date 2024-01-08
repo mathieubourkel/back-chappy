@@ -5,11 +5,12 @@ import * as bodyParser from "body-parser";
 import { dataBaseSource } from "./data-source";
 import { errorHandler } from "./middlewares/ErrorHandler";
 import { CustomError } from "./utils/CustomError";
-
+import cors from 'cors';
 
 const app = express();
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
+app.use(cors())
 dataBaseSource.AppDataSource.initialize()
   .then(async () => {
     Routes.forEach((_route) => {

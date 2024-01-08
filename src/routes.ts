@@ -1,4 +1,5 @@
 import { CategoryController } from "./controllers/category.controller";
+import { CompanyController } from "./controllers/company.controller";
 import { GlobalController } from "./controllers/controller";
 import { DocumentController } from "./controllers/document.controller";
 import { NotificationController } from "./controllers/notification.controller";
@@ -13,13 +14,13 @@ export const Routes = [
   // PROJECT
   { 
     method: "get",
-    route: "/myprojects",
+    route: "/myprojects/:idUser",
     controller: ProjectController,
     action: "getProjectsFromOwner"
   },
   { 
     method: "get",
-    route: "/mycollabs",
+    route: "/mycollabs/:idUser",
     controller: ProjectController,
     action: "getProjectsFromMember"
   },
@@ -37,19 +38,11 @@ export const Routes = [
     controller: ProjectController,
     action: "getProjectNameById"
   },
-
   { 
     method: "post",
     route: "/project",
     controller: ProjectController,
     action: "create"
-  },
-
-  { 
-    method: "delete",
-    route: "/project/:id",
-    controller: ProjectController,
-    action: "delete"
   },
   { 
     method: "put",
@@ -63,8 +56,18 @@ export const Routes = [
     controller: ProjectController,
     action: "update"
   },
-
-  
+  { 
+    method: "put",
+    route: "/project/:idProject/rejoin/:idUser",
+    controller: ProjectController,
+    action: "userRejoinProject"
+  },
+  { 
+    method: "delete",
+    route: "/project/:id",
+    controller: ProjectController,
+    action: "delete"
+  },
 
   // STEP
   { 
@@ -80,16 +83,16 @@ export const Routes = [
     action: "getStepByIdStep"
   },
   { 
-    method: "put",
-    route: "/step/:id",
-    controller: StepController,
-    action: "update"
-  },
-  { 
     method: "post",
     route: "/step",
     controller: StepController,
     action: "create"
+  },
+  { 
+    method: "put",
+    route: "/step/:id",
+    controller: StepController,
+    action: "update"
   },
   { 
     method: "delete",
@@ -109,13 +112,20 @@ export const Routes = [
 
   { 
     method: "get",
-    route: "/tasks/owner",
+    route: "/tasks/project/:idProject",
+    controller: TaskController,
+    action: "getTasksByIdProject"
+  },
+
+  { 
+    method: "get",
+    route: "/tasks/owner/:idUser",
     controller: TaskController,
     action: "getOwnerTasksByIdUser"
   },
   { 
     method: "get",
-    route: "/tasks/member",
+    route: "/tasks/member/:idUser",
     controller: TaskController,
     action: "getCollabTasksByIdUser"
   },
@@ -129,6 +139,12 @@ export const Routes = [
   { 
     method: "put",
     route: "/task/:id",
+    controller: TaskController,
+    action: "update"
+  },
+  { 
+    method: "put",
+    route: "/task/:idTask/delete/:idUser",
     controller: TaskController,
     action: "update"
   },
@@ -222,7 +238,7 @@ export const Routes = [
 
   { 
     method: "get",
-    route: "/notifications",
+    route: "/notifications/:idUser",
     controller: NotificationController,
     action: "getNotificationsByUser"
   },
@@ -248,13 +264,56 @@ export const Routes = [
   // COMMENT
   // USER
   { 
+    method: "get",
+    route: "/users",
+    controller: UserController,
+    action: "getAll"
+  },
+  { 
     method: "post",
     route: "/user",
     controller: UserController,
     action: "create"
   },
+  { 
+    method: "put",
+    route: "/user/:id",
+    controller: UserController,
+    action: "update"
+  },
+  { 
+    method: "delete",
+    route: "/user/:id",
+    controller: UserController,
+    action: "delete"
+  },
 
   // COMPANY
+
+  { 
+    method: "get",
+    route: "/companies",
+    controller: CompanyController,
+    action: "getAll"
+  },
+  { 
+    method: "post",
+    route: "/company",
+    controller: CompanyController,
+    action: "create"
+  },
+  { 
+    method: "put",
+    route: "/company/:id",
+    controller: CompanyController,
+    action: "update"
+  },
+  { 
+    method: "delete",
+    route: "/company/:id",
+    controller: CompanyController,
+    action: "delete"
+  },
 
   //GLOBAL
     { 

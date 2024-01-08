@@ -3,6 +3,7 @@ import { Status } from "../enums/status.enum";
 import { User } from "./user.entity";
 import { Step } from "./step.entity";
 import { Category } from "./category.entity";
+import { Project } from "./project.entity";
 
 @Entity()
 export class Task {
@@ -16,8 +17,8 @@ export class Task {
     @Column({type:"varchar"})
     description: string;
 
-    @Column({type:"enum", enum: Status})
-    status: Status
+    @Column({type:"int"})
+    status: number
 
     @Column({type:"int"})
     budget: number;
@@ -33,6 +34,7 @@ export class Task {
     users: User[]
 
     @ManyToOne (() => Step, step => step.tasks) step:Step;
+    @ManyToOne (() => Project, project => project.tasks) project:Project;
     @ManyToOne (() => User, owner => owner.myOwnTasks) owner:User;
     @ManyToOne (() => Category, category => category.tasks) category:Category;
 

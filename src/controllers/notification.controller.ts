@@ -9,7 +9,7 @@ export class NotificationController extends GlobalController {
   private notificationService = new Service(Notification)
 
   async getNotificationsByUser(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { receivers: [{id:req.body.idUser}] };
+    const searchOptions = { receivers: [{id:req.params.idUser}] };
     await this.handleGlobal(req, res, next, async () => {
       return this.notificationService.getManyBySearchOptions(searchOptions, [
         "receivers",

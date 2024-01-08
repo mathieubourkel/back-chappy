@@ -8,7 +8,7 @@ export class PurchaseController extends GlobalController {
 
   private purchaseService = new Service(Purchase)
 
-  async getPurchaseByIdProject(req: Request, res: Response, next: NextFunction) {
+  async getPurchasesByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: {id:+req.params.idProject} };
     await this.handleGlobal(req, res, next, async () => {
       return this.purchaseService.getManyBySearchOptions(searchOptions, [

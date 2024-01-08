@@ -19,8 +19,19 @@ export class TaskController extends GlobalController {
     });
   }
 
+  async getTasksByIdProject(req: Request, res: Response, next: NextFunction) {
+    const searchOptions = { project: {id:+req.params.idProject} };
+    await this.handleGlobal(req, res, next, async () => {
+      return this.taskService.getManyBySearchOptions(searchOptions, [
+        "project",
+        "category",
+        "users"
+      ]);
+    });
+  }
+
   async getOwnerTasksByIdUser(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { owner: {id: +req.body.idUser} };
+    const searchOptions = { owner: {id: +req.params.idUser} };
     await this.handleGlobal(req, res, next, async () => {
       return this.taskService.getManyBySearchOptions(searchOptions, [
         "owner"
@@ -29,7 +40,7 @@ export class TaskController extends GlobalController {
   }
 
   async getCollabTasksByIdUser(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { users: {id: +req.body.idUser} };
+    const searchOptions = { users: {id: +req.params.idUser} };
     await this.handleGlobal(req, res, next, async () => {
       return this.taskService.getManyBySearchOptions(searchOptions, [
         "users"

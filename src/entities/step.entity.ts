@@ -15,8 +15,8 @@ export class Step {
     @Column({type:"varchar"})
     description: string;
 
-    @Column({type:"enum", enum: Status})
-    status: Status
+    @Column({type:"int"})
+    status: number
 
     @Column({type:"int"})
     budget: number;

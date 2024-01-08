@@ -3,8 +3,8 @@ import { Status } from "../enums/status.enum";
 import { Step } from "./step.entity";
 import { User } from "./user.entity";
 import { Purchase } from "./purchase.entity";
-import { Company } from "./company.entity";
 import { Document } from "./document.entity";
+import { Task } from "./task.entity";
 
 @Entity()
 export class Project {
@@ -21,8 +21,8 @@ export class Project {
     @Column({type:"varchar"})
     code: string;
 
-    @Column({type:"enum", enum: Status})
-    status: Status
+    @Column({type:"int"})
+    status: number
 
     @Column({type:"int"})
     budget: number;
@@ -38,6 +38,7 @@ export class Project {
 
     @OneToMany (() => Purchase, purchase => purchase.project) purchases: Purchase[];
     @OneToMany (() => Step, step => step.project) steps: Step[];
+    @OneToMany (() => Task, task => task.project) tasks: Task[];
     @OneToMany (() => Document, document => document.project) documents: Document[];
 
 }

@@ -12,7 +12,7 @@ export class ProjectController extends GlobalController {
   private userService = new Service(User);
 
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { owner: { id: +req.body.idUser } };
+    const searchOptions = { owner: { id: +req.params.idUser } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
@@ -21,7 +21,7 @@ export class ProjectController extends GlobalController {
   }
 
   async getProjectsFromMember(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { users: { id: +req.body.idUser } };
+    const searchOptions = { users: { id: +req.params.idUser } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
@@ -44,16 +44,18 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto:any = new CreateProjectDto(req.body);
-      const errors = await validate(userDto, {whitelist: true});
-      console.log(errors)
-      if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK", 400);
-      }
-      userDto.users = userDto.users.map((elem: number) => {
-        return { id: elem };
-      });
-      return this.projectService.create(userDto);
+      // const userDto:any = new CreateProjectDto(req.body);
+      // const errors = await validate(userDto, {whitelist: true});
+      // console.log(errors)
+      // if (errors.length > 0) {
+      //   throw new CustomError("PC-DTO-CHECK", 400);
+      // }
+      // userDto.users = userDto.users.map((elem: number) => {
+      //   return { id: elem };
+      // });
+      // return this.projectService.create(userDto);
+      console.log(req.body)
+      return this.projectService.create(req.body);
     });
   }
 

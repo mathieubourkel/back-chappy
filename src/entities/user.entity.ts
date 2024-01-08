@@ -21,6 +21,9 @@ export class User {
     lastname: string;
 
     @Column({type:"varchar"})
+    email: string;
+
+    @Column({type:"varchar"})
     password: string;
 
     @Column({type:"int"})
