@@ -41,6 +41,9 @@ export class User {
     @Column({type:"enum", enum: UserRole})
     role: UserRole;
 
+    @Column({type:"text", nullable: true})
+    refreshToken: string;
+
     @ManyToOne (() => Company, company => company.users) company: Company;
     @OneToOne  (() => Company, company => company.owner) myCompany: Company
 

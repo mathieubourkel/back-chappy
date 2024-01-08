@@ -6,11 +6,14 @@ import { dataBaseSource } from "./data-source";
 import { errorHandler } from "./middlewares/ErrorHandler";
 import { CustomError } from "./utils/CustomError";
 import cors from 'cors';
+import { tokensMiddleware } from "./middlewares/tokens.middleware";
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors())
+app.use("/api", (req, res, next) => tokensMiddleware(req, res, next))
+app.use("/auth/refreshToken", (req, res, next) => tokensMiddleware(req, res, next, true))
 dataBaseSource.AppDataSource.initialize()
   .then(async () => {
     Routes.forEach((_route) => {
@@ -37,7 +40,5 @@ dataBaseSource.AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
-
 app.listen(3000);
-
 console.log("express runing");

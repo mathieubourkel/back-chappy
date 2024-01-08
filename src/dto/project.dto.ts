@@ -1,45 +1,66 @@
-import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsNumber, IsString, ValidateNested} from "class-validator";
-import { Status } from "../enums/status.enum";
-
-export class CheckIdDto {
-    @IsInt()
-    id: number
-}
+import { IsArray, IsDateString, IsInt, IsNumber, IsString, Length, Max, Min} from "class-validator";
 
 export class CreateProjectDto {
     @IsString()
+    @Length(1, 50)
     name:string;
     @IsString()
+    @Length(1, 250)
     description:string;
     @IsString()
+    @Length(16, 16)
     code:string;
     @IsInt()
+    @Min(1)
+    @Max(3)
     status:number;
     @IsInt()
     budget:number;
-    @IsString()
+    @IsDateString()
     estimEndDate:Date;
     @IsInt()
+    @Min(1)
     owner:number;
-
     @IsArray()
     @IsNumber({}, {each: true})
     users:number[];
 
     constructor(body:CreateProjectDto) {
-        this.name = body.name,
-        this.description = body.description,
-        this.code = body.code,
-        this.status = body.status,
-        this.budget = body.budget,
-        this.estimEndDate = body.estimEndDate,
-        this.owner = body.owner,
-        this.users = body.users
+        const {name, description, code, status, budget, estimEndDate, owner, users} = body;
+        this.name = name,
+        this.description = description,
+        this.code = code,
+        this.status = status,
+        this.budget = budget,
+        this.estimEndDate = estimEndDate,
+        this.owner = owner,
+        this.users = users
     }
 }
 
 export class ModifyProjectDto {
+    @IsString()
+    @Length(1, 50)
+    name:string;
+    @IsString()
+    @Length(1, 250)
+    description:string;
+    @IsInt()
+    @Min(1)
+    @Max(3)
+    status:number;
+    @IsInt()
+    budget:number;
+    @IsDateString()
+    estimEndDate:Date;
+    constructor(body:ModifyProjectDto) {
+        const {name,description, status, budget, estimEndDate} = body;
+        this.name = name,
+        this.description = description,
+        this.status = status,
+        this.budget = +budget,
+        this.estimEndDate = estimEndDate
+    }
     
 }
 
