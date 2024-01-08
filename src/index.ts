@@ -9,12 +9,13 @@ import cors from 'cors';
 import { tokensMiddleware } from "./middlewares/tokens.middleware";
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(cors())
 app.use("/api", (req, res, next) => tokensMiddleware(req, res, next))
 app.use("/auth/refreshToken", (req, res, next) => tokensMiddleware(req, res, next, true))
-dataBaseSource.AppDataSource.initialize()
+
+if (process.env.NODE_ENV === "production") dataBaseSource.AppDataSource.initialize()
+if (process.env.NODE_ENV === "development") dataBaseSource.AppDataSourceDev.initialize()
   .then(async () => {
     Routes.forEach((_route) => {
       const { method, route, action, controller } = _route;
@@ -40,5 +41,5 @@ dataBaseSource.AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
-app.listen(3000);
+process.env.NODE_ENV === 'production' ? app.listen(process.env.APP_PORT) : app.listen(process.env.APP_PORT_DEV)
 console.log("express runing");
