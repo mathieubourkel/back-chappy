@@ -1,6 +1,6 @@
 import { EntityTarget, Repository } from "typeorm";
-import { dataBaseSource } from "../data-source";
 import {CustomError} from "../utils/CustomError";
+import { AppDataSource } from "../data-source";
 
 export class Service {
 
@@ -9,7 +9,7 @@ export class Service {
   // une entity
   // Cela permet d'utiliser un global "repository" dans les fonctions
   constructor(entity:EntityTarget<unknown>){
-    this.repository = dataBaseSource.AppDataSource.getRepository(entity);
+    this.repository = AppDataSource.getRepository(entity);
   }
 
   // Function global du service qui gère la logique du try/catch er des erreurs

@@ -30,6 +30,12 @@ export const Routes = [
     controller: AuthController,
     action: "logout"
   },
+  { 
+    method: "post",
+    route: "/auth/register",
+    controller: UserController,
+    action: "create"
+  },
   // PROJECT
   { 
     method: "get",
@@ -288,12 +294,7 @@ export const Routes = [
     controller: UserController,
     action: "getAll"
   },
-  { 
-    method: "post",
-    route: "/api/user",
-    controller: UserController,
-    action: "create"
-  },
+
   { 
     method: "put",
     route: "/api/user/:id",
