@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { Category } from "../entities/category.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { RequestWithUserInfo } from "../middlewares/RequestWithUserInfo";
+import { RequestWithUserInfo } from "../interfaces/request.interface";
 
 export class CategoryController extends GlobalController {
 

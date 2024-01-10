@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { Notification } from "../entities/notification.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { RequestWithUserInfo } from "../middlewares/RequestWithUserInfo";
+import { RequestWithUserInfo } from "../interfaces/request.interface";
 
 export class NotificationController extends GlobalController {
 

@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { Purchase } from "../entities/purchase.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { RequestWithUserInfo } from "../middlewares/RequestWithUserInfo";
+import { RequestWithUserInfo } from "../interfaces/request.interface";
 
 export class PurchaseController extends GlobalController {
 

@@ -6,7 +6,7 @@ import { User } from "../entities/user.entity";
 import { CreateProjectDto, ModifyProjectDto } from "../dto/project.dto";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
-import { RequestWithUserInfo } from "../middlewares/RequestWithUserInfo";
+import { RequestWithUserInfo } from "../interfaces/request.interface";
 
 export class ProjectController extends GlobalController {
   private projectService = new Service(Project);

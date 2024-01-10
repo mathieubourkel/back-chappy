@@ -4,13 +4,13 @@ import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { RequestWithRefresh } from "../middlewares/RequestWithUserInfo";
+import { RequestWithUserInfo } from "../interfaces/request.interface";
 import { CustomError } from "../utils/CustomError";
 
 export class AuthController extends GlobalController {
+
   private userService = new Service(User);
 
- 
   private async __decryptPassword(input: string, bdd: string) {
     const result = await bcrypt.compare(input, bdd);
     return result;
@@ -23,12 +23,12 @@ export class AuthController extends GlobalController {
     const token = jwt.sign(
       { userId, email, exirationDate: tokenDate },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10s" }
+      { expiresIn: "2h" }
     );
     const refreshToken = jwt.sign(
       { userId, email, exirationDate: refreshDate },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "4w" }
+      { expiresIn: "1w" }
     );
 
     res.cookie("refreshToken", refreshToken, {
@@ -55,7 +55,7 @@ export class AuthController extends GlobalController {
     });
   }
 
-  async refreshToken(req: RequestWithRefresh, res: Response, next: NextFunction) {
+  async refreshToken(req: RequestWithUserInfo, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const user: any = await this.userService.getOneById(req.user.userId);
       if (!user) throw new CustomError("AUTH-C", 401, "No User");

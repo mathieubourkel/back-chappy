@@ -1,20 +1,14 @@
 import express from "express";
-import { Routes } from "./routes";
 import { Request, Response } from "express";
 import * as bodyParser from "body-parser";
+import cors from 'cors';
 import { AppDataSource } from "./data-source";
 import { errorHandler } from "./middlewares/ErrorHandler";
 import { CustomError } from "./utils/CustomError";
-import cors from 'cors';
 import cookieParser from "cookie-parser";
+import { Routes } from "./routes";
 import { verifyRefresh, verifyToken } from "./middlewares/tokens.middleware";
-
-const corsOptions = {
-  origin: process.env.FRONT_URL,
-  methods: 'GET,PUT,POST,DELETE,OPTIONS,PATCH,HEAD',
-  credentials: true,
-  allowedHeaders: 'Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization',
-};
+import { corsOptions } from "./middlewares/cors.middleware";
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,9 +33,7 @@ AppDataSource.initialize()
             );
           } else if (result !== null && result !== undefined) {
             res.json(result);
-          }
-        }
-      );
+          }});
     });
     // middleware gestion des erreurs
     app.use((err: CustomError, req: Request, res: Response, next: Function) => {
@@ -49,5 +41,16 @@ AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
-process.env.NODE_ENV === 'production' ? app.listen(process.env.APP_PORT) : app.listen(process.env.APP_PORT_DEV)
-console.log("Server is up !");
+
+switch (process.env.NODE_ENV){
+  case ('production'):
+    app.listen(process.env.APP_PORT)
+    console.log(`[PROD]Server Up on this URL : ${process.env.BACK_HOST}:${process.env.APP_PORT}`)
+    break;
+  case ('development'):
+    app.listen(process.env.APP_PORT_DEV)
+    console.log(`[DEV]Server Up on this URL : ${process.env.BACK_HOST_DEV}:${process.env.APP_PORT_DEV}`)
+    break;
+  default:
+    console.log("Configure ton .env amigo")
+}

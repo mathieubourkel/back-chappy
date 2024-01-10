@@ -6,7 +6,3 @@ export interface RequestWithUserInfo extends Request {
         userId: number
     }
 }
-
-export interface RequestWithRefresh extends RequestWithUserInfo {
-    refreshToken: string
-}
