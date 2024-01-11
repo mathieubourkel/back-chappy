@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPMessages } from "../utils/HTTPMessages";
+import { client } from '../index'
 
 export abstract class GlobalController {
   // Fonction globale, utilisée dans toutes les fonctions de controlleurs
@@ -22,6 +23,7 @@ export abstract class GlobalController {
       let result = await callback();
       let tmpMes;
       if (result == null || result.length == 0) tmpMes = "Aucune data trouvée"
+      await client.set(req.url, JSON.stringify(result))
       res.status(status || 200)
         .json({
           data: result,
