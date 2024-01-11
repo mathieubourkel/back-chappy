@@ -13,7 +13,7 @@ export class ProjectController extends GlobalController {
   private userService = new Service(User);
 
   async getProjectsFromOwner(req: RequestWithUserInfo, res: Response, next: NextFunction) {
-    const searchOptions = { owner: { id: +req.params.idUser } };
+    const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
@@ -22,7 +22,7 @@ export class ProjectController extends GlobalController {
   }
 
   async getProjectsFromMember(req: RequestWithUserInfo, res: Response, next: NextFunction) {
-    const searchOptions = { users: { id: +req.params.idUser } };
+    const searchOptions = { users: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",

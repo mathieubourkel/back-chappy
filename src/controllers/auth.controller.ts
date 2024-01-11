@@ -33,7 +33,7 @@ export class AuthController extends GlobalController {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: process.env.NODE_ENV === 'production',
-      maxAge:9000000,
+      maxAge:700000000,
       secure: process.env.NODE_ENV === 'production',
     })
 
