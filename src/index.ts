@@ -10,21 +10,20 @@ import cookieParser from "cookie-parser";
 import { Routes } from "./routes";
 import { verifyRefresh, verifyToken } from "./middlewares/tokens.middleware";
 import { corsOptions } from "./config/cors.middleware";
-import { redisConfig } from "./config/redis.config";
 import { fetchDataFromRedis } from "./middlewares/redis.middleware";
 
 const app = express();
 
 // REDIS
-export const client = createClient(redisConfig);
-client.on("connect", function () {
+export const redis = createClient({url: process.env.REDIS_URL});
+redis.on("connect", function () {
   console.log("Connected");
 });
-client.on("error", (err) => {
+redis.on("error", (err) => {
   console.log(err);
 });
 (async () => {
-  await client.connect();
+  await redis.connect();
 })();
 
 app.use(bodyParser.json());
@@ -35,7 +34,6 @@ app.use("/api", verifyToken);
 app.use("/auth/refreshToken", verifyRefresh);
 // Tu ajoutes un projet ca ne met pas a jour le cache
 app.get('/api/*', fetchDataFromRedis)
-
 AppDataSource.initialize()
   .then(async () => {
     Routes.forEach((_route) => {
@@ -67,13 +65,13 @@ switch (process.env.NODE_ENV) {
   case "production":
     app.listen(process.env.APP_PORT);
     console.log(
-      `[PROD]Server Up on this URL : ${process.env.BACK_HOST}:${process.env.APP_PORT}`
+      `[PROD] Server Up on this URL : ${process.env.BACK_HOST}:${process.env.APP_PORT}`
     );
     break;
   case "development":
     app.listen(process.env.APP_PORT_DEV);
     console.log(
-      `[DEV]Server Up on this URL : ${process.env.BACK_HOST_DEV}:${process.env.APP_PORT_DEV}`
+      `[DEV] Server Up on this URL : ${process.env.BACK_HOST_DEV}:${process.env.APP_PORT_DEV}`
     );
     break;
   default:
