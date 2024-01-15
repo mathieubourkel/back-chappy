@@ -1,6 +1,6 @@
 import { IsEmail, IsInt, IsNotEmpty, IsString, Length, Min } from "class-validator";
 
-export class CreateUserDto {
+export class UserDto {
     @IsString()
     @Length(1, 25)
     @IsNotEmpty()
@@ -58,7 +58,7 @@ export class CreateUserDto {
     @Min(1)
     task: number
 
-    constructor(body: CreateUserDto) {
+    constructor(body: UserDto) {
         const {firstname, lastname, email, password, address, zip, city, phone, status, role, refreshToken, company, project, comment, notification, category, task} = body;
         this.firstname = firstname,
         this.lastname = lastname,
@@ -78,8 +78,4 @@ export class CreateUserDto {
         this.category = category,
         this.task = task
     }
-}
-
-export class ModifyUserDto {
-    
 }
