@@ -37,6 +37,8 @@ export const Routes = [
     action: "create"
   },
   // PROJECT
+
+  // ENLEVER :IdUSER pour passer par le token
   { 
     method: "get",
     route: "/api/myprojects/:idUser",

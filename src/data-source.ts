@@ -2,7 +2,6 @@ import { DataSource } from "typeorm";
 require("dotenv").config();
 
 let data = {};
-
 if (process.env.NODE_ENV === "production") {
   data = {
     host: process.env.DB_HOST,
@@ -26,7 +25,7 @@ export const AppDataSource = new DataSource({
   ...data,
   synchronize: process.env.NODE_ENV === "development",
   logging: false,
-  entities: ["./src/entities/*{.ts, .js}"],
+  entities: [`${__dirname}/entities/*{.js,.ts}`],
   migrations: [],
   subscribers: [],
 });
