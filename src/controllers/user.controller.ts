@@ -4,7 +4,7 @@ import { Service } from "../services/Service";
 import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
 import bcrypt from "bcrypt";
-import { UserDto } from "../dto/user.dto";
+import { CreateUserDto } from "../dto/user.dto";
 import { validate } from "class-validator";
 
 export class UserController extends GlobalController {
@@ -23,7 +23,7 @@ export class UserController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto: any = new UserDto(req.body)
+      const userDto: any = new CreateUserDto(req.body)
       const errors = await validate(userDto)
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK")
