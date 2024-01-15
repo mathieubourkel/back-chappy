@@ -36,30 +36,9 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     role: string
-    @IsString()
-    @IsNotEmpty()
-    refreshToken: string
-    @IsInt()
-    @Min(1)
-    company: number
-    @IsInt()
-    @Min(1)
-    project: number
-    @IsInt()
-    @Min(1)
-    comment: number
-    @IsInt()
-    @Min(1)
-    notification: number
-    @IsInt()
-    @Min(1)
-    category: number
-    @IsInt()
-    @Min(1)
-    task: number
 
     constructor(body: CreateUserDto) {
-        const {firstname, lastname, email, password, address, zip, city, phone, status, role, refreshToken, company, project, comment, notification, category, task} = body;
+        const {firstname, lastname, email, password, address, zip, city, phone, status, role} = body;
         this.firstname = firstname,
         this.lastname = lastname,
         this.email = email,
@@ -69,14 +48,8 @@ export class CreateUserDto {
         this.city = city,
         this.phone = phone,
         this.status= status,
-        this.role = role,
-        this.refreshToken = refreshToken,
-        this.comment = company,
-        this. project = project,
-        this.comment = comment,
-        this.notification = notification,
-        this.category = category,
-        this.task = task
+        this.role = role
+       
     }
 }
 
