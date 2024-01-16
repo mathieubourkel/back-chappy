@@ -8,9 +8,21 @@ import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
 import { RequestWithUserInfo } from "../interfaces/request.interface";
 
+
 export class ProjectController extends GlobalController {
   private projectService = new Service(Project);
   private userService = new Service(User);
+  private __generateInvitationCode(): string {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let code = "";
+    for (let i = 0; i < 16 ; i++) {
+      const randomCode = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomCode)
+    }
+
+    return code;
+  }
 
   async getProjectsFromOwner(req: RequestWithUserInfo, res: Response, next: NextFunction) {
     const searchOptions = { owner: { id: +req.user.userId } };
@@ -50,12 +62,17 @@ export class ProjectController extends GlobalController {
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
+
+      userDto.code = this.__generateInvitationCode();
+
       userDto.users = userDto.users.map((elem: number) => {
         return { id: elem };
       });
       return this.projectService.create(userDto);
     });
   }
+
+ 
 
   async addUserToProject(req: RequestWithUserInfo, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {

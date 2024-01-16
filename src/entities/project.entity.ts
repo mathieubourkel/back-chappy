@@ -27,7 +27,7 @@ export class Project {
     @Column({type:"int"})
     budget: number;
 
-    @Column({type:"timestamp"})
+    @Column({type:"varchar"})
     estimEndDate: Date;
 
     @ManyToMany (() => User, {cascade: true})
