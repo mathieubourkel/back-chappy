@@ -26,7 +26,7 @@ export class UserController extends GlobalController {
       const userDto: any = new CreateUserDto(req.body)
       const errors = await validate(userDto)
       if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK")
+        throw new CustomError("PC-DTO-CHECK-USER")
       }
       req.body.password = await this.__hashPassword(req.body.password)
       return this.userService.create(req.body);
