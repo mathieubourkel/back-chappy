@@ -1,10 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { RequestWithUserInfo } from "../interfaces/request.interface";
 import { CustomError } from "../utils/CustomError";
 
 export class AuthController extends GlobalController {
@@ -55,7 +54,7 @@ export class AuthController extends GlobalController {
     });
   }
 
-  async refreshToken(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const user: any = await this.userService.getOneById(req.user.userId);
       if (!user) throw new CustomError("AUTH-C", 401, "No User");

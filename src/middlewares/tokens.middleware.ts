@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { CustomJwtPayload } from "jsonwebtoken";
 import { CustomError } from "../utils/CustomError";
 
 export async function verifyToken(request: Request,response: Response,next: NextFunction) {
@@ -7,7 +7,7 @@ export async function verifyToken(request: Request,response: Response,next: Next
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
     if (!token) throw new CustomError("MDW-TK", 401, "No token find");
     if (type !== "Bearer") throw new CustomError("MDW-TK", 401, "No bearer find");
-    request["user"] = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    request["user"] = <CustomJwtPayload>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     next();
   } catch (error) {
     response
@@ -20,7 +20,7 @@ export async function verifyRefresh(request: Request,response: Response,next: Ne
   try {
     const refreshToken = request.cookies.refreshToken;
     if (!refreshToken) throw new CustomError("MDW-TK-REF", 401, "No refresh token find");
-    request["user"] = jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET );
+    request["user"] = <CustomJwtPayload>jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET );
     next();
   } catch (error) {
     response

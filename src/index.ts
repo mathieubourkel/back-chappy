@@ -1,5 +1,5 @@
 import express from "express";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import * as bodyParser from "body-parser";
 import cors from "cors";
 import {createClient} from "redis";
