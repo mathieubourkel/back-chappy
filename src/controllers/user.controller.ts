@@ -6,9 +6,6 @@ import { GlobalController } from "./controller";
 import bcrypt from "bcrypt";
 import { CreateUserDto } from "../dto/user.dto";
 import { validate } from "class-validator";
-import {
-  RequestWithUserInfo
-} from "../interfaces/request.interface";
 
 export class UserController extends GlobalController {
 
@@ -24,7 +21,7 @@ export class UserController extends GlobalController {
     });
   }
 
-  async getInfosUserConnected(req:RequestWithUserInfo, res:Response, next:NextFunction) {
+  async getInfosUserConnected(req:Request, res:Response, next:NextFunction) {
     await this.handleGlobal(req, res, next, async ()=> {
       return this.userService.getOneById(+req.user.userId, [ "projects", "myOwnTasks", "participations"]);
     })
