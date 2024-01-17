@@ -4,6 +4,9 @@ import { Service } from "../services/Service";
 import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
 import bcrypt from "bcrypt";
+import {
+  RequestWithUserInfo
+} from "../interfaces/request.interface";
 
 export class UserController extends GlobalController {
 
@@ -17,6 +20,12 @@ export class UserController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       return this.userService.getAll();
     });
+  }
+
+  async getInfosUserConnected(req:RequestWithUserInfo, res:Response, next:NextFunction) {
+    await this.handleGlobal(req, res, next, async ()=> {
+      return this.userService.getOneById(+req.user.userId, [ "projects", "myOwnTasks", "participations"]);
+    })
   }
 
   async create(req: Request, res: Response, next: NextFunction) {

@@ -297,6 +297,13 @@ export const Routes = [
     action: "getAll"
   },
 
+  {
+    method: "get",
+    route: "/api/user",
+    controller: UserController,
+    action: "getInfosUserConnected"
+  },
+
   { 
     method: "put",
     route: "/api/user/:id",
