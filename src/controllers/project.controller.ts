@@ -86,6 +86,10 @@ export class ProjectController extends GlobalController {
     });
   }
 
+  async jointProjectByCode(req: RequestWithUserInfo, res: Response, next: NextFunction){
+    
+  }
+
   async update(req: RequestWithUserInfo, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const userDto:any = new ModifyProjectDto(req.body);
