@@ -7,6 +7,9 @@
      "emitDecoratorMetadata": true,
      "experimentalDecorators": true,
      "sourceMap": true,
-     "esModuleInterop": true
+     "esModuleInterop": true,
+     "typeRoots": ["./src/@types", "./node_modules/@types"]
   },
+  // "typeRoots": ["./src/@types", "./node_modules/@types"],
+  // "files": ["src/@types/express/index.d.ts"]
 }

@@ -1,5 +1,5 @@
 import express from "express";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import * as bodyParser from "body-parser";
 import cors from "cors";
 import {createClient} from "redis";
@@ -60,7 +60,7 @@ AppDataSource.initialize()
     });
   })
   .catch((error) => console.log(error));
-
+console.log(process.env.DB_NAME_DEV)
 switch (process.env.NODE_ENV) {
   case "production":
     app.listen(process.env.APP_PORT);

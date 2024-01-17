@@ -4,6 +4,8 @@ import { Service } from "../services/Service";
 import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
 import bcrypt from "bcrypt";
+import { CreateUserDto } from "../dto/user.dto";
+import { validate } from "class-validator";
 import {
   RequestWithUserInfo
 } from "../interfaces/request.interface";
@@ -30,6 +32,11 @@ export class UserController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
+      const userDto: any = new CreateUserDto(req.body)
+      const errors = await validate(userDto)
+      if (errors.length > 0) {
+        throw new CustomError("PC-DTO-CHECK-USER")
+      }
       req.body.password = await this.__hashPassword(req.body.password)
       return this.userService.create(req.body);
     });
