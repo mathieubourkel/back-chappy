@@ -6,7 +6,7 @@ import { User } from "../entities/user.entity";
 import { CreateProjectDto, ModifyProjectDto } from "../dto/project.dto";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
-import { RequestWithUserInfo } from "../interfaces/request.interface";
+
 
 
 export class ProjectController extends GlobalController {
@@ -74,7 +74,7 @@ export class ProjectController extends GlobalController {
 
  
 
-  async addUserToProject(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async addUserToProject(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const project: any = await this.projectService.getOneById(
         +req.params.idProject,
@@ -86,11 +86,11 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async jointProjectByCode(req: RequestWithUserInfo, res: Response, next: NextFunction){
+  async jointProjectByCode(req: Request, res: Response, next: NextFunction){
     
   }
 
-  async update(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const userDto:any = new ModifyProjectDto(req.body);
       const errors = await validate(userDto, {whitelist: true});
