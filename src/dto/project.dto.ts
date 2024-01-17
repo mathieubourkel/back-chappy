@@ -11,7 +11,6 @@ export class CreateProjectDto {
     @Length(16, 16)
     code:string;
     @IsInt()
-    @Min(1)
     @Max(3)
     status:number;
     @IsInt()

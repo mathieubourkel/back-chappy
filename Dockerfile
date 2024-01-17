@@ -1,7 +1,6 @@
 # Utiliser une image Node.js comme base
 FROM node:20.10.0-alpine as base
 RUN apk add --no-cache tzdata
-
 WORKDIR /app
 COPY --chown=node:node package.json .
 
