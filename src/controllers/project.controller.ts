@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import { Project } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
@@ -24,7 +24,7 @@ export class ProjectController extends GlobalController {
     return code;
   }
 
-  async getProjectsFromOwner(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
@@ -33,7 +33,7 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async getProjectsFromMember(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async getProjectsFromMember(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { users: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getManyBySearchOptions(searchOptions, [
@@ -43,19 +43,19 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async getProjectById(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getOneById(+req.params.id, ["steps", "owner"]);
     });
   }
 
-  async getProjectNameById(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async getProjectNameById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.getOneById(+req.params.id, [], { name: true });
     });
   }
 
-  async create(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const userDto:any = new CreateProjectDto(req.body);
       const errors = await validate(userDto, {whitelist: true});
@@ -104,7 +104,7 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async delete(req: RequestWithUserInfo, res: Response, next: NextFunction) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       return this.projectService.delete(+req.params.id);
     });

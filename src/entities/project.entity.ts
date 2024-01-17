@@ -30,7 +30,7 @@ export class Project {
     @Column({type:"varchar"})
     estimEndDate: Date;
 
-    @ManyToMany (() => User, {cascade: true})
+    @ManyToMany (() => User, (user) => user.participations, {cascade: true})
     @JoinTable()
     users: User[]
 

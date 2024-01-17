@@ -48,9 +48,13 @@ export class User {
     refreshToken: string;
 
     @ManyToOne (() => Company, company => company.users) company: Company;
-    @OneToOne  (() => Company, company => company.owner) myCompany: Company
+    @OneToOne  (() => Company, company => company.owner) myCompany: Company;
 
     @OneToMany (() => Project, project => project.owner) projects:Project[];
+
+    @ManyToMany(() => Project, (participation) => participation.users)
+    participations: Project[];
+
     @OneToMany (() => Comment, comment => comment.author) comments:Comment[];
     @OneToMany (() => Notification, notification => notification.sender) mySentNotifications: Notification[]
     @OneToMany (() => Category, category => category.user) myCreateCategories: Category[];

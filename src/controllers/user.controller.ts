@@ -21,6 +21,12 @@ export class UserController extends GlobalController {
     });
   }
 
+  async getInfosUserConnected(req:Request, res:Response, next:NextFunction) {
+    await this.handleGlobal(req, res, next, async ()=> {
+      return this.userService.getOneById(+req.user.userId, [ "projects", "myOwnTasks", "participations"]);
+    })
+  }
+
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const userDto: any = new CreateUserDto(req.body)
