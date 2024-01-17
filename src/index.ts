@@ -30,8 +30,8 @@ app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-app.use("/api", verifyToken);
-app.use("/auth/refreshToken", verifyRefresh);
+// app.use("/api", verifyToken);
+// app.use("/auth/refreshToken", verifyRefresh);
 // Tu ajoutes un projet ca ne met pas a jour le cache
 app.get('/api/*', fetchDataFromRedis)
 AppDataSource.initialize()

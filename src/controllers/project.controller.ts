@@ -52,6 +52,7 @@ export class ProjectController extends GlobalController {
       userDto.users = userDto.users.map((elem: number) => {
         return { id: elem };
       });
+      userDto.owner = req.user.userId
       return this.projectService.create(userDto);
     });
   }
