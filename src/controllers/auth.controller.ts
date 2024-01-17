@@ -22,12 +22,12 @@ export class AuthController extends GlobalController {
     const token = jwt.sign(
       { userId, email, exirationDate: tokenDate },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "2h" }
+      { expiresIn: "1w" }
     );
     const refreshToken = jwt.sign(
       { userId, email, exirationDate: refreshDate },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "1w" }
+      { expiresIn: "4w" }
     );
 
     res.cookie("refreshToken", refreshToken, {
