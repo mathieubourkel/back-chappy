@@ -85,9 +85,9 @@ export const Routes = [
   },
   { 
     method: "put",
-    route: "/api/project/:idProject/rejoin/:idUser",
+    route: "/api/rejoin",
     controller: ProjectController,
-    action: "userRejoinProject"
+    action: "joinProjectByCode"
   },
   { 
     method: "delete",

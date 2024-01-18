@@ -8,6 +8,9 @@ import { Task } from "./task.entity";
 
 @Entity()
 export class Project {
+    static findOne(arg0: { code: any; }) {
+      throw new Error("Method not implemented.");
+    }
 
     @PrimaryGeneratedColumn()
     id: number

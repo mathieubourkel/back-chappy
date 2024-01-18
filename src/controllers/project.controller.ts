@@ -86,8 +86,18 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async jointProjectByCode(req: Request, res: Response, next: NextFunction){
+  async joinProjectByCode(req: Request, res: Response, next: NextFunction) {
     
+    await this.handleGlobal(req, res, next, async () => {
+      const project : any = await this.projectService.getOneBySearchOptions({code:req.body.code}, ["users"]);
+      // const project : any = req.body;
+
+      const user: any = await this.userService.getOneById(req.user.userId);
+      console.log(project, user.firstname, req.body)
+      if (!project) throw new CustomError("PROJECT DOES NOT EXISTS", 200);
+      project.users.push(user);
+      return this.projectService.update(project.id, project);
+    });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
