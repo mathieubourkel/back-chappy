@@ -17,7 +17,7 @@ export class ProjectController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       let cacheResult = await redis.get(`myprojects${req.user.userId}`);
       if (cacheResult && cacheResult !== null) {
-        console.log(new Date().getHours() +1, "coucou ca vient du cache")
+        console.log(new Date(), "coucou ca vient du cache")
         return JSON.parse(cacheResult);
       }
       const result = await this.projectService.getManyBySearchOptions(searchOptions, [
@@ -40,7 +40,19 @@ export class ProjectController extends GlobalController {
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getOneById(+req.params.id, ["steps", "owner"]);
+      let cacheResult = await redis.get(`project${req.params.idProject}`);
+      if (cacheResult && cacheResult !== null) {
+        console.log(new Date(), "coucou ca vient du cache")
+        return JSON.parse(cacheResult);
+      }
+      const result:any = await this.projectService.getOneById(+req.params.id, ["users", "owner"], {description: true, id:true, owner: {id:true}, users: {id: true}});
+      console.log(req.user.userId)
+      console.log(result)
+      console.log(result.owner.id)
+      console.log(result.owner)
+      if (result.owner.id !== req.user.userId && !result.users.includes(req.user.userId)) throw new CustomError("PC-NOMEMBER", 400)
+      redis.set(`project${result.id}`, JSON.stringify(result))
+      return result;
     });
   }
 
@@ -52,16 +64,20 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto: any = new CreateProjectDto(req.body);
-      const errors = await validate(userDto, { whitelist: true });
+      const projectDto: any = new CreateProjectDto(req.body);
+      const errors = await validate(projectDto, { whitelist: true });
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
-      userDto.users = userDto.users.map((elem: number) => {
+      projectDto.users = projectDto.users.map((elem: number) => {
         return { id: elem };
       });
-      userDto.owner = req.user.userId;
-      return this.projectService.create(userDto);
+      projectDto.owner = req.user.userId;
+      const result:any = await this.projectService.create(projectDto);
+      redis.del(`myprojects${req.user.userId}`)
+      redis.set(`project${result.id}`, JSON.stringify(result))
+      return result
+      //redis.del(`projet${result.id}`)
     });
   }
 

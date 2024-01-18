@@ -8,7 +8,6 @@ export class CreateStepDto {
     @Length(1, 250)
     description:string;
     @IsInt()
-    @Min(1)
     @Max(3)
     status:number;
     @IsInt()

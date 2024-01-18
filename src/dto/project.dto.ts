@@ -20,6 +20,7 @@ export class CreateProjectDto {
     @IsArray()
     @IsNumber({}, {each: true})
     users:number[];
+    id:number
 
     constructor(body:CreateProjectDto) {
         const {name, description, code, status, budget, estimEndDate, users} = body;
