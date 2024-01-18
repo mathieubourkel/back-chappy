@@ -15,7 +15,7 @@ export class ProjectController extends GlobalController {
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult = await redis.get(`myprojects${req.user.userId}`);
+      let cacheResult = await redis.get(`mytoto${req.user.userId}`);
       if (cacheResult && cacheResult !== null) {
         console.log(new Date().getHours() +1, "coucou ca vient du cache")
         return JSON.parse(cacheResult);
