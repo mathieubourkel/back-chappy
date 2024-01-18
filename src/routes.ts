@@ -59,13 +59,6 @@ export const Routes = [
     controller: ProjectController,
     action: "getProjectById"
   },
-
-  { 
-    method: "get",
-    route: "/api/project/name/:id",
-    controller: ProjectController,
-    action: "getProjectNameById"
-  },
   { 
     method: "post",
     route: "/api/project",

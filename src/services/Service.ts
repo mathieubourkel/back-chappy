@@ -39,15 +39,15 @@ export class Service {
     });
   }
 
-  async getOneBySearchOptions(searchOptions: {}, relations?: Array<string>): Promise<unknown> {
+  async getOneBySearchOptions(searchOptions: {}, relations?: Array<string>, select?:any): Promise<unknown> {
     return this.handleService("GET-ONE-SEARCH", async () => {
-      return this.repository.findOne({ where: searchOptions, relations });
+      return this.repository.findOne({ where: searchOptions, relations, select });
     });
   }
 
-  async getManyBySearchOptions(searchOptions: {}, relations?: Array<string>): Promise<unknown> {
+  async getManyBySearchOptions(searchOptions: {}, relations?: Array<string>, select?:any): Promise<unknown> {
     return this.handleService("GET-MANY", async () => {
-      return this.repository.find({ where: searchOptions, relations });
+      return this.repository.find({ where: searchOptions, relations, select});
     });
   }
 
