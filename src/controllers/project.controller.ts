@@ -6,6 +6,7 @@ import { User } from "../entities/user.entity";
 import { CreateProjectDto, ModifyProjectDto } from "../dto/project.dto";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
+import { redis } from "..";
 
 
 
@@ -27,9 +28,16 @@ export class ProjectController extends GlobalController {
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getManyBySearchOptions(searchOptions, [
+      let cacheResult = await redis.get(`mytoto${req.user.userId}`);
+      if (cacheResult && cacheResult !== null) {
+        console.log(new Date().getHours() +1, "coucou ca vient du cache")
+        return JSON.parse(cacheResult);
+      }
+      const result = await this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
       ]);
+      await redis.set(`myprojects${req.user.userId}`, JSON.stringify(result));
+      return result
     });
   }
 
@@ -57,8 +65,8 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto:any = new CreateProjectDto(req.body);
-      const errors = await validate(userDto, {whitelist: true});
+      const userDto: any = new CreateProjectDto(req.body);
+      const errors = await validate(userDto, { whitelist: true });
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
@@ -68,6 +76,7 @@ export class ProjectController extends GlobalController {
       userDto.users = userDto.users.map((elem: number) => {
         return { id: elem };
       });
+      userDto.owner = req.user.userId;
       return this.projectService.create(userDto);
     });
   }
@@ -102,14 +111,12 @@ export class ProjectController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto:any = new ModifyProjectDto(req.body);
-      const errors = await validate(userDto, {whitelist: true});
-      console.log(errors)
-      console.log(userDto)
+      const userDto: any = new ModifyProjectDto(req.body);
+      const errors = await validate(userDto, { whitelist: true });
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
-      console.log("update",req.body)
+      console.log("update", req.body);
       return this.projectService.update(+req.params.id, userDto);
     });
   }

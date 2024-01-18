@@ -9,6 +9,7 @@ import { PurchaseController } from "./controllers/purchase.controller";
 import { StepController } from "./controllers/step.controller";
 import { TaskController } from "./controllers/task.controller";
 import { UserController } from "./controllers/user.controller";
+import { CommentController } from "./controllers/comment.controller";
 
 export const Routes = [ 
 
@@ -241,7 +242,7 @@ export const Routes = [
     action: "delete"
   },
 
-  // CATEGORIE
+  // CATEGORY
   { 
     method: "get",
     route: "/api/categories",
@@ -289,6 +290,39 @@ export const Routes = [
   },
   
   // COMMENT
+
+  {
+    method: "get",
+    route: "/api/comments/project/:idProject",
+    controller: CommentController,
+    action: "getCommentsByIdProject"
+  },
+  {
+    method: "get",
+    route: "/api/comments/step/:idStep",
+    controller: CommentController,
+    action: "getCommentsByIdStep"
+  },
+  {
+    method: "post",
+    route: "/api/comment",
+    controller: CommentController,
+    action: "create"
+  },
+  {
+    method: "put",
+    route:"/api/comment/:id",
+    controller: CommentController,
+    action: "update"
+  },
+  {
+    method: "delete",
+    route:"/api/comment/:id",
+    controller: CommentController,
+    action: "delete"
+  },
+
+
   // USER
   { 
     method: "get",

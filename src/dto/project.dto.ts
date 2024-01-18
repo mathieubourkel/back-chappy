@@ -8,28 +8,23 @@ export class CreateProjectDto {
     @Length(1, 250)
     description:string;
     @IsInt()
-    @Min(1)
     @Max(3)
     status:number;
     @IsInt()
     budget:number;
     @IsString()
     estimEndDate:Date;
-    @IsInt()
-    @Min(1)
-    owner:number;
     @IsArray()
     @IsNumber({}, {each: true})
     users:number[];
 
     constructor(body:CreateProjectDto) {
-        const {name, description, status, budget, estimEndDate, owner, users} = body;
+        const {name, description, status, budget, estimEndDate, users} = body;
         this.name = name,
         this.description = description,
         this.status = status,
         this.budget = budget,
         this.estimEndDate = estimEndDate,
-        this.owner = owner,
         this.users = users
     }
 }

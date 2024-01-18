@@ -23,7 +23,6 @@ export abstract class GlobalController {
       let result = await callback();
       let tmpMes;
       if (result == null || result.length == 0) tmpMes = "Aucune data trouvée"
-      await redis.set(req.url, JSON.stringify(result))
       res.status(status || 200)
         .json({
           data: result,
