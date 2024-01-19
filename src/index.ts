@@ -10,21 +10,30 @@ import cookieParser from "cookie-parser";
 import { Routes } from "./routes";
 import { verifyRefresh, verifyToken } from "./middlewares/tokens.middleware";
 import { corsOptions } from "./config/cors.middleware";
-import { fetchDataFromRedis } from "./middlewares/redis.middleware";
 
 const app = express();
 
 // REDIS
-export const redis = createClient({url: process.env.REDIS_URL});
-redis.on("connect", function () {
-  console.log("Connected");
-});
-redis.on("error", (err) => {
-  console.log(err);
-});
-(async () => {
-  await redis.connect();
-})();
+export let redis;
+
+if (process.env.NODE_ENV === 'development') {
+  redis = createClient({url: process.env.REDIS_URL});
+} else if (process.env.NODE_ENV === 'production') {
+  redis = createClient({url: process.env.REDIS_URL_PROD});
+}
+
+if (redis != null){
+  redis.on("connect", function () {
+    console.log("Connected");
+  });
+  redis.on("error", (err) => {
+    console.log(err);
+  });
+  (async () => {
+    await redis.connect();
+  })();
+}
+
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
@@ -32,8 +41,7 @@ app.use(cookieParser());
 
 app.use("/api", verifyToken);
 app.use("/auth/refreshToken", verifyRefresh);
-//Tu ajoutes un projet ca ne met pas a jour le cache
-// app.get('/api/*', fetchDataFromRedis)
+
 AppDataSource.initialize()
   .then(async () => {
     Routes.forEach((_route) => {
