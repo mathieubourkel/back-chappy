@@ -1,5 +1,5 @@
-import { redis } from '../index'
 import { Request, Response, NextFunction } from "express";
+import { redis } from "..";
 
 export const fetchDataFromRedis = async (req: Request, res: Response, next: NextFunction) => {
   const result = await redis.get(req.url);

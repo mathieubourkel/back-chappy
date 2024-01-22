@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPMessages } from "../utils/HTTPMessages";
-import { redis } from '../index'
 
 export abstract class GlobalController {
   // Fonction globale, utilisée dans toutes les fonctions de controlleurs
