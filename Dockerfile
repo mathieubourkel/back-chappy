@@ -1,6 +1,10 @@
-# Utiliser une image Node.js comme base
 FROM node:20.10.0-alpine as base
-RUN apk add --no-cache tzdata
+ENV TZ Europe/Paris
+RUN apk add --no-cache --virtual .build-tz tzdata;\
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone;\
+    apk del .build-tz;\
+    echo /usr/share/zoneinfo/$TZ | cut -d'/' -f-5 | xargs mkdir -p;\
+    cp /etc/localtime /usr/share/zoneinfo/$TZ
 LABEL maintainer="Laetitia Ashry, Jeremy Laigle, Mathieu Bourkel"
 WORKDIR /app
 COPY --chown=node:node package.json .
@@ -27,4 +31,5 @@ FROM base AS production
 LABEL version='production'
 COPY --chown=node:node --from=clean-node-modules /app/node_modules /app/node_modules
 COPY --chown=node:node --from=buildprod /app/build /app/build
+USER node
 CMD ["node", "build/index.js"]
