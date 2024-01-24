@@ -93,15 +93,9 @@ export const Routes = [
   // STEP
   { 
     method: "get",
-    route: "/api/steps/:idProject",
+    route: "/api/step/:id",
     controller: StepController,
-    action: "getStepsByIdProject"
-  },
-  { 
-    method: "get",
-    route: "/api/step/:idStep",
-    controller: StepController,
-    action: "getStepByIdStep"
+    action: "getStepById"
   },
   { 
     method: "post",

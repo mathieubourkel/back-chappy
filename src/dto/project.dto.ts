@@ -46,8 +46,27 @@ export const cleanResDataProject = {
     name: true,
     status: true,
     budget: true,
-    code: true,
     estimEndDate: true,
     owner: { id: true },
     users: { id: true },
   }
+
+  export const FullResDataProject = {
+    description: true,
+    id: true,
+    name: true,
+    status: true,
+    budget: true,
+    code: true,
+    estimEndDate: true,
+    owner: { id: true, firstname: true, lastname: true },
+    users: { id: true },
+    steps: true,
+    documents: true,
+    purchases: true
+  }
+
+export const cleanResDataProjectForDel = {
+    id: true,
+    owner: {id: true}
+}

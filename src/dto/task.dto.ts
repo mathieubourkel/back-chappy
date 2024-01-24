@@ -1,6 +1,6 @@
-import { IsDateString, IsInt, IsString, Length, Max, Min} from "class-validator";
+import { IsArray, IsDateString, IsInt, IsNumber, IsString, Length, Max, Min} from "class-validator";
 
-export class CreateTaskDto {
+export class TaskDto {
     @IsString()
     @Length(1, 50)
     name:string;
@@ -18,32 +18,49 @@ export class CreateTaskDto {
     endDate:Date;
     @IsInt()
     @Min(1)
-    project:number;
-    @IsInt()
-    @Min(1)
-    step:number;
-    @IsInt()
-    @Min(1)
-    owner:number;
-    @IsInt()
-    @Min(1)
     category:number;
 
-    constructor(body:CreateTaskDto) {
-        const {name, description, status, budget, startDate, endDate, project, step, owner, category} = body;
+    constructor(body:TaskDto) {
+        const {name, description, status, budget, startDate, endDate, category} = body;
         this.name = name,
         this.description = description,
         this.status = status,
-        this.budget = budget,
+        this.budget = +budget,
         this.startDate = startDate,
         this.endDate = endDate,
-        this.project = project,
-        this.step = step,
-        this.owner = owner,
         this.category = category
     }
 }
 
-export class ModifyTaskDto {
-    
+export class CreateTaskDto extends TaskDto {
+    @IsInt()
+    @Min(1)
+    project:number;
+    @IsInt()
+    @Min(1)
+    step:number;
+    @IsArray()
+    @IsNumber({}, {each: true})
+    users:number[];
+    owner:number;
+
+    constructor(body:CreateTaskDto){
+        super(body)
+        this.project = body.project,
+        this.step = body.step,
+        this.users = body.users
+    }
 }
+
+export const cleanResDataTask = {
+    description: true,
+    id: true,
+    name: true,
+    status: true,
+    budget: true,
+    endDate: true,
+    startDate: true,
+    owner: {id: true},
+    users: {id: true, email: true},
+    category: {id:true, name: true}
+  }

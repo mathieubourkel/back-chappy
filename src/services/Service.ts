@@ -63,9 +63,9 @@ export class Service {
     });
   }
 
-  async update(id: number, body: {}): Promise<any> {
+  async update(id: number, body: {}, relations?: Array<string>, select?:any): Promise<any> {
     return this.handleService("UPDATE", async () => {
-      const entityToUpdate = await this.repository.findOne({ where: { id } });
+      const entityToUpdate = await this.repository.findOne({ where: { id } , relations, select});
       return this.repository.save(this.repository.merge(entityToUpdate, body));
     });
   }
