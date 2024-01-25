@@ -127,7 +127,7 @@ export class ProjectController extends GlobalController {
       if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
       redis.del(`project/${result.id}`); 
       redis.del(`myprojects/${req.user.userId}`);
-      return await this.projectService.delete(+req.params.id);
+      return await this.projectService.delete(result.id);
     });
   }
 }

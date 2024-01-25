@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
 import { Status } from "../enums/status.enum";
 import { Task } from "./task.entity";
 
 @Entity()
+// @Index('index_projectId', ['projectId'])
 export class Step {
 
     @PrimaryGeneratedColumn()

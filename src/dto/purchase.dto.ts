@@ -15,6 +15,7 @@ export class PurchaseDto {
     commandDate:Date;
     @IsDateString()
     deliveryDate:Date;
+    idProject:string
 
     constructor(body:PurchaseDto) {
         const {name, ref, status, price, commandDate, deliveryDate} = body;
@@ -37,3 +38,14 @@ export class CreatePurchaseDto extends PurchaseDto {
         this.project = body.project
     }
 }
+
+export const cleanResDataPurchases = {
+    ref: true,
+    id: true,
+    name: true,
+    status: true,
+    price: true,
+    commandDate: true,
+    deliveryDate: true,
+    project: {id:true, users: {id: true}, owner: {id: true}}
+  }

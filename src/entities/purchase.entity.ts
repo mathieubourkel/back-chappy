@@ -15,8 +15,8 @@ export class Purchase {
     @Column({type:"varchar"})
     ref: string;
 
-    @Column({type:"enum", enum: PurchaseStatus})
-    status: PurchaseStatus
+    @Column({type:"int"})
+    status: number
 
     @Column({type:"int"})
     price: number;

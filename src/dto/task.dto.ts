@@ -46,8 +46,8 @@ export class CreateTaskDto extends TaskDto {
 
     constructor(body:CreateTaskDto){
         super(body)
-        this.project = body.project,
-        this.step = body.step,
+        this.project = +body.project,
+        this.step = +body.step,
         this.users = body.users
     }
 }
@@ -62,5 +62,28 @@ export const cleanResDataTask = {
     startDate: true,
     owner: {id: true},
     users: {id: true, email: true},
-    category: {id:true, name: true}
+    category: {id:true, name: true},
+    step: {id: true},
+    project: {id:true, users: {id: true}}
+  }
+
+  export const cleanResDataTaskForDel = {
+    id: true,
+    owner: {id: true},
+    project: {id: true, owner: {id: true}},
+    step: {id: true}
+  }
+
+  export const cleanResDataTaskCalendar = {
+    description: true,
+    id: true,
+    name: true,
+    status: true,
+    budget: true,
+    endDate: true,
+    startDate: true,
+    users: {id: true, email: true},
+    category: {id:true, name: true},
+    step: {id: true, name: true},
+    project: { id: true, owner: {id: true}, users: {id: true}}
   }
