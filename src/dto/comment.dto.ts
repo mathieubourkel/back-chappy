@@ -22,16 +22,18 @@ export class CreateCommentDto {
     @Min(1)
     idParent:number;
 
-    @IsInt()
-    @Min(1)
     author:number;
 
+    @IsInt()
+    @Min(1)
+    idProject:number;
+
     constructor(body:CreateCommentDto) {
-        const {content, table, idParent, author} = body;
+        const {content, table, idParent, idProject} = body;
         this.content = content;
         this.table = table;
         this.idParent = idParent;
-        this.author = author;
+        this.idProject = idProject;
     }
 }
 
