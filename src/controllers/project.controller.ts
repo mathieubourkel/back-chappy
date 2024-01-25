@@ -3,7 +3,7 @@ import { Project } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
-import { CreateProjectDto, ProjectDto, cleanResDataProject } from "../dto/project.dto";
+import { CreateProjectDto, ProjectDto, cleanResDataProject, cleanResDataProjectForDel,FullResDataProject } from "../dto/project.dto";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
@@ -11,22 +11,21 @@ import { redis } from "..";
 export class ProjectController extends GlobalController {
   private projectService = new Service(Project);
   private userService = new Service(User);
+
   private __generateInvitationCode(): string {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     let code = "";
     for (let i = 0; i < 16; i++) {
       const randomCode = Math.floor(Math.random() * characters.length);
       code += characters.charAt(randomCode);
     }
-
     return code;
   }
 
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult = await redis.get(`mytoto${req.user.userId}`);
+      let cacheResult = await redis.get(`myprojects/${req.user.userId}`);
       if (cacheResult && cacheResult !== null) {
         console.log(new Date(), "coucou ca vient du cache");
         return JSON.parse(cacheResult);
@@ -43,7 +42,7 @@ export class ProjectController extends GlobalController {
   async getProjectsFromMember(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { users: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getManyBySearchOptions(searchOptions, [
+      return await this.projectService.getManyBySearchOptions(searchOptions, [
         "steps",
         "owner",
       ]);
@@ -52,14 +51,16 @@ export class ProjectController extends GlobalController {
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult = await redis.get(`project${req.params.id}`);
+      let cacheResult:any = await redis.get(`project/${req.params.id}`);
       if (cacheResult && cacheResult !== null) {
-        console.log(new Date(), "coucou ca vient du cache");
-        return JSON.parse(cacheResult);
+        cacheResult = JSON.parse(cacheResult)
+        if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+        console.log(new Date(), "coucou ca vient du cache", `project/${req.params.id}`);
+        return cacheResult;
       }
-      const result: any = await this.projectService.getOneById(+req.params.id, ["users", "owner"], cleanResDataProject);
-      if (result.owner.id !== req.user.userId && !result.users.includes(req.user.userId)) throw new CustomError("PC-NO-ACCESS", 400);
-      redis.set(`project${result.id}`, JSON.stringify(result));
+      const result: any = await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], FullResDataProject);
+      if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      redis.set(`project/${result.id}`, JSON.stringify(result));
       return result;
     });
   }
@@ -89,7 +90,7 @@ export class ProjectController extends GlobalController {
       );
       const user: any = await this.userService.getOneById(req.body.idUser);
       project.users.push(user);
-      return this.projectService.update(+req.params.idProject, project);
+      return await this.projectService.update(+req.params.idProject, project);
     });
   }
 
@@ -99,31 +100,34 @@ export class ProjectController extends GlobalController {
         { code: req.body.code },
         ["users"]
       );
-      // const project : any = req.body;
-
-      const user: any = await this.userService.getOneById(req.user.userId);
-      console.log(project, user.firstname, req.body);
-      if (!project) throw new CustomError("PROJECT DOES NOT EXISTS", 200);
+      if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
+      const user: any = await this.userService.getOneById(req.user.userId); 
       project.users.push(user);
-      return this.projectService.update(project.id, project);
+      return await this.projectService.update(project.id, project);
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto: any = new ProjectDto(req.body);
-      const errors = await validate(userDto, { whitelist: true });
+      const projectDto: any = new ProjectDto(req.body);
+      const errors = await validate(projectDto, { whitelist: true });
       if (errors.length > 0) {
         throw new CustomError("PC-DTO-CHECK", 400);
       }
-      console.log("update", req.body);
-      return this.projectService.update(+req.params.id, userDto);
+      const result = await this.projectService.update(+req.params.id, projectDto, ["owner"], cleanResDataProject);
+      if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);
+      redis.del(`project/${result.id}`);
+      return result
     });
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.delete(+req.params.id);
+      const result:any = await this.projectService.getOneById(+req.params.id, ["owner"], cleanResDataProjectForDel);
+      if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
+      redis.del(`project/${result.id}`); 
+      redis.del(`myprojects/${req.user.userId}`);
+      return await this.projectService.delete(+req.params.id);
     });
   }
 }

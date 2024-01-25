@@ -1,13 +1,12 @@
 import { IsDateString, IsInt, IsString, Length, Max, Min } from "class-validator";
 
-export class CreatePurchaseDto {
+export class PurchaseDto {
     @IsString()
     @Length(1, 50)
     name:string;
     @IsString()
     ref:string;
     @IsInt()
-    @Min(1)
     @Max(3)
     status:number;
     @IsInt()
@@ -16,18 +15,25 @@ export class CreatePurchaseDto {
     commandDate:Date;
     @IsDateString()
     deliveryDate:Date;
-    @IsInt()
-    @Min(1)
-    project: number;
 
-    constructor(body:CreatePurchaseDto) {
-        const {name, ref, status, price, commandDate, deliveryDate, project} = body;
+    constructor(body:PurchaseDto) {
+        const {name, ref, status, price, commandDate, deliveryDate} = body;
         this.name = name,
         this.ref = ref,
         this.status = status,
         this.price = price,
         this.commandDate = commandDate,
-        this.deliveryDate = deliveryDate,
-        this.project = project
+        this.deliveryDate = deliveryDate
+    }
+}
+
+export class CreatePurchaseDto extends PurchaseDto {
+    @IsInt()
+    @Min(1)
+    project: number;
+
+    constructor(body: CreatePurchaseDto){
+        super(body)
+        this.project = body.project
     }
 }
