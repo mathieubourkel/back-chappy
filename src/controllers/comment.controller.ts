@@ -2,18 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import { Comment } from "../entities/comment.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import {
-  CreateCommentDto, ModifyCommentDto
-} from "../dto/comment.dto";
+import { CreateCommentDto, ModifyCommentDto } from "../dto/comment.dto";
 import {
   validate,
   ValidationError
 } from "class-validator";
 import {CustomError} from "../utils/CustomError";
+import {
+  Project
+} from "../entities/project.entity";
 
 export class CommentController extends GlobalController {
 
-  private commentService = new Service(Comment)
+  private commentService:Service = new Service(Comment);
+  private projectService:Service = new Service(Project);
 
   async getCommentsByIdProject(req:Request, res:Response, next:NextFunction):Promise<void> {
     const searchOptions : { table:string, idParent:number } = { table:"project", idParent: +req.params.idProject };
@@ -34,28 +36,32 @@ export class CommentController extends GlobalController {
       const comment:CreateCommentDto = new CreateCommentDto(req.body);
       comment.author = req.user.userId;
 
-      console.log(comment)
       const errors:ValidationError[] = await validate(comment, { whitelist:true });
       if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK", 400);
+        throw new CustomError("CC-DTO-CHECK", 400);
       }
+
+      const project:any = await this.projectService.getOneById(comment.idProject, ["users", "owner"], {id:true, users: {id:true}, owner: {id:true}});
+      if(project.owner.id != req.user.userId && !project.users.find((user: { id: number }):boolean => user.id === req.user.userId)) throw new CustomError("CC-NO-RIGHTS", 403);
+
+      console.log(project)
       return this.commentService.create(comment)
     });
   };
 
   async update(req:Request, res:Response, next: NextFunction):Promise<void> {
     await this.handleGlobal(req, res, next, async ():Promise<any>=> {
-      const upToUpdate:any = await this.commentService.getOneById(+req.params.id, ["author"], {id:true, author: {id: true}});
-
-      if (!upToUpdate) throw new CustomError("PC-NFC-CHECK", 400);
-      if (req.user.userId !== upToUpdate.author.id) throw new CustomError("PC-NAU-CHECK", 403);
-
       const comment:any = new ModifyCommentDto(req.body);
       const errors:ValidationError[] = await validate(comment, {whitelist: true});
 
       if (errors.length > 0 ) {
-        throw new CustomError("PC-DTO-CHECK", 400);
+        throw new CustomError("CC-DTO-CHECK", 400);
       }
+
+      const upToUpdate:any = await this.commentService.getOneById(+req.params.id, ["author"], {id:true, author: {id: true}});
+
+      if (!upToUpdate) throw new CustomError("CC-NFC-CHECK", 400);
+      if (req.user.userId !== upToUpdate.author.id) throw new CustomError("CC-NAU-CHECK", 403);
 
       return this.commentService.update(upToUpdate.id, comment)
     });

@@ -69,4 +69,10 @@ export class Service {
       return this.repository.save(this.repository.merge(entityToUpdate, body));
     });
   }
+
+  async exist(searchOptions: {}, relations?: Array<string>, select?:any): Promise<boolean> {
+    return this.handleService("IF-EXIST", async () => {
+      return this.repository.exist({ where: searchOptions, relations, select });
+    });
+  }
 }
