@@ -37,6 +37,12 @@ export const Routes = [
     controller: UserController,
     action: "create"
   },
+  { 
+    method: "post",
+    route: "/auth/company/register",
+    controller: CompanyController,
+    action: "create"
+  },
   // PROJECT
 
   // ENLEVER :IdUSER pour passer par le token
@@ -352,12 +358,7 @@ export const Routes = [
     controller: CompanyController,
     action: "getAll"
   },
-  { 
-    method: "post",
-    route: "/api/company",
-    controller: CompanyController,
-    action: "create"
-  },
+  
   { 
     method: "put",
     route: "/api/company/:id",

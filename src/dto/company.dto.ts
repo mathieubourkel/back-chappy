@@ -5,10 +5,10 @@ export class CreateCompanyDto {
     @Length(1, 50)
     @IsNotEmpty()
     name: string
-    @IsInt()
+    @IsString()
     @Length(14)
     @IsNotEmpty()
-    siret: number
+    siret: string
     @IsString()
     @IsNotEmpty()
     @Length(1, 255)

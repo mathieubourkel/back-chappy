@@ -38,10 +38,10 @@ export class User {
     @Column({type:"varchar"})
     phone: string;
 
-    @Column({type:"enum", enum: UserStatus})
+    @Column({type:"enum", enum: UserStatus, default: UserStatus.pending})
     status: UserStatus;
 
-    @Column({type:"enum", enum: UserRole})
+    @Column({type:"enum", enum: UserRole, default: UserRole.user})
     role: UserRole;
 
     @Column({type:"text", nullable: true})

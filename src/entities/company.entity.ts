@@ -11,8 +11,8 @@ export class Company {
     @Column({type:"varchar"})
     name: string;
 
-    @Column({type:"int"})
-    siret: number;
+    @Column({type:"varchar"})
+    siret: string;
 
     @Column({type:"varchar"})
     description: string;

@@ -21,7 +21,7 @@ export class CompanyController extends GlobalController {
       const companyDto = new CreateCompanyDto(req.body)
       const errors = await validate(companyDto)
       if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK-COMPANY")
+        throw new CustomError("CC-DTO-CHECK", 400)
       }
       return this.companyService.create(req.body);
     });
