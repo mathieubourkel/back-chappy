@@ -1,8 +1,8 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
+import { UserEntity } from "./user.entity";
 
 @Entity()
-export class Notification {
+export class NotificationEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -19,10 +19,10 @@ export class Notification {
     @Column({type:"bool"})
     isView: boolean;
 
-    @ManyToMany (() => User, {cascade: true})
+    @ManyToMany (() => UserEntity, {cascade: true})
     @JoinTable()
-    receivers: User[]
+    receivers: UserEntity[]
 
-    @ManyToOne (() => User, sender => sender.mySentNotifications) sender:User;
+    @ManyToOne (() => UserEntity, sender => sender.mySentNotifications) sender:UserEntity;
 
 }

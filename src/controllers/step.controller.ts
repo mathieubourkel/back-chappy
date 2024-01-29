@@ -1,15 +1,14 @@
 import { NextFunction, Response, Request } from "express";
-import { Step } from "../entities/step.entity";
+import { StepEntity } from "../entities/step.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
-import { validate } from "class-validator";
-import { CreateStepDto, StepDto, cleanResDataStep, cleanResDataStepForCheck } from "../dto/step.dto";
+import { cleanResDataStep, cleanResDataStepForCheck } from "../dto/step.dto";
 
 export class StepController extends GlobalController {
 
-  private stepService = new Service(Step)
+  private stepService = new Service(StepEntity)
 
   async getStepById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
@@ -29,25 +28,15 @@ export class StepController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const stepDto: any = new CreateStepDto(req.body);
-      const errors = await validate(stepDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("SC-DTO-CHECK", 400);
-      }  
-      const result = await this.stepService.create(stepDto);
-      redis.del(`project/${stepDto.project}`);
+      const result = await this.stepService.create(req.body);
+      redis.del(`project/${req.body.project}`);
       return result;
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const stepDto: any = new StepDto(req.body);
-      const errors = await validate(stepDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("SC-DTO-CHECK", 400);
-      }
-      const result = await this.stepService.update(+req.params.id, stepDto, ["project", "project.owner"], cleanResDataStep);
+      const result = await this.stepService.update(+req.params.id, req.body, ["project", "project.owner"], cleanResDataStep);
       if (result.project.owner.id !== req.user.userId) throw new CustomError("SC-NO-RIGHTS", 403);
       redis.del(`project/${result.project.id}`);
       redis.del(`step/${result.id}`);

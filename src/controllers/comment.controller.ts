@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Comment } from "../entities/comment.entity";
+import { CommentEntity } from "../entities/comment.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { CreateCommentDto, ModifyCommentDto } from "../dto/comment.dto";
@@ -8,14 +8,12 @@ import {
   ValidationError
 } from "class-validator";
 import {CustomError} from "../utils/CustomError";
-import {
-  Project
-} from "../entities/project.entity";
+import { ProjectEntity } from "../entities/project.entity";
 
 export class CommentController extends GlobalController {
 
-  private commentService:Service = new Service(Comment);
-  private projectService:Service = new Service(Project);
+  private commentService:Service = new Service(CommentEntity);
+  private projectService:Service = new Service(ProjectEntity);
 
   async getCommentsByIdProject(req:Request, res:Response, next:NextFunction):Promise<void> {
     const searchOptions : { table:string, idParent:number } = { table:"project", idParent: +req.params.idProject };
@@ -72,7 +70,4 @@ export class CommentController extends GlobalController {
       return this.commentService.delete(+req.params.id)
     });
   };
-
-
-
 }

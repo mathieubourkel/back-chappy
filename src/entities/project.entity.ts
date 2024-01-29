@@ -1,13 +1,16 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Step } from "./step.entity";
-import { User } from "./user.entity";
-import { Purchase } from "./purchase.entity";
-import { Document } from "./document.entity";
-import { Task } from "./task.entity";
-import {StatusEnum} from "../enums/status.enum";
+import { StatusEnum } from "../enums/status.enum";
+import { StepEntity } from "./step.entity";
+import { UserEntity } from "./user.entity";
+import { PurchaseEntity } from "./purchase.entity";
+import { DocumentEntity } from "./document.entity";
+import { TaskEntity } from "./task.entity";
 
 @Entity()
-export class Project {
+export class ProjectEntity {
+    static findOne(arg0: { code: any; }) {
+      throw new Error("Method not implemented.");
+    }
 
     @PrimaryGeneratedColumn()
     id: number
@@ -30,15 +33,15 @@ export class Project {
     @Column({type:"varchar"})
     estimEndDate: Date;
 
-    @ManyToMany (() => User, (user) => user.participations, {cascade: true})
+    @ManyToMany (() => UserEntity, (user) => user.participations, {cascade: true})
     @JoinTable()
-    users: User[]
+    users: UserEntity[]
 
-    @ManyToOne (() => User, owner => owner.projects) owner:User;
+    @ManyToOne (() => UserEntity, owner => owner.projects) owner:UserEntity;
 
-    @OneToMany (() => Purchase, purchase => purchase.project) purchases: Purchase[];
-    @OneToMany (() => Step, step => step.project) steps: Step[];
-    @OneToMany (() => Task, task => task.project) tasks: Task[];
-    @OneToMany (() => Document, document => document.project) documents: Document[];
+    @OneToMany (() => PurchaseEntity, purchase => purchase.project) purchases: PurchaseEntity[];
+    @OneToMany (() => StepEntity, step => step.project) steps: StepEntity[];
+    @OneToMany (() => TaskEntity, task => task.project) tasks: TaskEntity[];
+    @OneToMany (() => DocumentEntity, document => document.project) documents: DocumentEntity[];
 
 }

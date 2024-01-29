@@ -1,7 +1,6 @@
 import { AuthController } from "./controllers/auth.controller";
 import { CategoryController } from "./controllers/category.controller";
 import { CompanyController } from "./controllers/company.controller";
-import { GlobalController } from "./controllers/controller";
 import { DocumentController } from "./controllers/document.controller";
 import { NotificationController } from "./controllers/notification.controller";
 import { ProjectController } from "./controllers/project.controller";
@@ -10,6 +9,9 @@ import { StepController } from "./controllers/step.controller";
 import { TaskController } from "./controllers/task.controller";
 import { UserController } from "./controllers/user.controller";
 import { CommentController } from "./controllers/comment.controller";
+import { CreateProjectDto, ProjectDto } from "./dto/project.dto";
+import { CreateStepDto, StepDto } from "./dto/step.dto";
+import { CreateTaskDto, TaskDto } from "./dto/task.dto";
 
 export const Routes = [ 
 
@@ -17,7 +19,7 @@ export const Routes = [
     method: "post",
     route: "/auth/login",
     controller: AuthController,
-    action: "login"
+    action: "login",
   },
   { 
     method: "get",
@@ -69,7 +71,8 @@ export const Routes = [
     method: "post",
     route: "/api/project",
     controller: ProjectController,
-    action: "create"
+    action: "create",
+    dto: CreateProjectDto
   },
   { 
     method: "put",
@@ -81,7 +84,8 @@ export const Routes = [
     method: "put",
     route: "/api/project/:id",
     controller: ProjectController,
-    action: "update"
+    action: "update",
+    dto: ProjectDto
   },
   { 
     method: "put",
@@ -107,13 +111,15 @@ export const Routes = [
     method: "post",
     route: "/api/step",
     controller: StepController,
-    action: "create"
+    action: "create",
+    dto: CreateStepDto
   },
   { 
     method: "put",
     route: "/api/step/:id",
     controller: StepController,
-    action: "update"
+    action: "update",
+    dto: StepDto
   },
   { 
     method: "delete",
@@ -161,19 +167,22 @@ export const Routes = [
     method: "put",
     route: "/api/task/:id",
     controller: TaskController,
-    action: "update"
+    action: "update",
+    dto: TaskDto
   },
   { 
     method: "put",
     route: "/api/task/:idTask/delete/:idUser",
     controller: TaskController,
-    action: "update"
+    action: "update",
+    dto: TaskDto
   },
   { 
     method: "post",
     route: "/api/task",
     controller: TaskController,
-    action: "create"
+    action: "create",
+    dto: CreateTaskDto
   },
   { 
     method: "delete",
@@ -364,14 +373,5 @@ export const Routes = [
     route: "/api/company/:id",
     controller: CompanyController,
     action: "delete"
-  },
-
-  //GLOBAL
-    { 
-      method: "all",
-      route: "*",
-      controller: GlobalController,
-      action: "badRoute"
-    },
-    
+  }, 
 ];

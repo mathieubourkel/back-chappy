@@ -1,11 +1,10 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { Task } from "./task.entity";
-import {StatusEnum} from "../enums/status.enum";
+import { ProjectEntity } from "./project.entity";
+import { StatusEnum } from "../enums/status.enum";
+import { TaskEntity } from "./task.entity";
 
 @Entity()
-// @Index('index_projectId', ['projectId'])
-export class Step {
+export class StepEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -25,7 +24,6 @@ export class Step {
     @Column({type:"date"})
     estimEndDate: Date;
 
-    @ManyToOne (() => Project, project => project.steps) project:Project;
-    @OneToMany(() => Task, task => task.step) tasks: Task[];
-
+    @ManyToOne (() => ProjectEntity, project => project.steps) project:ProjectEntity;
+    @OneToMany(() => TaskEntity, task => task.step) tasks: TaskEntity[];
 }

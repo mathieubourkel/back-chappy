@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { CustomJwtPayload } from "jsonwebtoken";
 import { CustomError } from "../utils/CustomError";
 
-export async function verifyToken(request: Request,response: Response,next: NextFunction) {
+export async function verifyTokenMiddleware(request: Request,response: Response,next: NextFunction) {
   try {
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
     if (!token) throw new CustomError("MDW-TK", 401, "No token find");
@@ -16,7 +16,7 @@ export async function verifyToken(request: Request,response: Response,next: Next
   }
 }
 
-export async function verifyRefresh(request: Request,response: Response,next: NextFunction) {
+export async function verifyRefreshMiddleware(request: Request,response: Response,next: NextFunction) {
   try {
     const refreshToken = request.cookies.refreshToken;
     if (!refreshToken) throw new CustomError("MDW-TK-REF", 401, "No refresh token find");
