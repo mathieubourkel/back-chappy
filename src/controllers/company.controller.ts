@@ -10,11 +10,11 @@ export class CompanyController extends GlobalController {
 
   private companyService = new Service(Company)
 
-  // async getAll(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return this.companyService.getAll();
-  //   });
-  // }
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      return this.companyService.getAll();
+    });
+  }
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {

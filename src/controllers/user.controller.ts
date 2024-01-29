@@ -15,11 +15,11 @@ export class UserController extends GlobalController {
     return await bcrypt.hash(password, 10)
   }
 
-  // async getAll(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return this.userService.getAll();
-  //   });
-  // }
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      return this.userService.getAll();
+    });
+  }
 
   async getInfosUserConnected(req:Request, res:Response, next:NextFunction) {
     await this.handleGlobal(req, res, next, async ()=> {

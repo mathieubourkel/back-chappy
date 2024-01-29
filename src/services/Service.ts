@@ -27,7 +27,7 @@ export class Service {
   // chaque fonction appelle via callback la fonction globale
   async getAll<T>(relations?: Array<string>): Promise<T> {
     return this.handleService<T>("GET-ALL", async () => {
-      return this.repository.find({ relations });
+      return this.repository.find({ relations }) as Promise<T>
     });
   }
 
