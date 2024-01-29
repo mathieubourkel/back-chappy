@@ -10,12 +10,12 @@ export class CategoryController extends GlobalController {
   private categoryService = new Service(Category)
 
   async getAll(req: Request, res: Response, next: NextFunction) {
-    await this.handleGlobal(req, res, next, async () => {
-      let cacheResult:any = await redis.get(`categories`);
+    await this.handleGlobal<Array<Category>>(req, res, next, async () => {
+      let cacheResult:string = await redis.get(`categories`);
       if (cacheResult && cacheResult !== null) {
-        return JSON.parse(cacheResult)
+        return JSON.parse(cacheResult) as Array<Category>
       }
-      const result = await this.categoryService.getAll();
+      const result = await this.categoryService.getAll<Array<Category>>();
       redis.set(`categories`, JSON.stringify(result));
       return result
     });

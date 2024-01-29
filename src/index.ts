@@ -33,16 +33,7 @@ AppDataSource.initialize()
       (app as any)[method](
         route,
         (req: Request, res: Response, next: NextFunction) => {
-          const result = new (controller as any)()[action](req, res, next);
-          if (result instanceof Promise) {
-            result.then((result) =>
-              result !== null && result !== undefined
-                ? res.send(result)
-                : undefined
-            );
-          } else if (result !== null && result !== undefined) {
-            res.json(result);
-          }
+          new (controller as any)()[action](req, res, next);
         }
       );
     });

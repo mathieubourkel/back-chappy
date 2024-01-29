@@ -1,19 +1,19 @@
-import { EntityTarget, Repository } from "typeorm";
+import { EntityTarget, IsAny, Repository } from "typeorm";
 import {CustomError} from "../utils/CustomError";
 import { AppDataSource } from "../data-source";
 
 export class Service {
 
-  private repository:Repository<unknown>;
+  private repository:Repository<any>;
   // Dans chaque controlleur, on instancie un service avec comme paramètre
   // une entity
   // Cela permet d'utiliser un global "repository" dans les fonctions
-  constructor(entity:EntityTarget<unknown>){
+  constructor(entity:EntityTarget<any>){
     this.repository = AppDataSource.getRepository(entity);
   }
 
   // Function global du service qui gère la logique du try/catch er des erreurs
-  private async handleService(name: string, callback: () => Promise<any>): Promise<any> {
+  private async handleService<T>(name: string, callback: () => Promise<T>): Promise<T> {
     try {
       return await callback();
     } catch (error) {
@@ -25,8 +25,8 @@ export class Service {
   }
 
   // chaque fonction appelle via callback la fonction globale
-  async getAll(relations?: Array<string>): Promise<unknown> {
-    return this.handleService("GET-ALL", async () => {
+  async getAll<T>(relations?: Array<string>): Promise<T> {
+    return this.handleService<T>("GET-ALL", async () => {
       return this.repository.find({ relations });
     });
   }
