@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
+import { ProjectEntity } from "./project.entity";
 import { Status } from "../enums/status.enum";
 import { PurchaseStatus } from "../enums/purchase.status.enum";
 
 @Entity()
-export class Purchase {
+export class PurchaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -27,6 +27,6 @@ export class Purchase {
     @Column({type:"date"})
     deliveryDate: Date;
 
-    @ManyToOne (() => Project, project => project.purchases) project:Project;
+    @ManyToOne (() => ProjectEntity, project => project.purchases) project:ProjectEntity;
 
 }

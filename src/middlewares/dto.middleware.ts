@@ -1,16 +1,23 @@
-// import { NextFunction, Request, Response } from "express";
-// import { CustomError } from "../utils/CustomError";
+import { NextFunction, Request, Response } from "express";
+import { CustomError } from "../utils/CustomError";
+import { validate } from "class-validator";
+import { errorHandlerMiddleware } from "./error.handler.middleware";
+import { plainToInstance } from "class-transformer";
 
-// export async function verifyToken(request: Request,response: Response,next: NextFunction) {
-//     try {
-//       const [type, token] = request.headers.authorization?.split(" ") ?? [];
-//       if (!token) throw new CustomError("MDW-TK", 401, "No token find");
-//       if (type !== "Bearer") throw new CustomError("MDW-TK", 401, "No bearer find");
-//       request["user"] = <CustomJwtPayload>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-//       next();
-//     } catch (error) {
-//       response
-//           .status(400)
-//           .json({code: "DTO-BAD-REQUEST", message: "you didn't send the good things", expiredAt: error.expiredAt});
-//     }
-//   }
+export async function verifyDtoMiddleware(req: Request, res: Response, next: NextFunction, classDto?) {
+  try {
+    if (req.body && Object.values(req.body).length != 0){
+        if (req.method === 'GET') throw new CustomError("GET-WITH-BODY", 400)
+        const bodyToValidate = plainToInstance(classDto, req.body)
+        const errors = await validate(bodyToValidate, { whitelist: true });
+        console.log(errors)
+        if (errors.length > 0) {
+            throw new CustomError("MDW-DTO-CHECK", 400, JSON.stringify(errors));
+        }
+        req.body = bodyToValidate
+    } 
+    next();
+  } catch (error) {
+    errorHandlerMiddleware(error, res);
+  }
+}

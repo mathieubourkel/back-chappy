@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { User } from "../entities/user.entity";
+import { UserEntity } from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { CustomError } from "../utils/CustomError";
 
 export class AuthController extends GlobalController {
 
-  private userService = new Service(User);
+  private userService = new Service(UserEntity);
 
   private async __decryptPassword(input: string, bdd: string) {
     const result = await bcrypt.compare(input, bdd);

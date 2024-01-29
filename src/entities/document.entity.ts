@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
+import { ProjectEntity } from "./project.entity";
 
 @Entity()
-export class Document {
+export class DocumentEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -13,6 +13,6 @@ export class Document {
     @Column({type:"varchar"})
     type: string;
 
-    @ManyToOne (() => Project, project => project.documents) project:Project;
+    @ManyToOne (() => ProjectEntity, project => project.documents) project:ProjectEntity;
 
 }

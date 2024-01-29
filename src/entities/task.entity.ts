@@ -1,12 +1,12 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Status } from "../enums/status.enum";
-import { User } from "./user.entity";
-import { Step } from "./step.entity";
-import { Category } from "./category.entity";
-import { Project } from "./project.entity";
+import { UserEntity } from "./user.entity";
+import { StepEntity } from "./step.entity";
+import { CategoryEntity } from "./category.entity";
+import { ProjectEntity } from "./project.entity";
 
 @Entity()
-export class Task {
+export class TaskEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -29,13 +29,12 @@ export class Task {
     @Column({type:"date"})
     endDate: Date;
 
-    @ManyToMany (() => User, {cascade: true})
+    @ManyToMany (() => UserEntity, {cascade: true})
     @JoinTable()
-    users: User[]
+    users: UserEntity[]
 
-    @ManyToOne (() => Step, step => step.tasks) step:Step;
-    @ManyToOne (() => Project, project => project.tasks) project:Project;
-    @ManyToOne (() => User, owner => owner.myOwnTasks) owner:User;
-    @ManyToOne (() => Category, category => category.tasks) category:Category;
-
+    @ManyToOne (() => StepEntity, step => step.tasks) step:StepEntity;
+    @ManyToOne (() => ProjectEntity, project => project.tasks) project:ProjectEntity;
+    @ManyToOne (() => UserEntity, owner => owner.myOwnTasks) owner:UserEntity;
+    @ManyToOne (() => CategoryEntity, category => category.tasks) category:CategoryEntity;
 }

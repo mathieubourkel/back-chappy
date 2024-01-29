@@ -1,15 +1,15 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ProjectEntity } from "./project.entity";
 import { UserStatus } from "../enums/user.status.enum";
-import { Task } from "./task.entity";
+import { TaskEntity } from "./task.entity";
 import { UserRole } from "../enums/user.role.enum";
-import { Company } from "./company.entity";
-import { Category } from "./category.entity";
-import { Comment } from "./comment.entity";
-import { Notification } from "./notification.entity";
+import { CompanyEntity } from "./company.entity";
+import { CategoryEntity } from "./category.entity";
+import { CommentEntity } from "./comment.entity";
+import { NotificationEntity } from "./notification.entity";
 
 @Entity()
-export class User {
+export class UserEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -47,16 +47,16 @@ export class User {
     @Column({type:"text", nullable: true})
     refreshToken: string;
 
-    @ManyToOne (() => Company, company => company.users) company: Company;
-    @OneToOne  (() => Company, company => company.owner) myCompany: Company;
+    @ManyToOne (() => CompanyEntity, company => company.users) company: CompanyEntity;
+    @OneToOne  (() => CompanyEntity, company => company.owner) myCompany: CompanyEntity;
 
-    @OneToMany (() => Project, project => project.owner) projects:Project[];
+    @OneToMany (() => ProjectEntity, project => project.owner) projects:ProjectEntity[];
 
-    @ManyToMany(() => Project, (participation) => participation.users)
-    participations: Project[];
+    @ManyToMany(() => ProjectEntity, (participation) => participation.users)
+    participations: ProjectEntity[];
 
-    @OneToMany (() => Comment, comment => comment.author) comments:Comment[];
-    @OneToMany (() => Notification, notification => notification.sender) mySentNotifications: Notification[]
-    @OneToMany (() => Category, category => category.user) myCreateCategories: Category[];
-    @OneToMany (() => Task, task => task.owner) myOwnTasks: Task[];
+    @OneToMany (() => CommentEntity, comment => comment.author) comments:CommentEntity[];
+    @OneToMany (() => NotificationEntity, notification => notification.sender) mySentNotifications: NotificationEntity[]
+    @OneToMany (() => CategoryEntity, category => category.user) myCreateCategories: CategoryEntity[];
+    @OneToMany (() => TaskEntity, task => task.owner) myOwnTasks: TaskEntity[];
 }

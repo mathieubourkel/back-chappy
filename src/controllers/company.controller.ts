@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Company } from "../entities/company.entity";
+import { CompanyEntity } from "../entities/company.entity";
 import { Service } from "../services/Service";
 import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
@@ -8,7 +8,7 @@ import { validate } from "class-validator";
 
 export class CompanyController extends GlobalController {
 
-  private companyService = new Service(Company)
+  private companyService = new Service(CompanyEntity)
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {

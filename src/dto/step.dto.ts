@@ -14,27 +14,12 @@ export class StepDto {
     budget:number;
     @IsDateString()
     estimEndDate:Date;
-
-
-    constructor(body:StepDto) {
-        const {name, description, status, budget, estimEndDate} = body
-        this.name = name,
-        this.description = description,
-        this.status = status,
-        this.budget = +budget,
-        this.estimEndDate = estimEndDate
-    }
 }
 
 export class CreateStepDto extends StepDto {
     @IsInt()
     @Min(1)
     project:number;
-
-    constructor(body:CreateStepDto){
-        super(body);
-        this.project = +body.project
-    }
 }
 
 export const cleanResDataStep = {

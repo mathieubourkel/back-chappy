@@ -1,10 +1,9 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
-import { CategoryVisibility } from "../enums/category.visiblity.enum";
-import { Task } from "./task.entity";
+import { UserEntity } from "./user.entity";
+import { TaskEntity } from "./task.entity";
 
 @Entity()
-export class Category {
+export class CategoryEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -12,10 +11,6 @@ export class Category {
     @Column({type:"varchar"})
     name: string;
 
-    // Permet au user de créer une catégorie pour lui
-    @Column({type:"enum", enum: CategoryVisibility})
-    visibility: CategoryVisibility;
-    @ManyToOne (() => User, user => user.myCreateCategories) user:User;
-    @OneToMany (() => Task, task => task.category) tasks: Task[];
-
+    @ManyToOne (() => UserEntity, user => user.myCreateCategories) user:UserEntity;
+    @OneToMany (() => TaskEntity, task => task.category) tasks: TaskEntity[];
 }

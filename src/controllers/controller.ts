@@ -32,10 +32,4 @@ export abstract class GlobalController {
       next(error);
     }
   }
-
-  // Fonction dédiée aux mauvaises URL (définit dans le fichier routes)
-  protected async badRoute(req: Request, res: Response, next: NextFunction) {
-    res.status(404).json(HTTPMessages[404]);
-  }
-
 }

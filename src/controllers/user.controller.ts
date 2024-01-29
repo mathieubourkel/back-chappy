@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "../entities/user.entity";
+import { UserEntity } from "../entities/user.entity";
 import { Service } from "../services/Service";
 import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
@@ -9,7 +9,7 @@ import { validate } from "class-validator";
 
 export class UserController extends GlobalController {
 
-  private userService = new Service(User)
+  private userService = new Service(UserEntity)
 
   private async __hashPassword(password: string) {
     return await bcrypt.hash(password, 10)

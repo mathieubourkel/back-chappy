@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from "express";
-import { Category } from "../entities/category.entity";
+import { CategoryEntity } from "../entities/category.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { CustomError } from "../utils/CustomError";
@@ -7,15 +7,15 @@ import { redis } from "..";
 
 export class CategoryController extends GlobalController {
 
-  private categoryService = new Service(Category)
+  private categoryService = new Service(CategoryEntity)
 
   async getAll(req: Request, res: Response, next: NextFunction) {
-    await this.handleGlobal<Array<Category>>(req, res, next, async () => {
+    await this.handleGlobal<Array<CategoryEntity>>(req, res, next, async () => {
       let cacheResult:string = await redis.get(`categories`);
       if (cacheResult && cacheResult !== null) {
-        return JSON.parse(cacheResult) as Array<Category>
+        return JSON.parse(cacheResult) as Array<CategoryEntity>
       }
-      const result = await this.categoryService.getAll<Array<Category>>();
+      const result = await this.categoryService.getAll<Array<CategoryEntity>>();
       redis.set(`categories`, JSON.stringify(result));
       return result
     });
