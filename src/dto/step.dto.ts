@@ -45,7 +45,7 @@ export const cleanResDataStep = {
     budget: true,
     estimEndDate: true,
     tasks: {id: true},
-    project: { id: true, owner: {id:true}, users: {id: true, email:true}},
+    project: { id: true, owner: {id:true}, name: true, users: {id: true, email:true}},
   }
 
   export const cleanResDataStepForCheck = {
