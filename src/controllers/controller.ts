@@ -20,6 +20,7 @@ export abstract class GlobalController {
       // également dans cette fonction et renvoie le catch qui renvoie vers
       // la gestion d'erreurs
       let result = await callback();
+      console.log(result)
       res.status(status || 200)
         .json({
           data: result,

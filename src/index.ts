@@ -42,7 +42,7 @@ AppDataSource.initialize()
           new (controller as any)()[action](req, res, next);
         },
 
-        async (err: CustomError, res:Response) => {
+        async (err: CustomError,req:Request, res:Response, next: NextFunction) => {
           errorHandlerMiddleware(err, res)
         }
       );

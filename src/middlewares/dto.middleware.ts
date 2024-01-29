@@ -14,7 +14,7 @@ export async function verifyDtoMiddleware(req: Request, res: Response, next: Nex
         if (errors.length > 0) {
             throw new CustomError("MDW-DTO-CHECK", 400, JSON.stringify(errors));
         }
-        req.body = bodyToValidate
+      //  req.body = bodyToValidate
     } 
     next();
   } catch (error) {

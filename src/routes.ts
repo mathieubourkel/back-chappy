@@ -12,6 +12,8 @@ import { CommentController } from "./controllers/comment.controller";
 import { CreateProjectDto, ProjectDto } from "./dto/project.dto";
 import { CreateStepDto, StepDto } from "./dto/step.dto";
 import { CreateTaskDto, TaskDto } from "./dto/task.dto";
+import { LoginDto } from "./dto/auth.dto";
+import { CreateUserDto } from "./dto/user.dto";
 
 export const Routes = [ 
 
@@ -20,6 +22,7 @@ export const Routes = [
     route: "/auth/login",
     controller: AuthController,
     action: "login",
+    dto: LoginDto
   },
   { 
     method: "get",
@@ -37,7 +40,8 @@ export const Routes = [
     method: "post",
     route: "/auth/register",
     controller: UserController,
-    action: "create"
+    action: "create",
+    dto: CreateUserDto
   },
   { 
     method: "post",

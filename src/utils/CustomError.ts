@@ -6,7 +6,7 @@ export class CustomError {
     status: number
     codePerso:string
 
-    constructor( codePerso: string, status?:number, message?:string){
+    constructor( codePerso: string, status:number, message?:string){
         this.date = new Date()
         this.message = message || HTTPMessages[status]
         this.codePerso = codePerso

@@ -33,20 +33,6 @@ export class CreateUserDto {
     @IsNotEmpty()
     phone: string
    
-
-    constructor(body: CreateUserDto) {
-        const {firstname, lastname, email, password, address, zip, city, phone} = body;
-        this.firstname = firstname,
-        this.lastname = lastname,
-        this.email = email,
-        this.password = password,
-        this.address = address,
-        this.zip = +zip,
-        this.city = city,
-        this.phone = phone
-       
-       
-    }
 }
 
 export class ModifyUserDto {

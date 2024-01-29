@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ProjectEntity } from "./project.entity";
-import { FileTypeEnum } from "../enums/type.enum";
+import { FileTypeEnum } from "../enums/file.type.enum";
 
 @Entity()
 export class DocumentEntity {
