@@ -1,12 +1,12 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
-import { UserStatus } from "../enums/user.status.enum";
+import { UserStatusEnum } from "../enums/user.status.enum";
 import { Task } from "./task.entity";
-import { UserRole } from "../enums/user.role.enum";
 import { Company } from "./company.entity";
 import { Category } from "./category.entity";
 import { Comment } from "./comment.entity";
 import { Notification } from "./notification.entity";
+import { UserRoleEnum } from "../enums/user.role.enum";
 
 @Entity()
 export class User {
@@ -38,11 +38,11 @@ export class User {
     @Column({type:"varchar"})
     phone: string;
 
-    @Column({type:"enum", enum: UserStatus, default: UserStatus.pending})
-    status: UserStatus;
+    @Column({type:"enum", enum: UserStatusEnum, default: UserStatusEnum.PENDING})
+    status: UserStatusEnum;
 
-    @Column({type:"enum", enum: UserRole, default: UserRole.user})
-    role: UserRole;
+    @Column({type:"enum", enum: UserRoleEnum, default: UserRoleEnum.USER})
+    role: UserRoleEnum;
 
     @Column({type:"text", nullable: true})
     refreshToken: string;

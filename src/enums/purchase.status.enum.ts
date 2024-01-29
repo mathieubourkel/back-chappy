@@ -1,7 +1,7 @@
-export enum PurchaseStatus {
-    indelivery = 'En cours de livraison',
-    delivered = 'Reçu',
-    archive = 'Archivée',
-    pending = "En attente"
+export enum PurchaseStatusEnum {
+    IN_DELIVERY,  // en cours de livraison'
+    DELIVERED,  // reçu
+    ARCHIVE, // archivée
+    PENDING // en attente
   }
   

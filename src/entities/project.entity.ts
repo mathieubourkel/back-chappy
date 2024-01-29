@@ -1,16 +1,13 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Status } from "../enums/status.enum";
 import { Step } from "./step.entity";
 import { User } from "./user.entity";
 import { Purchase } from "./purchase.entity";
 import { Document } from "./document.entity";
 import { Task } from "./task.entity";
+import {StatusEnum} from "../enums/status.enum";
 
 @Entity()
 export class Project {
-    static findOne(arg0: { code: any; }) {
-      throw new Error("Method not implemented.");
-    }
 
     @PrimaryGeneratedColumn()
     id: number
@@ -24,8 +21,8 @@ export class Project {
     @Column({type:"varchar"})
     code: string;
 
-    @Column({type:"int"})
-    status: number
+    @Column({type:"enum", enum:StatusEnum, default:StatusEnum.IN_PROGRESS})
+    status: StatusEnum
 
     @Column({type:"int"})
     budget: number;

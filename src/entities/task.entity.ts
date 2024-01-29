@@ -1,9 +1,9 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Status } from "../enums/status.enum";
 import { User } from "./user.entity";
 import { Step } from "./step.entity";
 import { Category } from "./category.entity";
 import { Project } from "./project.entity";
+import {StatusEnum} from "../enums/status.enum";
 
 @Entity()
 export class Task {
@@ -17,8 +17,8 @@ export class Task {
     @Column({type:"varchar"})
     description: string;
 
-    @Column({type:"int"})
-    status: number
+    @Column({type:"enum", enum:StatusEnum, default:StatusEnum.IN_PROGRESS})
+    status: StatusEnum
 
     @Column({type:"int"})
     budget: number;

@@ -1,7 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
-import { Status } from "../enums/status.enum";
-import { PurchaseStatus } from "../enums/purchase.status.enum";
+import { PurchaseStatusEnum} from "../enums/purchase.status.enum";
 
 @Entity()
 export class Purchase {
@@ -15,8 +14,8 @@ export class Purchase {
     @Column({type:"varchar"})
     ref: string;
 
-    @Column({type:"int"})
-    status: number
+    @Column({type:"enum", enum:PurchaseStatusEnum, default:PurchaseStatusEnum.PENDING})
+    status: PurchaseStatusEnum
 
     @Column({type:"int"})
     price: number;
