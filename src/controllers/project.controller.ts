@@ -3,19 +3,17 @@ import { ProjectEntity } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import {
-  CreateProjectDto,
-  ProjectDto,
   cleanResDataProject,
   cleanResDataProjectForDel,
   FullResDataProject,
   cleanResDataUsersOnProject
 } from "../dto/project.dto";
-import { validate } from "class-validator";
 import { UserEntity } from "../entities/user.entity";
-import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class ProjectController extends GlobalController {
+
   private projectService = new Service(ProjectEntity);
   private userService = new Service(UserEntity);
 
@@ -86,6 +84,7 @@ export class ProjectController extends GlobalController {
         return cacheResult;
       }
       const result: any = await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], FullResDataProject);
+      if (!result) throw new CustomError("PC-NO-EXIST", 404)
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       redis.set(`project/${result.id}`, JSON.stringify(result));
       return result;

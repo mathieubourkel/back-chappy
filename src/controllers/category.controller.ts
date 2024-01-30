@@ -2,8 +2,8 @@ import { NextFunction, Response, Request } from "express";
 import { CategoryEntity } from "../entities/category.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class CategoryController extends GlobalController {
 

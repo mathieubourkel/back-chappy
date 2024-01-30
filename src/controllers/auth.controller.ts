@@ -4,21 +4,21 @@ import { GlobalController } from "./controller";
 import { UserEntity } from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { CustomError } from "../utils/CustomError";
+import { CustomError } from '../middlewares/error.handler.middleware';
 
 export class AuthController extends GlobalController {
 
   private userService = new Service(UserEntity);
 
-  private async __decryptPassword(input: string, bdd: string) {
-    const result = await bcrypt.compare(input, bdd);
+  private async __decryptPassword(inputFromRequest: string, passwordFromUserBDD: string) {
+    const result = await bcrypt.compare(inputFromRequest, passwordFromUserBDD);
     return result;
   }
 
   private async __createTokens(userId: number, email: string, res:Response) {
     let date = new Date();
-    const tokenDate = date.getHours() + 3;
-    const refreshDate = date.getMonth() + 1;
+    const tokenDate = date.setHours(date.getHours() + 3)
+    const refreshDate = date.setDate(date.getDate() + 4 * 7)
     const token = jwt.sign(
       { userId, email, exirationDate: tokenDate },
       process.env.ACCESS_TOKEN_SECRET,
@@ -27,7 +27,7 @@ export class AuthController extends GlobalController {
     const refreshToken = jwt.sign(
       { userId, email, exirationDate: refreshDate },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "3w" }
+      { expiresIn: "4w" }
     );
 
     res.cookie("refreshToken", refreshToken, {

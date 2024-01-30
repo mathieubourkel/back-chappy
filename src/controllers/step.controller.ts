@@ -2,9 +2,9 @@ import { NextFunction, Response, Request } from "express";
 import { StepEntity } from "../entities/step.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
 import { cleanResDataStep, cleanResDataStepForCheck } from "../dto/step.dto";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class StepController extends GlobalController {
 

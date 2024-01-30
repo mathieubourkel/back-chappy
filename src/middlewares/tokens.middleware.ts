@@ -1,30 +1,30 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { CustomJwtPayload } from "jsonwebtoken";
-import { CustomError } from "../utils/CustomError";
+import { CustomError } from "./error.handler.middleware";
 
-export async function verifyTokenMiddleware(request: Request,response: Response,next: NextFunction) {
+export async function verifyTokenMiddleware(req: Request,res: Response,next: NextFunction) {
   try {
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    if (!token) throw new CustomError("MDW-TK", 401, "No token find");
-    if (type !== "Bearer") throw new CustomError("MDW-TK", 401, "No bearer find");
-    request["user"] = <CustomJwtPayload>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const [type, token] = req.headers.authorization?.split(" ") ?? [];
+    if (!token) throw {code:"MDW-TK", status: 401, message:"No token find"};
+    if (type !== "Bearer") throw {code:"MDW-TK", status: 401, message:"No bearer find"};
+    req["user"] = <CustomJwtPayload>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     next();
   } catch (error) {
-    response
-        .status(401)
-        .json({code: "MDW-TK",message: "jwt expired",expiredAt: error.expiredAt});
+    if (error.message === 'jwt expired') error.status = 401 ; error.codePerso = "MDW-TK"
+    if (error.message === 'invalid signature') error.status = 401 ; error.codePerso = "MDW-TK"
+    new CustomError(error.codePerso, error.status, error.message).sendError(res)
   }
 }
 
-export async function verifyRefreshMiddleware(request: Request,response: Response,next: NextFunction) {
+export async function verifyRefreshMiddleware(req: Request,res: Response,next: NextFunction) {
   try {
-    const refreshToken = request.cookies.refreshToken;
-    if (!refreshToken) throw new CustomError("MDW-TK-REF", 401, "No refresh token find");
-    request["user"] = <CustomJwtPayload>jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET );
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) throw {code:"MDW-TK-REFRESH", status: 401, message:"No refresh token find"};
+    req["user"] = <CustomJwtPayload>jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET );
     next();
   } catch (error) {
-    response
-      .status(401)
-      .json({code: "MDW-TK-REF",message: "refresh token expired",expiredAt: error.expiredAt});
+    if (error.message === 'jwt expired') error.status = 401 ; error.codePerso = "MDW-TK-REFRESH"
+    if (error.message === 'invalid signature') error.status = 401 ; error.codePerso = "MDW-TK-REFRESH"
+    new CustomError(error.codePerso, error.status, error.message).sendError(res)
   }
 }

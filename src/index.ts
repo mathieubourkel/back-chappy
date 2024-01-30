@@ -1,17 +1,16 @@
 import express from "express";
 import { Request, Response, NextFunction } from "express";
-import * as bodyParser from "body-parser";
 import cors from "cors";
-import { errorHandlerMiddleware } from "./middlewares/error.handler.middleware";
-import { CustomError } from "./utils/CustomError";
 import cookieParser from "cookie-parser";
-import { Routes } from "./routes";
-import { verifyRefreshMiddleware, verifyTokenMiddleware } from "./middlewares/tokens.middleware";
+import * as bodyParser from "body-parser";
 import { createClient } from "redis";
+import { Routes } from "./routes";
 import { AppDataSource } from "./data-source";
+import { CustomError } from "./middlewares/error.handler.middleware";
 import { verifyDtoMiddleware } from "./middlewares/dto.middleware";
-import { HTTPMessages } from "./utils/HTTPMessages";
-import { corsOptions } from "./utils/CorsOptions";
+import { verifyRefreshMiddleware, verifyTokenMiddleware } from "./middlewares/tokens.middleware";
+import { corsOptions } from "./enums/utils/cors.options.enum";
+
 
 // DEMARRAGE EXPRESS ET REDIS
 const app = express();
@@ -22,8 +21,8 @@ export const redis = createClient({ url: `redis://${process.env.REDIS_HOST}:${pr
 
 // MIDDLEWARES
 app.use(bodyParser.json());
-app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(cors(corsOptions));
 app.use("/api", verifyTokenMiddleware);
 app.use("/auth/refreshToken", verifyRefreshMiddleware);
 
@@ -35,20 +34,21 @@ AppDataSource.initialize()
         route,
 
         async (req: Request, res: Response, next: NextFunction ) => {
-          verifyDtoMiddleware(req, res, next, dto)
+          await verifyDtoMiddleware(req, res, next, dto)
         },
 
         async (req: Request, res: Response, next: NextFunction ) => {
           new (controller as any)()[action](req, res, next);
         },
 
-        async (err: CustomError,req:Request, res:Response, next: NextFunction) => {
-          errorHandlerMiddleware(err, res)
-        }
       );
     })
-    app.use((req, res) => {
-      res.status(404).json(HTTPMessages[404]);
+    app.use(() => {
+      throw new CustomError("IDX-NOMATCH", 404)
+    })
+    app.use((err:CustomError, req: Request, res:Response, next:NextFunction) => {
+      if (!(err instanceof CustomError)) err = new CustomError("UNEXPECTED", 500)
+      err.sendError(res)
     });
   })
   .catch((error) => console.log(error));
