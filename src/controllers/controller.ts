@@ -20,6 +20,7 @@ export abstract class GlobalController {
       // également dans cette fonction et renvoie le catch qui renvoie vers
       // la gestion d'erreurs
       let result = await callback();
+      console.log(result)
       res.status(status || 200)
         .json({
           data: result,
@@ -32,10 +33,4 @@ export abstract class GlobalController {
       next(error);
     }
   }
-
-  // Fonction dédiée aux mauvaises URL (définit dans le fichier routes)
-  protected async badRoute(req: Request, res: Response, next: NextFunction) {
-    res.status(404).json(HTTPMessages[404]);
-  }
-
 }

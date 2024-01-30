@@ -1,11 +1,11 @@
 import { NextFunction, Response, Request } from "express";
-import { Notification } from "../entities/notification.entity";
+import { NotificationEntity } from "../entities/notification.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 
 export class NotificationController extends GlobalController {
 
-  private notificationService = new Service(Notification)
+  private notificationService = new Service(NotificationEntity)
 
   async getNotificationsByUser(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { receivers: [{id:req.params.idUser}] };

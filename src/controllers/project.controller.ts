@@ -1,7 +1,8 @@
 import { NextFunction, Response, Request } from "express";
-import { Project } from "../entities/project.entity";
+import { ProjectEntity } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
+<<<<<<< HEAD
 import { User } from "../entities/user.entity";
 import {
   CreateProjectDto,
@@ -12,12 +13,16 @@ import {
   cleanResDataUsersOnProject
 } from "../dto/project.dto";
 import { validate } from "class-validator";
+=======
+import { UserEntity } from "../entities/user.entity";
+import { cleanResDataProject, cleanResDataProjectForDel,FullResDataProject } from "../dto/project.dto";
+>>>>>>> 110331e7d58fd4af426b4e544cfa965a1e0ea432
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
 
 export class ProjectController extends GlobalController {
-  private projectService = new Service(Project);
-  private userService = new Service(User);
+  private projectService = new Service(ProjectEntity);
+  private userService = new Service(UserEntity);
 
   private __generateInvitationCode(): string {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -94,18 +99,13 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const projectDto: any = new CreateProjectDto(req.body);
-      const errors = await validate(projectDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK", 400);
-      }
-      projectDto.code = this.__generateInvitationCode();
-      projectDto.users = projectDto.users.map((elem: number) => {
+      req.body.code = this.__generateInvitationCode();
+      req.body.users = req.body.users.map((elem: number) => {
         return { id: elem };
       });
-      projectDto.owner = req.user.userId;
+      req.body.owner = req.user.userId;
       redis.del(`myprojects${req.user.userId}`);
-      return await this.projectService.create(projectDto);
+      return await this.projectService.create(req.body);
     });
   }
 
@@ -136,15 +136,10 @@ export class ProjectController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const projectDto: any = new ProjectDto(req.body);
-      const errors = await validate(projectDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK", 400);
-      }
-      const result = await this.projectService.update(+req.params.id, projectDto, ["owner"], cleanResDataProject);
+      const result = await this.projectService.update(+req.params.id, req.body, ["owner"], cleanResDataProject);
       if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);
       redis.del(`project/${result.id}`);
-      return result
+      return result;
     });
   }
 

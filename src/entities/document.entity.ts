@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
-import {FileTypeEnum} from "../enums/type.enum";
+import { ProjectEntity } from "./project.entity";
+import { FileTypeEnum } from "../enums/file.type.enum";
 
 @Entity()
-export class Document {
+export class DocumentEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -14,6 +14,6 @@ export class Document {
     @Column({type:"enum", enum:FileTypeEnum})
     type: FileTypeEnum;
 
-    @ManyToOne (() => Project, project => project.documents) project:Project;
+    @ManyToOne (() => ProjectEntity, project => project.documents) project:ProjectEntity;
 
 }

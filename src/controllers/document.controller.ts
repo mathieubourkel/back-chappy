@@ -1,11 +1,11 @@
 import { NextFunction, Response, Request } from "express";
-import { Document } from "../entities/document.entity";
+import { DocumentEntity } from "../entities/document.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 
 export class DocumentController extends GlobalController {
 
-  private documentService = new Service(Document)
+  private documentService = new Service(DocumentEntity)
 
   async getDocumentsByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: {id:+req.params.idProject} };

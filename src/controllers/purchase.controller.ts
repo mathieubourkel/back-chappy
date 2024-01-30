@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from "express";
-import { Purchase } from "../entities/purchase.entity";
+import { PurchaseEntity } from "../entities/purchase.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { redis } from "..";
@@ -8,7 +8,7 @@ import { cleanResDataPurchases } from "../dto/purchase.dto";
 
 export class PurchaseController extends GlobalController {
 
-  private purchaseService = new Service(Purchase)
+  private purchaseService = new Service(PurchaseEntity)
 
   async getPurchasesByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: { id: +req.params.idProject } };

@@ -14,18 +14,7 @@ export class ProjectDto {
     @IsInt()
     budget:number;
     @IsDateString()
-    estimEndDate:Date;
-
-    constructor(body:ProjectDto) {
-        const {name,description, status, budget, estimEndDate} = body;
-        this.name = name,
-        this.description = description,
-        this.status = status,
-        this.estimEndDate = estimEndDate,
-        this.budget = +budget,
-        this.estimEndDate = estimEndDate
-    }
-    
+    estimEndDate:Date; 
 }
 export class CreateProjectDto extends ProjectDto {
 
@@ -33,11 +22,6 @@ export class CreateProjectDto extends ProjectDto {
     @IsNumber({}, {each: true})
     users:number[];
     id:number
-
-    constructor(body:CreateProjectDto) {
-        super(body);
-        this.users = body.users
-    }
 }
 
 export const cleanResDataProject = {

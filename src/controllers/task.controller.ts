@@ -1,20 +1,18 @@
 import { NextFunction, Response, Request } from "express";
-import { Task } from "../entities/task.entity";
+import { TaskEntity } from "../entities/task.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import {
-  CreateTaskDto,
-  TaskDto,
   cleanResDataTask,
   cleanResDataTaskCalendar,
   cleanResDataTaskForDel,
 } from "../dto/task.dto";
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
-import { validate } from "class-validator";
 
 export class TaskController extends GlobalController {
-  private taskService = new Service(Task);
+
+  private taskService = new Service(TaskEntity);
 
   async getTasksByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: { id: +req.params.idProject } };
@@ -71,31 +69,21 @@ export class TaskController extends GlobalController {
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       req.body.category = req.body.category.id;
-      const taskDto: any = new CreateTaskDto(req.body);
-      const errors = await validate(taskDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("TC-DTO-CHECK", 400);
-      }
-      taskDto.owner = req.user.userId;
-      taskDto.users = taskDto.users.map((elem: number) => {
+      req.body.owner = req.user.userId;
+      req.body.users = req.body.users.map((elem: number) => {
         return { id: elem };
       });
-      const result: any = await this.taskService.create(taskDto);
+      const result: any = await this.taskService.create(req.body);
       redis.del(`task/${result.id}`);
-      redis.del(`step/${taskDto.step}`);
-      redis.del(`tasksByProject/${taskDto.project}`);
+      redis.del(`step/${req.body.step}`);
+      redis.del(`tasksByProject/${req.body.project}`);
       return result;
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const taskDto: any = new TaskDto(req.body);
-      const errors = await validate(taskDto, { whitelist: true });
-      if (errors.length > 0) {
-        throw new CustomError("TC-DTO-CHECK", 400);
-      }
-      const result = await this.taskService.update(+req.params.id, taskDto, ["owner", "users", "category", "step"], cleanResDataTask
+      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "category", "step"], cleanResDataTask
       );
       if (result.owner.id !== req.user.userId)
         throw new CustomError("TC-NO-RIGHTS", 403);

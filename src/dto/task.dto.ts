@@ -19,17 +19,6 @@ export class TaskDto {
     @IsInt()
     @Min(1)
     category:number;
-
-    constructor(body:TaskDto) {
-        const {name, description, status, budget, startDate, endDate, category} = body;
-        this.name = name,
-        this.description = description,
-        this.status = status,
-        this.budget = +budget,
-        this.startDate = startDate,
-        this.endDate = endDate,
-        this.category = category
-    }
 }
 
 export class CreateTaskDto extends TaskDto {
@@ -43,13 +32,6 @@ export class CreateTaskDto extends TaskDto {
     @IsNumber({}, {each: true})
     users:number[];
     owner:number;
-
-    constructor(body:CreateTaskDto){
-        super(body)
-        this.project = +body.project,
-        this.step = +body.step,
-        this.users = body.users
-    }
 }
 
 export const cleanResDataTask = {
