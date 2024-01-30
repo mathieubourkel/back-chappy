@@ -41,8 +41,6 @@ export class CommentController extends GlobalController {
 
       const project:any = await this.projectService.getOneById(comment.idProject, ["users", "owner"], {id:true, users: {id:true}, owner: {id:true}});
       if(project.owner.id != req.user.userId && !project.users.find((user: { id: number }):boolean => user.id === req.user.userId)) throw new CustomError("CC-NO-RIGHTS", 403);
-
-      console.log(project)
       return this.commentService.create(comment)
     });
   };

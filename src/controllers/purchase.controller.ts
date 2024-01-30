@@ -23,7 +23,6 @@ export class PurchaseController extends GlobalController {
       }
       const result:any = await this.purchaseService.getManyBySearchOptions(searchOptions, ["project","project.owner", "project.users"],
       cleanResDataPurchases);
-      console.log(result)
       if (result.length > 0){
         if (result[0].project.owner.id !== req.user.userId && !result[0].project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PurcC-NO-RIGHTS", 403);
       }
@@ -34,7 +33,7 @@ export class PurchaseController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      redis.del(`purchasesByProject/${req.body.idProject}`)
+      redis.del(`purchasesByProject/${req.body.project}`)
       return await this.purchaseService.create(req.body);
     });
   }

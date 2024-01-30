@@ -10,12 +10,10 @@ export async function verifyDtoMiddleware(req: Request, res: Response, next: Nex
         if (req.method === 'GET') throw new CustomError("GET-WITH-BODY", 400)
         const bodyToValidate = plainToInstance(classDto, req.body)
         const errors = await validate(bodyToValidate, { whitelist: true });
-        console.log(errors)
         if (errors.length > 0) {
             throw new CustomError("MDW-DTO-CHECK", 400, JSON.stringify(errors));
         }
-        console.log(errors, "jattein errors")
-       // req.body = bodyToValidate
+        req.body = bodyToValidate
     } 
     next();
   } catch (error) {

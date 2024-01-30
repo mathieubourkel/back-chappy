@@ -23,7 +23,8 @@ export class CategoryController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      if (req.user.userId != 1) throw new CustomError("CC-NORIGHT", 403)
+  //    if (req.user.userId != 1) throw new CustomError("CC-NORIGHT", 403)
+  // A remplace par check le role si addmin
       redis.del(`categories`)
       return this.categoryService.create(req.body);
     });

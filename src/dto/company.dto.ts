@@ -14,12 +14,6 @@ export class CreateCompanyDto {
     @Length(1, 255)
     description: string
 
-    constructor(body: CreateCompanyDto) {
-        const { name, siret, description } = body;
-            this.name  = name,
-            this.siret = siret,
-            this.description = description
-    }
 }
 
 export class ModifyCompanyDto {

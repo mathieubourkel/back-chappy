@@ -18,11 +18,6 @@ export class CompanyController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const companyDto = new CreateCompanyDto(req.body)
-      const errors = await validate(companyDto)
-      if (errors.length > 0) {
-        throw new CustomError("CC-DTO-CHECK", 400)
-      }
       return this.companyService.create(req.body);
     });
   }

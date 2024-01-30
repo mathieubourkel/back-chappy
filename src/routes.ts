@@ -14,6 +14,10 @@ import { CreateStepDto, StepDto } from "./dto/step.dto";
 import { CreateTaskDto, TaskDto } from "./dto/task.dto";
 import { LoginDto } from "./dto/auth.dto";
 import { CreateUserDto } from "./dto/user.dto";
+import { CreateCategoryDto } from "./dto/category.dto";
+import { CreatePurchaseDto, PurchaseDto } from "./dto/purchase.dto";
+import { CreateCompanyDto } from "./dto/company.dto";
+import { CreateNotificationDto } from "./dto/notification.dto";
 
 export const Routes = [ 
 
@@ -32,12 +36,6 @@ export const Routes = [
   },
   { 
     method: "post",
-    route: "/auth/logout",
-    controller: AuthController,
-    action: "logout"
-  },
-  { 
-    method: "post",
     route: "/auth/register",
     controller: UserController,
     action: "create",
@@ -47,20 +45,19 @@ export const Routes = [
     method: "post",
     route: "/auth/company/register",
     controller: CompanyController,
-    action: "create"
+    action: "create",
+    dto: CreateCompanyDto
   },
   // PROJECT
-
-  // ENLEVER :IdUSER pour passer par le token
   { 
     method: "get",
-    route: "/api/myprojects/:idUser",
+    route: "/api/myprojects",
     controller: ProjectController,
     action: "getProjectsFromOwner"
   },
   { 
     method: "get",
-    route: "/api/mycollabs/:idUser",
+    route: "/api/mycollabs",
     controller: ProjectController,
     action: "getProjectsFromMember"
   },
@@ -153,12 +150,15 @@ export const Routes = [
     action: "getTasksByIdProject"
   },
 
+  // idUser useless / Use token
   { 
     method: "get",
     route: "/api/tasks/owner/:idUser",
     controller: TaskController,
     action: "getOwnerTasksByIdUser"
   },
+
+  // idUser useless / Use token
   { 
     method: "get",
     route: "/api/tasks/member/:idUser",
@@ -175,13 +175,6 @@ export const Routes = [
   { 
     method: "put",
     route: "/api/task/:id",
-    controller: TaskController,
-    action: "update",
-    dto: TaskDto
-  },
-  { 
-    method: "put",
-    route: "/api/task/:idTask/delete/:idUser",
     controller: TaskController,
     action: "update",
     dto: TaskDto
@@ -212,13 +205,15 @@ export const Routes = [
     method: "post",
     route: "/api/purchase",
     controller: PurchaseController,
-    action: "create"
+    action: "create",
+    dto: CreatePurchaseDto
   },
   { 
     method: "put",
     route: "/api/purchase/:id",
     controller: PurchaseController,
-    action: "update"
+    action: "update",
+    dto: PurchaseDto
   },
   { 
     method: "delete",
@@ -264,7 +259,8 @@ export const Routes = [
     method: "post",
     route: "/api/category",
     controller: CategoryController,
-    action: "create"
+    action: "create",
+    dto: CreateCategoryDto
   },
   { 
     method: "delete",
@@ -285,13 +281,8 @@ export const Routes = [
     method: "post",
     route: "/api/notification",
     controller: NotificationController,
-    action: "create"
-  },
-  { 
-    method: "put",
-    route: "/api/notification/:id",
-    controller: NotificationController,
-    action: "update"
+    action: "create",
+    dto: CreateNotificationDto
   },
   { 
     method: "delete",
@@ -353,7 +344,8 @@ export const Routes = [
     method: "put",
     route: "/api/user/:id",
     controller: UserController,
-    action: "update"
+    action: "update",
+    dto: CreateUserDto
   },
   { 
     method: "delete",
@@ -375,7 +367,8 @@ export const Routes = [
     method: "put",
     route: "/api/company/:id",
     controller: CompanyController,
-    action: "update"
+    action: "update",
+    dto: CreateCompanyDto
   },
   { 
     method: "delete",

@@ -62,14 +62,12 @@ export class ProjectController extends GlobalController {
       //   if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }): boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       //   return cacheResult;
       // }
-      console.log("MAIS TES OU ??")
       const result:any = await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], cleanResDataUsersOnProject);
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) : boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       // await redis.set(
       //     `project/${result.id}`,
       //     JSON.stringify(result)
       // );
-      console.log(result, "toto")
       return result;
     })
   }

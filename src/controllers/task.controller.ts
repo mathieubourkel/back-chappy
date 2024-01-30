@@ -68,7 +68,6 @@ export class TaskController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      req.body.category = req.body.category.id;
       req.body.owner = req.user.userId;
       req.body.users = req.body.users.map((elem: number) => {
         return { id: elem };
