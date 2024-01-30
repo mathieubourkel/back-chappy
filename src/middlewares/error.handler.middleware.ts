@@ -8,8 +8,8 @@ export class CustomError {
     message: string
     date: string
 
-    constructor( codePerso: string, status:number, message?:string){      
-        this.codePerso = codePerso || "ERR-UNEXCPECTED"
+    constructor( codePerso: string, status:number, message?:string){
+        this.codePerso = codePerso
         this.status = status || 500
         this.message = message || HTTPMessagesEnum[status]
         this.date = new Date().toLocaleString('fr-FR', {timeZone: process.env.TZ})

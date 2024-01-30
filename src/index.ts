@@ -40,6 +40,7 @@ AppDataSource.initialize()
         async (req: Request, res: Response, next: NextFunction ) => {
           new (controller as any)()[action](req, res, next);
         },
+
       );
     })
     app.use(() => {

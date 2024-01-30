@@ -59,7 +59,7 @@ export class ProjectController extends GlobalController {
         return cacheResult;
       }
       const result: any = await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], FullResDataProject);
-     // if (!result) throw new CustomError("PC-NO-EXIST", 404)
+      if (!result) throw new CustomError("PC-NO-EXIST", 404)
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       redis.set(`project/${result.id}`, JSON.stringify(result));
       return result;

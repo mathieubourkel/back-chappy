@@ -8,7 +8,6 @@ export const HTTPMessagesEnum = {
     500 : "Internal error, call your dev and be nice",
 }
 
-
 // export enum HTTPMessages {
 //     BAD_REQUEST = "400- Request is not formatted very well",
 //     NO_TOKEN = "401- Token is missing",
