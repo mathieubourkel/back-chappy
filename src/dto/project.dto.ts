@@ -70,3 +70,10 @@ export const cleanResDataProjectForDel = {
     id: true,
     owner: {id: true}
 }
+
+export const cleanResDataUsersOnProject = {
+    id: true,
+    name: true,
+    owner: { id: true, firstname: true, lastname: true },
+    users: { id: true, firstname:true, lastname:true, myOwnTasks: {id: true}, company: {id:true, name: true} },
+}

@@ -3,7 +3,14 @@ import { Project } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { User } from "../entities/user.entity";
-import { CreateProjectDto, ProjectDto, cleanResDataProject, cleanResDataProjectForDel,FullResDataProject } from "../dto/project.dto";
+import {
+  CreateProjectDto,
+  ProjectDto,
+  cleanResDataProject,
+  cleanResDataProjectForDel,
+  FullResDataProject,
+  cleanResDataUsersOnProject
+} from "../dto/project.dto";
 import { validate } from "class-validator";
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
@@ -47,6 +54,26 @@ export class ProjectController extends GlobalController {
         "owner",
       ]);
     });
+  }
+
+  async getMembersByProject(req:Request, res:Response, next:NextFunction): Promise<void> {
+    await this.handleGlobal(req, res, next, async (): Promise<unknown> => {
+      // let cacheResult:any = await redis.get(`project/${req.params.id}`);
+      // if(cacheResult) {
+      //   cacheResult = JSON.parse(cacheResult)
+      //   if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }): boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      //   return cacheResult;
+      // }
+      console.log("MAIS TES OU ??")
+      const result:any = await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], cleanResDataUsersOnProject);
+      if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) : boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      // await redis.set(
+      //     `project/${result.id}`,
+      //     JSON.stringify(result)
+      // );
+      console.log(result, "toto")
+      return result;
+    })
   }
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
