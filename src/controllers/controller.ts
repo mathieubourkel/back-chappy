@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTPMessages } from "../utils/HTTPMessages";
+import { HTTPMessagesEnum } from "../enums/utils/http.messages.enum";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export abstract class GlobalController {
   // Fonction globale, utilisée dans toutes les fonctions de controlleurs
@@ -20,14 +21,13 @@ export abstract class GlobalController {
       // également dans cette fonction et renvoie le catch qui renvoie vers
       // la gestion d'erreurs
       let result = await callback();
-      console.log(result)
       res.status(status || 200)
         .json({
           data: result,
-          date: new Date(),
+          date: new Date().toLocaleString('fr-FR', {timeZone: process.env.TZ}),
           // Si il y a un status présent met le, sinon affiche une 200
           // (en cas de création avec un 201 par exemple)
-          message: Object.values(result).length == 0 ? "No data" : HTTPMessages[status || 200],
+          message: Object.values(result).length == 0 ? "No data" : HTTPMessagesEnum[status || 200],
         });
     } catch (error) {
       next(error);

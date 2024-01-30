@@ -7,8 +7,8 @@ import {
   validate,
   ValidationError
 } from "class-validator";
-import {CustomError} from "../utils/CustomError";
 import { ProjectEntity } from "../entities/project.entity";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class CommentController extends GlobalController {
 

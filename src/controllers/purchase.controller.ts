@@ -3,8 +3,8 @@ import { PurchaseEntity } from "../entities/purchase.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { redis } from "..";
-import { CustomError } from "../utils/CustomError";
 import { cleanResDataPurchases } from "../dto/purchase.dto";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class PurchaseController extends GlobalController {
 

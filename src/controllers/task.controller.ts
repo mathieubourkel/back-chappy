@@ -7,8 +7,8 @@ import {
   cleanResDataTaskCalendar,
   cleanResDataTaskForDel,
 } from "../dto/task.dto";
-import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class TaskController extends GlobalController {
 

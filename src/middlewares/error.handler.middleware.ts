@@ -1,9 +1,21 @@
-import { CustomError } from "../utils/CustomError";
-import { HTTPMessages } from "../utils/HTTPMessages";
+import { HTTPMessagesEnum } from "../enums/utils/http.messages.enum";
 import { Response } from "express";
 
-export const errorHandlerMiddleware = async ( err: CustomError, res: Response) => {
-    const status = err.status || 500;
-    const message = err.message || HTTPMessages[500];
-    res.status(status).json({ error: message, code: err.codePerso, status, date: err.date });
-  };
+export class CustomError {
+
+    codePerso:string
+    status: number
+    message: string
+    date: string
+
+    constructor( codePerso: string, status:number, message?:string){      
+        this.codePerso = codePerso || "ERR-UNEXCPECTED"
+        this.status = status || 500
+        this.message = message || HTTPMessagesEnum[status]
+        this.date = new Date().toLocaleString('fr-FR', {timeZone: process.env.TZ})
+    }
+
+    sendError(res: Response) {
+      res.status(this.status).json({ message: this.message, code: this.codePerso, status: this.status, date: this.date });
+    };
+}

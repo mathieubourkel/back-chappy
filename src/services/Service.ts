@@ -1,6 +1,6 @@
-import { EntityTarget, IsAny, Repository } from "typeorm";
-import {CustomError} from "../utils/CustomError";
+import { EntityTarget, Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class Service {
 
