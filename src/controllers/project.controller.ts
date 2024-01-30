@@ -2,8 +2,6 @@ import { NextFunction, Response, Request } from "express";
 import { ProjectEntity } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-<<<<<<< HEAD
-import { User } from "../entities/user.entity";
 import {
   CreateProjectDto,
   ProjectDto,
@@ -13,10 +11,7 @@ import {
   cleanResDataUsersOnProject
 } from "../dto/project.dto";
 import { validate } from "class-validator";
-=======
 import { UserEntity } from "../entities/user.entity";
-import { cleanResDataProject, cleanResDataProjectForDel,FullResDataProject } from "../dto/project.dto";
->>>>>>> 110331e7d58fd4af426b4e544cfa965a1e0ea432
 import { CustomError } from "../utils/CustomError";
 import { redis } from "..";
 
