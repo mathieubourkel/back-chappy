@@ -16,6 +16,6 @@ export async function verifyDtoMiddleware(req: Request, res: Response, next: Nex
         req.body = bodyToValidate
     } 
   } catch (error) {
-    error.sendError(res);
+    return Promise.reject(error)
   }
 }

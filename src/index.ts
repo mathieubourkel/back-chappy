@@ -26,7 +26,6 @@ AppDataSource.initialize()
         },
 
         async (req: Request, res: Response, next: NextFunction ) => {
-         // await applyMiddlewares(req, res, next, objRoute)
           new (controller as any)()[action](req, res, next);
         },
 

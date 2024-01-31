@@ -39,7 +39,7 @@ export class Routes {
         app.use(cors(corsOptions));
     }
 
-    applyGlobalErrorMiddleware(app) {
+    async applyGlobalErrorMiddleware(app) {
         app.use(() => {
             throw new CustomError("IDX-NOMATCH", 404)
         })

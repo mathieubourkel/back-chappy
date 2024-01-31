@@ -8,24 +8,23 @@ export async function applyMiddlewares(req: Request,res: Response,next: NextFunc
 
   if (!route.middlewares) next();
   try {
-    route.middlewares.map(async (mdw: MiddlewareInterface) => {
+    for (const mdw of route.middlewares){
       switch (mdw.name) {
-          case MiddlewaresEnum.TOKEN:
-              await verifyTokenMiddleware(req, res, next)
-              break;
-          case MiddlewaresEnum.DTO:
-              await verifyDtoMiddleware(req, res, next, mdw.classDto)
-              break;
-          case MiddlewaresEnum.REFRESH_TOKEN:
-              await verifyRefreshMiddleware(req, res, next)
-              break;
-          default:
-              console.log("Names your middlewares better")
+        case MiddlewaresEnum.TOKEN:
+            await verifyTokenMiddleware(req, res, next)
+            break;
+        case MiddlewaresEnum.DTO:
+            await verifyDtoMiddleware(req, res, next, mdw.classDto)
+            break;
+        case MiddlewaresEnum.REFRESH_TOKEN:
+            await verifyRefreshMiddleware(req, res, next)
+            break;
+        default:
+            console.log("Names your middlewares better")
       } 
-    });
+    }
     next()
   } catch (error) {
-    console.log(error, "pas bon")
     next(error)
   }
 }
