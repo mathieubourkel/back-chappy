@@ -6,7 +6,7 @@ import { PurchaseEntity } from "./purchase.entity";
 import { DocumentEntity } from "./document.entity";
 import { TaskEntity } from "./task.entity";
 
-@Entity()
+@Entity({name:"project"})
 export class ProjectEntity {
 
     @PrimaryGeneratedColumn()

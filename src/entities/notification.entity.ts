@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 
-@Entity()
+@Entity({name:"notification"})
 export class NotificationEntity {
 
     @PrimaryGeneratedColumn()

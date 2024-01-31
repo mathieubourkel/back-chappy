@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 import { UserEntity } from "./user.entity";
 import { TaskEntity } from "./task.entity";
 
-@Entity()
+@Entity({name:"category"})
 export class CategoryEntity {
 
     @PrimaryGeneratedColumn()

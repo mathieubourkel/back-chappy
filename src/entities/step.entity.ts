@@ -3,7 +3,7 @@ import { ProjectEntity } from "./project.entity";
 import { StatusEnum } from "../enums/status.enum";
 import { TaskEntity } from "./task.entity";
 
-@Entity()
+@Entity({name:"step"})
 export class StepEntity {
 
     @PrimaryGeneratedColumn()

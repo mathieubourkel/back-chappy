@@ -8,7 +8,7 @@ import { CategoryEntity } from "./category.entity";
 import { CommentEntity } from "./comment.entity";
 import { NotificationEntity } from "./notification.entity";
 
-@Entity()
+@Entity({name:"user"})
 export class UserEntity {
 
     @PrimaryGeneratedColumn()

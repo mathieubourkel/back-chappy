@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGene
 import { ProjectEntity } from "./project.entity";
 import { UserEntity } from "./user.entity";
 
-@Entity()
+@Entity({name:"company"})
 export class CompanyEntity {
 
     @PrimaryGeneratedColumn()

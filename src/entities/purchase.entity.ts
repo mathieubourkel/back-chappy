@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ProjectEntity } from "./project.entity";
 import { PurchaseStatusEnum } from "../enums/purchase.status.enum";
 
-@Entity()
+@Entity({name:"purchase"})
 export class PurchaseEntity {
 
     @PrimaryGeneratedColumn()

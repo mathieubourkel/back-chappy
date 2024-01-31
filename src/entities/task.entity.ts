@@ -5,7 +5,7 @@ import { StepEntity } from "./step.entity";
 import { CategoryEntity } from "./category.entity";
 import { ProjectEntity } from "./project.entity";
 
-@Entity()
+@Entity({name:"task"})
 export class TaskEntity {
 
     @PrimaryGeneratedColumn()

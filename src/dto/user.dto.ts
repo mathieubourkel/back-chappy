@@ -1,4 +1,10 @@
-import { IsEmail, IsInt, IsNotEmpty, IsString, Length, Min } from "class-validator";
+import {
+    IsEmail,
+    IsNotEmpty,
+    IsString,
+    Length,
+    MinLength
+} from "class-validator";
 
 export class CreateUserDto {
     @IsString()
@@ -21,10 +27,10 @@ export class CreateUserDto {
     @Length(1, 250, {message: "l'erreur vient de address"})
     @IsNotEmpty()
     address: string
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    @Min(5, {message: "l'erreur vient du zip"})
-    zip: number
+    @MinLength(5, {message: "l'erreur vient du zip"})
+    zip: string
     @IsString()
     @Length(1,50, {message: "l'erreur vient de city"})
     @IsNotEmpty()

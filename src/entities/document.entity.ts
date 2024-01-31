@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ProjectEntity } from "./project.entity";
 import { FileTypeEnum } from "../enums/file.type.enum";
 
-@Entity()
+@Entity({name:"document"})
 export class DocumentEntity {
 
     @PrimaryGeneratedColumn()
