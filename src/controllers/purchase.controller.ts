@@ -3,7 +3,7 @@ import { PurchaseEntity } from "../entities/purchase.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import { redis } from "..";
-import { cleanResDataPurchases } from "../dto/purchase.dto";
+import { cleanResDataPurchaseForDel, cleanResDataPurchases } from "../dto/purchase.dto";
 import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class PurchaseController extends GlobalController {
@@ -46,6 +46,9 @@ export class PurchaseController extends GlobalController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
+      const result:any = await this.purchaseService.getOneById(+req.params.id, ["project", "project.owner"], cleanResDataPurchaseForDel);
+      if (result.project.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
+      redis.del(`purchasesByProject/${result.project.id}`)
       return await this.purchaseService.delete(+req.params.id);
     });
   }

@@ -14,6 +14,6 @@ export class DocumentEntity {
     @Column({type:"enum", enum:FileTypeEnum})
     type: FileTypeEnum;
 
-    @ManyToOne (() => ProjectEntity, project => project.documents) project:ProjectEntity;
+    @ManyToOne (() => ProjectEntity, project => project.documents, { onDelete: "CASCADE" }) project:ProjectEntity;
 
 }

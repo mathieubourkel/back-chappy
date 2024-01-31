@@ -33,3 +33,8 @@ export const cleanResDataPurchases = {
     deliveryDate: true,
     project: {id:true, users: {id: true}, owner: {id: true}}
   }
+
+export const cleanResDataPurchaseForDel = {
+    id: true,
+    project: {id: true, owner: {id: true}}
+}

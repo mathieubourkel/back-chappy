@@ -24,6 +24,6 @@ export class StepEntity {
     @Column({type:"date"})
     estimEndDate: Date;
 
-    @ManyToOne (() => ProjectEntity, project => project.steps) project:ProjectEntity;
-    @OneToMany(() => TaskEntity, task => task.step) tasks: TaskEntity[];
+    @ManyToOne (() => ProjectEntity, project => project.steps, { onDelete: "CASCADE" }) project:ProjectEntity;
+    @OneToMany(() => TaskEntity, task => task.step, { cascade: ["remove"] }) tasks: TaskEntity[];
 }

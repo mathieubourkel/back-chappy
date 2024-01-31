@@ -26,6 +26,6 @@ export class PurchaseEntity {
     @Column({type:"date"})
     deliveryDate: Date;
 
-    @ManyToOne (() => ProjectEntity, project => project.purchases) project:ProjectEntity;
+    @ManyToOne (() => ProjectEntity, project => project.purchases, { onDelete: "CASCADE" }) project:ProjectEntity;
 
 }

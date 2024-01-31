@@ -36,9 +36,9 @@ export class ProjectEntity {
 
     @ManyToOne (() => UserEntity, owner => owner.projects) owner:UserEntity;
 
-    @OneToMany (() => PurchaseEntity, purchase => purchase.project) purchases: PurchaseEntity[];
-    @OneToMany (() => StepEntity, step => step.project) steps: StepEntity[];
-    @OneToMany (() => TaskEntity, task => task.project) tasks: TaskEntity[];
-    @OneToMany (() => DocumentEntity, document => document.project) documents: DocumentEntity[];
+    @OneToMany (() => PurchaseEntity, purchase => purchase.project, {cascade: ["remove"]}) purchases: PurchaseEntity[];
+    @OneToMany (() => StepEntity, step => step.project, {cascade: ["remove"]}) steps: StepEntity[];
+    @OneToMany (() => TaskEntity, task => task.project, {cascade: ["remove"]}) tasks: TaskEntity[];
+    @OneToMany (() => DocumentEntity, document => document.project, {cascade: ["remove"]}) documents: DocumentEntity[];
 
 }

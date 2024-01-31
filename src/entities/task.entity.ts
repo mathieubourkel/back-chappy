@@ -33,8 +33,8 @@ export class TaskEntity {
     @JoinTable()
     users: UserEntity[]
 
-    @ManyToOne (() => StepEntity, step => step.tasks) step:StepEntity;
-    @ManyToOne (() => ProjectEntity, project => project.tasks) project:ProjectEntity;
+    @ManyToOne (() => StepEntity, step => step.tasks, { onDelete: "CASCADE" }) step:StepEntity;
+    @ManyToOne (() => ProjectEntity, project => project.tasks, { onDelete: "CASCADE" }) project:ProjectEntity;
     @ManyToOne (() => UserEntity, owner => owner.myOwnTasks) owner:UserEntity;
     @ManyToOne (() => CategoryEntity, category => category.tasks) category:CategoryEntity;
 }
