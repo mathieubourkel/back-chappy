@@ -1,55 +1,38 @@
 import express from "express";
 import { Request, Response, NextFunction } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import * as bodyParser from "body-parser";
-import { createClient } from "redis";
-import { Routes } from "./routes";
 import { AppDataSource } from "./data-source";
-import { CustomError } from "./middlewares/error.handler.middleware";
-import { verifyDtoMiddleware } from "./middlewares/dto.middleware";
-import { verifyRefreshMiddleware, verifyTokenMiddleware } from "./middlewares/tokens.middleware";
-import { corsOptions } from "./enums/utils/cors.options.enum";
+import { Routes } from "./routes/";
+import { applyMiddlewares } from "./middlewares/manage.middlewares";
+import { createClient } from "redis";
 
-
-// DEMARRAGE EXPRESS ET REDIS
 const app = express();
+const routeClass = new Routes()
+routeClass.applyGlobalMiddleware(app);
+
 export const redis = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` });
 (async () => {
     await redis.connect();
 })();
 
-// MIDDLEWARES
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(cors(corsOptions));
-app.use("/api", verifyTokenMiddleware);
-app.use("/auth/refreshToken", verifyRefreshMiddleware);
-
 AppDataSource.initialize()
   .then(async () => {
-    Routes.forEach((_route) => {
-      const { method, route, action, controller, dto } = _route;
+    routeClass.routes.forEach((objRoute) => {
+      const { method, route, action, controller} = objRoute;
       (app as any)[method](
         route,
 
         async (req: Request, res: Response, next: NextFunction ) => {
-          await verifyDtoMiddleware(req, res, next, dto)
+          await applyMiddlewares(req, res, next, objRoute)
         },
 
         async (req: Request, res: Response, next: NextFunction ) => {
+         // await applyMiddlewares(req, res, next, objRoute)
           new (controller as any)()[action](req, res, next);
         },
 
       );
     })
-    app.use(() => {
-      throw new CustomError("IDX-NOMATCH", 404)
-    })
-    app.use((err:CustomError, req: Request, res:Response, next:NextFunction) => {
-      if (!(err instanceof CustomError)) err = new CustomError("UNEXPECTED", 500)
-      err.sendError(res)
-    });
+    routeClass.applyGlobalErrorMiddleware(app)
   })
   .catch((error) => console.log(error));
 

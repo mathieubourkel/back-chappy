@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken'
-import { HTTPMessagesEnum } from '../../enums/utils/http.messages.enum'
 
 declare module 'express-serve-static-core' {
   export interface Request {
