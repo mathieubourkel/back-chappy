@@ -18,7 +18,16 @@ export class CategoryController extends GlobalController {
       const result = await this.categoryService.getAll<Array<CategoryEntity>>();
       redis.set(`categories`, JSON.stringify(result));
       return result
+
+/**
+ * ALTERNATIVE
+ */
+      // return await this.proceedCache<Array<Category>>(CacheEnum.CATEGORIES, req.query, this.categoryService.getAll<Array<Category>>)
+
     });
+
+
+
   }
 
   async create(req: Request, res: Response, next: NextFunction) {

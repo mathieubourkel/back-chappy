@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPMessagesEnum } from "../enums/utils/http.messages.enum";
 import { CustomError } from "../middlewares/error.handler.middleware";
+import { CacheUtils } from "../utils/cache.utils";
 
-export abstract class GlobalController {
+export abstract class GlobalController extends CacheUtils{
   // Fonction globale, utilisée dans toutes les fonctions de controlleurs
   // elle engloba la gestion du try/catch 
   // ainsi que celle des erreurs
