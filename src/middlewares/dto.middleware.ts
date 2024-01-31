@@ -5,6 +5,7 @@ import { CustomError } from "./error.handler.middleware";
 
 export async function verifyDtoMiddleware(req: Request, res: Response, next: NextFunction, classDto?) {
   try {
+
     if (req.body && Object.values(req.body).length != 0){
       
         if (req.method === 'GET') throw new CustomError("GET-WITH-BODY", 400)

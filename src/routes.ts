@@ -19,6 +19,8 @@ import { CreatePurchaseDto, PurchaseDto } from "./dto/purchase.dto";
 import { CreateCompanyDto } from "./dto/company.dto";
 import { CreateNotificationDto } from "./dto/notification.dto";
 
+
+
 export const Routes = [ 
 
   { 
@@ -347,6 +349,18 @@ export const Routes = [
     action: "update",
     dto: CreateUserDto
   },
+
+  {
+    method: "post",
+    route: "/api/user",
+    controller: UserController,
+    action: "create",
+    middleware: [
+      dtoMiddleware(CreateUserDto),
+      authMiddleware(),
+    ]
+
+  },
   { 
     method: "delete",
     route: "/api/user/:id",
@@ -377,3 +391,21 @@ export const Routes = [
     action: "delete"
   }, 
 ];
+
+
+
+function dtoMiddleware(value) {
+  return { name: middlewareName.DTO, value}
+}
+
+enum middlewareName {
+  DTO = 'dto',
+  AUTH = 'auth'
+}
+interface OptionMiddlewareInterface {
+  role ?: number;
+}
+
+function authMiddleware(options?: OptionMiddlewareInterface) {
+  return { name:middlewareName.AUTH, options}
+}
