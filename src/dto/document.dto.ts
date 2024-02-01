@@ -1,14 +1,28 @@
-import { IsString, Length } from "class-validator";
+import { IsInt, IsString, Length, Max, Min } from "class-validator";
 
-export class CreateDocumentDto {
+export class DocumentDto {
     @IsString()
     @Length(1, 250)
     path:string;
-    @IsString()
-    type:string;
+    @IsInt()
+    @Max(20)
+    type:number
+}
 
-    constructor(body:CreateDocumentDto) {      
-        this.path = body.path,
-        this.type = body.type
-    }
+export class CreateDocumentDto extends DocumentDto {
+    @IsInt()
+    @Min(1)
+    project: number;
+}
+
+export const cleanResDataDocument = {
+    id: true,
+    path: true,
+    type: true,
+    project: {id:true}
+  }
+
+export const cleanResDataDocumentForDel = {
+    id: true,
+    project: {id: true, owner: {id: true}}
 }

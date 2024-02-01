@@ -27,7 +27,7 @@ export class ProjectEntity {
     @Column({type:"int"})
     budget: number;
 
-    @Column({type:"varchar"})
+    @Column({type:"date"})
     estimEndDate: Date;
 
     @ManyToMany (() => UserEntity, (user) => user.participations, {cascade: true})
