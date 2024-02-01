@@ -113,6 +113,16 @@ export class ProjectController extends GlobalController {
     });
   }
 
+  async deleteUserFromProject(req:Request, res: Response, next: NextFunction) :Promise<void> {
+    await this.handleGlobal(req, res, next, async () => {
+      const project: any = await this.projectService.getOneById(+req.params.idProject, ["users"]);
+      const user: any = await this.userService.getOneById(+req.body.idUser);
+      return await this.projectService.delete(user);
+    })
+  }
+
+
+
   async joinProjectByCode(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const project: any = await this.projectService.getOneBySearchOptions(
