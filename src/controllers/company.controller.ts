@@ -2,9 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { CompanyEntity } from "../entities/company.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { CreateCompanyDto } from "../dto/company.dto";
-import { validate } from "class-validator";
-import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class CompanyController extends GlobalController {
 

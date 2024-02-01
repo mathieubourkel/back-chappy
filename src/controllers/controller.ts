@@ -1,37 +1,77 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpMessagesUtils } from "../utils/http.messages.utils";
-import { CustomError } from "../middlewares/error.handler.middleware";
-import { CacheUtils } from "../utils/cache.utils";
+import { RedisClientType, createClient } from "redis";
+import { CacheEnum } from "../enums/cache.enum";
+import { QueryInterface } from "../interfaces/query.interface";
 
-export abstract class GlobalController extends CacheUtils{
-  // Fonction globale, utilisée dans toutes les fonctions de controlleurs
-  // elle engloba la gestion du try/catch 
-  // ainsi que celle des erreurs
-  // En cas de catch on a (next) qui appelle le middleware de gestion d'erreurs
-
-  protected async handleGlobal<T>(req: Request,res: Response,
+export abstract class GlobalController {
+  private cache:any
+  protected async handleGlobal<T>(
+    req: Request,
+    res: Response,
     next: NextFunction,
     callback: () => Promise<T>,
-    // status facultatif si on veut mettre un status perssonalisé (201)
     status?: number
   ) {
     try {
-      // le callback sera toutes les fonctions enfant des controlleurs
-      // On stock le resultat
-      // Si la promesse a échouée dans la fonction enfant, cela échoue
-      // également dans cette fonction et renvoie le catch qui renvoie vers
-      // la gestion d'erreurs
       let result = await callback();
-      res.status(status || 200)
-        .json({
-          data: result,
-          date: new Date().toLocaleString('fr-FR', {timeZone: process.env.TZ}),
-          // Si il y a un status présent met le, sinon affiche une 200
-          // (en cas de création avec un 201 par exemple)
-          message: Object.values(result).length == 0 ? "No data" : HttpMessagesUtils[status || 200],
-        });
+      res.status(status || 200).json({
+        data: result,
+        date: new Date().toLocaleString("fr-FR", { timeZone: process.env.TZ }),
+        message:
+          Object.values(result).length == 0
+            ? "No data"
+            : HttpMessagesUtils[status || 200],
+      });
     } catch (error) {
       next(error);
+    }
+  }
+
+  async startCache() {
+    if (!this.cache) {
+      this.cache = createClient({
+        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+      });
+      await this.cache.connect();
+    }
+    return this.cache as Promise<RedisClientType>;
+  }
+
+  BuildCacheKeyName(initName: CacheEnum, query?: QueryInterface): string {
+    if (!query) return `${initName}`
+    return `${initName}|${query.params ? query.params : ""}|${
+      query.skip ? query.skip : ""
+    }|${query.limit ? query.limit : ""}`;
+  }
+
+  async delCache(name: CacheEnum, query?: QueryInterface) {
+    try {
+      (await this.startCache()).del(this.BuildCacheKeyName(name, query));
+    } catch (error) {
+      Promise.reject(error);
+    }
+  }
+
+  async proceedCache<T>(
+    name: CacheEnum,
+    callback: () => Promise<T>,
+    query?: QueryInterface
+  ): Promise<T> {
+    try {
+      const cache = await (
+        await this.startCache()
+      ).get(this.BuildCacheKeyName(name, query));
+      if (cache) return JSON.parse(cache) as T;
+
+      const datas = await callback();
+      if (datas)
+        await (
+          await this.startCache()
+        ).set(this.BuildCacheKeyName(name, query), JSON.stringify(datas));
+      return datas as T;
+    } catch (error) {
+      Promise.reject(error);
     }
   }
 }

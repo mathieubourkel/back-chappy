@@ -10,9 +10,7 @@ export class DocumentController extends GlobalController {
   async getDocumentsByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: {id:+req.params.idProject} };
     await this.handleGlobal(req, res, next, async () => {
-      return this.documentService.getManyBySearchOptions(searchOptions, [
-        "project"
-      ]);
+      return this.documentService.getManyBySearchOptions(searchOptions, ["project"]);
     });
   }
 

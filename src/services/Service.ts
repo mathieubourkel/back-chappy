@@ -33,40 +33,40 @@ export class Service {
 
   // Certain paramètres de la fonction sont facultatifs ce qui permet 
   // de réutiliser la même fonction pour plusieurs besoins
-  async getOneById(id: number, relations?: Array<string>, select?:any): Promise<unknown> {
+  async getOneById<T>(id: number, relations?: Array<string>, select?:any): Promise<T> {
     return this.handleService("GET-ONEBYID", async () => {
-      return this.repository.findOne({ where:{id}, relations, select });
+      return this.repository.findOne({ where:{id}, relations, select }) as Promise<T>
     });
   }
 
-  async getOneBySearchOptions(searchOptions: {}, relations?: Array<string>, select?:any): Promise<unknown> {
+  async getOneBySearchOptions<T>(searchOptions: {}, relations?: Array<string>, select?:any): Promise<T> {
     return this.handleService("GET-ONE-SEARCH", async () => {
-      return this.repository.findOne({ where: searchOptions, relations, select });
+      return this.repository.findOne({ where: searchOptions, relations, select }) as Promise<T>
     });
   }
 
-  async getManyBySearchOptions(searchOptions: {}, relations?: Array<string>, select?:any): Promise<unknown> {
-    return this.handleService("GET-MANY", async () => {
-      return this.repository.find({ where: searchOptions, relations, select});
+  async getManyBySearchOptions<T>(searchOptions: {}, relations?: Array<string>, select?:any): Promise<T> {
+    return this.handleService<T>("GET-MANY", async () => {
+      return this.repository.find({ where: searchOptions, relations, select}) as Promise<T>
     });
   }
 
-  async create(body: {}): Promise<unknown> {
+  async create<T>(body: {}): Promise<T> {
     return this.handleService("CREATE", async () => {
-      return this.repository.save(body);
+      return this.repository.save(body) as Promise<T>
     });
   }
 
-  async delete(id: number): Promise<unknown> {
+  async delete<T>(id: number): Promise<T> {
     return this.handleService("DELETE", async () => {
-      return this.repository.delete(id);
+      return this.repository.delete(id) as Promise<T>
     });
   }
 
   async update(id: number, body: {}, relations?: Array<string>, select?:any): Promise<any> {
     return this.handleService("UPDATE", async () => {
       const entityToUpdate = await this.repository.findOne({ where: { id } , relations, select});
-      return this.repository.save(this.repository.merge(entityToUpdate, body));
+      return this.repository.save(this.repository.merge(entityToUpdate, body))
     });
   }
 
