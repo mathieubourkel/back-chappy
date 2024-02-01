@@ -45,10 +45,17 @@ export const ProjectRoutes = [
     },
     { 
       method: "put",
-      route: "/api/project/addUser/:idProject",
+      route: "/api/project/user/add",
       controller: ProjectController,
       action: "addUserToProject",
       middlewares: [{name: 'checkToken'}]
+    },
+    {
+        method: "put",
+        route: "/api/project/user/delete",
+        controller: ProjectController,
+        action: "delUserToProject",
+        middlewares: [{name: 'checkToken'}]
     },
     { 
       method: "put",

@@ -26,7 +26,7 @@ export class CreateProjectDto extends ProjectDto {
     owner:number
 }
 
-export const cleanResDataProject = {
+export const dataProject = {
     description: true,
     id: true,
     name: true,
@@ -37,7 +37,7 @@ export const cleanResDataProject = {
     users: { id: true },
   }
 
-  export const FullResDataProject = {
+  export const fullDataProject = {
     description: true,
     id: true,
     name: true,
@@ -52,14 +52,15 @@ export const cleanResDataProject = {
     purchases: true
   }
 
-export const cleanResDataProjectForDel = {
-    id: true,
-    owner: {id: true}
-}
-
-export const cleanResDataUsersOnProject = {
+export const dataUsersOnProject = {
     id: true,
     name: true,
     owner: { id: true, firstname: true, lastname: true },
     users: { id: true, firstname:true, lastname:true, myOwnTasks: {id: true}, company: {id:true, name: true} },
+}
+
+export const lightDataUsersOnProject = {
+    id: true,
+    owner: {id: true},
+    users: { id: true}
 }

@@ -70,9 +70,4 @@ export class Service {
     });
   }
 
-  async exist(searchOptions: {}, relations?: Array<string>, select?:any): Promise<boolean> {
-    return this.handleService("IF-EXIST", async () => {
-      return this.repository.exist({ where: searchOptions, relations, select });
-    });
-  }
 }

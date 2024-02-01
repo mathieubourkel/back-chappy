@@ -2,7 +2,11 @@ import { NextFunction, Response, Request } from "express";
 import { ProjectEntity } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import {cleanResDataProject,cleanResDataProjectForDel,FullResDataProject,cleanResDataUsersOnProject,} from "../dto/project.dto";
+import {
+  lightDataUsersOnProject,
+  dataUsersOnProject,
+  fullDataProject, dataProject,
+} from "../dto/project.dto";
 import { UserEntity } from "../entities/user.entity";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { CacheEnum } from "../enums/cache.enum";
@@ -28,7 +32,7 @@ export class ProjectController extends GlobalController {
 
   async getMembersByProject(req:Request, res:Response, next:NextFunction): Promise<void> {
     await this.handleGlobal(req, res, next, async (): Promise<unknown> => {
-      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT_MEMBERS, async () => await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], cleanResDataUsersOnProject), {params: req.params.idProject});
+      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT_MEMBERS, async () => await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], dataUsersOnProject), {params: req.params.idProject});
       if (!result) throw new CustomError("PC-NO-EXIST", 404)
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) : boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       return result;
@@ -37,7 +41,7 @@ export class ProjectController extends GlobalController {
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT, async () => await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], FullResDataProject),{params: req.params.id});
+      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT, async () => await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], fullDataProject),{params: req.params.id});
       if (!result) throw new CustomError("PC-NO-EXIST", 404)
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
       return result;
@@ -54,7 +58,7 @@ export class ProjectController extends GlobalController {
 
   async addUserToProject(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.idProject,["users"]);
+      const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.body.idProject,["users"], lightDataUsersOnProject);
       if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
       const user:UserEntity = await this.userService.getOneById(req.body.idUser);
       project.users.push(user);
@@ -62,15 +66,19 @@ export class ProjectController extends GlobalController {
     });
   }
 
-  async deleteUserFromProject(req:Request, res: Response, next: NextFunction) :Promise<void> {
+  async delUserToProject(req: Request, res: Response, next: NextFunction):Promise<void> {
     await this.handleGlobal(req, res, next, async () => {
-      const project: any = await this.projectService.getOneById(+req.params.idProject, ["users"]);
-      const user: any = await this.userService.getOneById(+req.body.idUser);
-      return await this.projectService.delete(user);
-    })
+      const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.body.idProject,["users", "owner"], lightDataUsersOnProject);
+      if (!project) throw new CustomError("PC-DEL-NOTFIND", 400);
+      if(project.owner.id !== req.user.userId) throw new CustomError("PC-DEL-NOTAUTHORIZED", 403);
+      const user:UserEntity = await this.userService.getOneById(+req.body.idUser);
+      const userIndex = project.users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        project.users = project.users.filter(u => u.id !== user.id);
+      }
+      return await this.projectService.update(project.id, project);
+    });
   }
-
-
 
   async joinProjectByCode(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
@@ -84,7 +92,7 @@ export class ProjectController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result = await this.projectService.update(+req.params.id, req.body, ["owner"], cleanResDataProject);
+      const result = await this.projectService.update(+req.params.id, req.body, ["owner"], dataProject);
       this.delCache(CacheEnum.PROJECT, {params: result.id})
       return result;
     });
@@ -92,7 +100,7 @@ export class ProjectController extends GlobalController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.id, ["owner"], cleanResDataProjectForDel);
+      const result:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.id, ["owner"], lightDataUsersOnProject);
       if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
       this.delCache(CacheEnum.PROJECT, {params: result.id})
       this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
