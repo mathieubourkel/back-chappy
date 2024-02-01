@@ -31,7 +31,7 @@ AppDataSource.initialize()
 
       );
     })
-    routeClass.applyGlobalErrorMiddleware(app)
+    await routeClass.applyGlobalErrorMiddleware(app)
   })
   .catch((error) => console.log(error));
 

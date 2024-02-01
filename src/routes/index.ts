@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
-import { corsOptions } from "./../enums/utils/cors.options.enum";
+import { corsOptions } from "../utils/cors.options.utils";
 import { RoutesInterface } from "../interfaces/route.interface";
 import { AuthRoutes } from "./auth.routes";
 import { StepRoutes } from "./step.routes";

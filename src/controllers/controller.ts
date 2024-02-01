@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTPMessagesEnum } from "../enums/utils/http.messages.enum";
+import { HttpMessagesUtils } from "../utils/http.messages.utils";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { CacheUtils } from "../utils/cache.utils";
 
@@ -28,7 +28,7 @@ export abstract class GlobalController extends CacheUtils{
           date: new Date().toLocaleString('fr-FR', {timeZone: process.env.TZ}),
           // Si il y a un status présent met le, sinon affiche une 200
           // (en cas de création avec un 201 par exemple)
-          message: Object.values(result).length == 0 ? "No data" : HTTPMessagesEnum[status || 200],
+          message: Object.values(result).length == 0 ? "No data" : HttpMessagesUtils[status || 200],
         });
     } catch (error) {
       next(error);

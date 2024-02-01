@@ -1,4 +1,4 @@
-export const HTTPMessagesEnum = {
+export const HttpMessagesUtils = {
     400 : "Request is not formatted very well, try again",
     401 : "Authentication failed",
     403 : "You have not the right to be here",

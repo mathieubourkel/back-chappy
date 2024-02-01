@@ -19,7 +19,6 @@ export class CacheUtils {
         return this.cache as Promise<RedisClientType>
     }
 
-
     BuildCacheKeyName(initName: CacheEnum, query: QueryInterface): string {
         return `${initName}|${query.skip}|${query.limit}`
     }

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { MiddlewareInterface, RouteInterface } from "../interfaces/route.interface";
+import { RouteInterface } from "../interfaces/route.interface";
 import { verifyDtoMiddleware } from "./dto.middleware";
 import { verifyRefreshMiddleware, verifyTokenMiddleware } from "./tokens.middleware";
-import { MiddlewaresEnum } from "../enums/utils/middlewares.enum";
+import { MiddlewaresEnum } from "../enums/middlewares.enum";
 
 export async function applyMiddlewares(req: Request,res: Response,next: NextFunction,route: RouteInterface) {
 

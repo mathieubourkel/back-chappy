@@ -56,31 +56,31 @@ export class ProjectController extends GlobalController {
 
   async getMembersByProject(req:Request, res:Response, next:NextFunction): Promise<void> {
     await this.handleGlobal(req, res, next, async (): Promise<unknown> => {
-      // let cacheResult:any = await redis.get(`project/${req.params.id}`);
-      // if(cacheResult) {
-      //   cacheResult = JSON.parse(cacheResult)
-      //   if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }): boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
-      //   return cacheResult;
-      // }
+      let cacheResult:any = await redis.get(`project/${req.params.id}`);
+      if(cacheResult) {
+        cacheResult = JSON.parse(cacheResult)
+        if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }): boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+        return cacheResult;
+      }
       const result:any = await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], cleanResDataUsersOnProject);
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) : boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
-      // await redis.set(
-      //     `project/${result.id}`,
-      //     JSON.stringify(result)
-      // );
+      await redis.set(
+          `project/${result.id}`,
+          JSON.stringify(result)
+      );
       return result;
     })
   }
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult:any = await redis.get(`project/${req.params.id}`);
-      if (cacheResult && cacheResult !== null) {
-        cacheResult = JSON.parse(cacheResult)
-        if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
-        console.log(new Date(), "coucou ca vient du cache", `project/${req.params.id}`);
-        return cacheResult;
-      }
+      // let cacheResult:any = await redis.get(`project/${req.params.id}`);
+      // if (cacheResult && cacheResult !== null) {
+      //   cacheResult = JSON.parse(cacheResult)
+      //   if (cacheResult.owner.id !== req.user.userId && !cacheResult.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      //   console.log(new Date(), "coucou ca vient du cache", `project/${req.params.id}`);
+      //   return cacheResult;
+      // }
       const result: any = await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], FullResDataProject);
       if (!result) throw new CustomError("PC-NO-EXIST", 404)
       if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
