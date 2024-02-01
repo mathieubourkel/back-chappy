@@ -9,6 +9,7 @@ import {
 } from "../dto/task.dto";
 import { redis } from "..";
 import { CustomError } from "../middlewares/error.handler.middleware";
+import { CacheEnum } from "../enums/cache.enum";
 
 export class TaskController extends GlobalController {
 
@@ -17,20 +18,10 @@ export class TaskController extends GlobalController {
   async getTasksByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: { id: +req.params.idProject } };
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult:any = await redis.get(`tasksByProject/${req.params.idProject}`);
-      if (cacheResult && cacheResult !== null) {
-        cacheResult = JSON.parse(cacheResult)
-        if (cacheResult.length === 0) return cacheResult
-        if (cacheResult[0].project.owner.id !== req.user.userId && !cacheResult[0].project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
-        console.log(new Date(), "coucou ca vient du cache");
-        return cacheResult
-      }
-      const result:any = await this.taskService.getManyBySearchOptions(searchOptions, ["project","category","users","step", "project.owner", "project.users"],
-      cleanResDataTaskCalendar);
-      if (result.length > 0){
-        if (result[0].project.owner.id !== req.user.userId && !result[0].project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
-      }
-      await redis.set(`tasksByProject/${req.params.idProject}`, JSON.stringify(result));
+      const result:Array<TaskEntity> = await this.proceedCache<Array<TaskEntity>>(CacheEnum.TASKS, async () => await this.taskService.getManyBySearchOptions(searchOptions, ["project","category","users","step", "project.owner", "project.users"],cleanResDataTaskCalendar), {params: req.params.idProject});
+      if (!result) throw new CustomError("TC-NO-EXIST", 404)
+      if (result.length === 0) return result;
+      if (result[0].project.owner.id !== req.user.userId && !result[0].project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
       return result;
     });
   }
@@ -51,58 +42,49 @@ export class TaskController extends GlobalController {
 
   async getTaskById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      let cacheResult: any = await redis.get(`task/${req.params.id}`);
-      if (cacheResult && cacheResult !== null) {
-        cacheResult = JSON.parse(cacheResult);
-        if (
-          cacheResult.owner.id !== req.user.userId &&
-          !cacheResult.project.users.find((user: { id: number }) => user.id === req.user.userId))
-          throw new CustomError("TC-NO-RIGHTS", 403);
-        return cacheResult;
-      }
-      const result:any = await this.taskService.getOneById(+req.params.id, ["category", "owner", "users", "project", "project.users"],cleanResDataTask);
-      redis.set(`task/${result.id}`, JSON.stringify(result));
+      const result:TaskEntity = await this.proceedCache<TaskEntity>(CacheEnum.TASK, async () => await this.taskService.getOneById(+req.params.id, ["category", "owner", "users", "project", "project.users"],cleanResDataTask), {params: req.params.id});
+      if (result.owner.id !== req.user.userId && !result.project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
       return result;
     });
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      req.body.owner = req.user.userId;
-      req.body.users = req.body.users.map((elem: number) => {
-        return { id: elem };
-      });
-      const result: any = await this.taskService.create(req.body);
-      redis.del(`task/${result.id}`);
-      redis.del(`step/${req.body.step}`);
-      redis.del(`tasksByProject/${req.body.project}`);
-      return result;
+      const data = this.__buildRequestForCreation(req.body, req.user.userId)
+      this.delCache(CacheEnum.STEP, {params: req.body.step})
+      this.delCache(CacheEnum.PROJECT_TASKS, {params: req.body.project})
+      return await this.taskService.create(data);
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "category", "step"], cleanResDataTask
-      );
-      if (result.owner.id !== req.user.userId)
-        throw new CustomError("TC-NO-RIGHTS", 403);
-      redis.del(`task/${result.id}`);
-      redis.del(`step/${result.step.id}`);
-      redis.del(`tasksByProject/${result.project.id}`);
+      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "category", "step"], cleanResDataTask);
+      this.delCache(CacheEnum.TASK, {params: result.id})
+      this.delCache(CacheEnum.STEP, {params: result.step.id})
+      this.delCache(CacheEnum.PROJECT_TASKS, {params: result.project.id})
       return result;
     });
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result: any = await this.taskService.getOneById(+req.params.id,
-        ["owner", "project", "project.owner", "step"],cleanResDataTaskForDel);
-      if (result.owner.id !== req.user.userId && result.project.owner.id !== req.user.userId) 
-      throw new CustomError("TC-NO-RIGHTS", 403);
-      redis.del(`task/${result.id}`);
-      redis.del(`step/${result.step.id}`);
-      redis.del(`tasksByProject/${result.project.id}`);
+      const result:TaskEntity = await this.taskService.getOneById<TaskEntity>(+req.params.id,["owner", "project", "project.owner", "step"],cleanResDataTaskForDel);
+      if (result.owner.id !== req.user.userId && result.project.owner.id !== req.user.userId) throw new CustomError("TC-NO-RIGHTS", 403);
+      this.delCache(CacheEnum.TASK, {params: result.id})
+      this.delCache(CacheEnum.STEP, {params: result.step.id})
+      this.delCache(CacheEnum.PROJECT_TASKS, {params: result.project.id})
       return await this.taskService.delete(result.id);
     });
   }
+
+  private __buildRequestForCreation(body, userId:number){
+    body.users = body.users.map((elem: number) => {
+      return { id: elem };
+    });
+    body.owner = userId;
+    return body
+  }
 }
+
+

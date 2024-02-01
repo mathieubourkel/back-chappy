@@ -20,8 +20,10 @@ export class CreateProjectDto extends ProjectDto {
 
     @IsArray()
     @IsNumber({}, {each: true})
-    users:number[];
+    users:number[]
     id:number
+    code:string
+    owner:number
 }
 
 export const cleanResDataProject = {
