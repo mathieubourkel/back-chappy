@@ -20,6 +20,9 @@ export class CreateProjectDto extends ProjectDto {
     @IsArray()
     @IsNumber({}, {each: true})
     users:number[]
+    @IsArray()
+    @IsNumber({}, {each: true})
+    companies:number[]
     id:number
     code:string
     owner:number

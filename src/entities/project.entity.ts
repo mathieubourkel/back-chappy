@@ -5,6 +5,7 @@ import { UserEntity } from "./user.entity";
 import { PurchaseEntity } from "./purchase.entity";
 import { DocumentEntity } from "./document.entity";
 import { TaskEntity } from "./task.entity";
+import { CompanyEntity } from "./company.entity";
 
 @Entity({name:"project"})
 export class ProjectEntity {
@@ -33,6 +34,10 @@ export class ProjectEntity {
     @ManyToMany (() => UserEntity, (user) => user.participations, {cascade: true})
     @JoinTable()
     users: UserEntity[]
+
+    @ManyToMany (() => CompanyEntity, (company) => company.participations, {cascade: true})
+    @JoinTable()
+    companies: CompanyEntity[]
 
     @ManyToOne (() => UserEntity, owner => owner.projects) owner:UserEntity;
 

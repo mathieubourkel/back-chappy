@@ -2,8 +2,8 @@ import { AuthController } from "../controllers/auth.controller";
 import { CompanyController } from "../controllers/company.controller";
 import { UserController } from "../controllers/user.controller";
 import { LoginDto } from "../dto/auth.dto";
-import { CreateCompanyDto } from "../dto/company.dto";
-import { CreateUserDto } from "../dto/user.dto";
+import { CompanyDto } from "../dto/company.dto";
+import { CreateUserDto, CreateUserWithCompany } from "../dto/user.dto";
 
 export const AuthRoutes = [ 
 { 
@@ -29,10 +29,17 @@ export const AuthRoutes = [
   },
   { 
     method: "post",
+    route: "/auth/registerWithCompany",
+    controller: UserController,
+    action: "create",
+    middlewares: [{name: 'dto', classDto: CreateUserWithCompany}]
+  },
+  { 
+    method: "post",
     route: "/auth/company/register",
     controller: CompanyController,
     action: "create",
-    middlewares: [{name: 'dto', classDto: CreateCompanyDto}]
+    middlewares: [{name: 'dto', classDto: CompanyDto}]
   },
   { 
     method: "get",
@@ -82,7 +89,7 @@ export const AuthRoutes = [
     controller: CompanyController,
     action: "update",
     middlewares: [{name: 'checkToken'},
-    {name: "dto", classDto: CreateCompanyDto}]
+    {name: "dto", classDto: CompanyDto}]
   },
   { 
     method: "delete",

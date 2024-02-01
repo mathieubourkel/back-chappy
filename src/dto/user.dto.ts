@@ -41,6 +41,15 @@ export class CreateUserDto {
    
 }
 
-export class ModifyUserDto {
-    
+export class CreateUserWithCompany extends CreateUserDto {
+    @IsString()
+    @Length(1, 50)
+    @IsNotEmpty()
+    name: string
+    @IsString()
+    siret: string
+    @IsString()
+    @Length(0, 255)
+    description: string
+    owner:number
 }

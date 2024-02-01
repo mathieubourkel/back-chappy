@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ProjectEntity } from "./project.entity";
 import { UserEntity } from "./user.entity";
 
@@ -17,11 +17,13 @@ export class CompanyEntity {
     @Column({type:"varchar"})
     description: string;
 
-    @ManyToMany (() => ProjectEntity, {cascade: true})
+    @ManyToMany (() => ProjectEntity,(participation) => participation.companies)
     @JoinTable()
-    projects: ProjectEntity[]
+    participations: ProjectEntity[]
 
     @OneToMany (() => UserEntity, user => user.company) users:UserEntity[];
-    @OneToOne (() => UserEntity, owner => owner.company) owner:UserEntity;
+    @OneToOne (() => UserEntity, user => user.company)
+    @JoinColumn()
+    owner: UserEntity
 
 }

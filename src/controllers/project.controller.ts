@@ -114,6 +114,9 @@ export class ProjectController extends GlobalController {
       body.users = body.users.map((elem: number) => {
         return { id: elem };
       });
+      body.companies = body.companies.map((elem: number) => {
+        return { id: elem };
+      });
       body.owner = userId;
       return body
   }
