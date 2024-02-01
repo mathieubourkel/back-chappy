@@ -14,7 +14,7 @@ export class StepController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       const result:StepEntity = await this.proceedCache<StepEntity>(CacheEnum.STEP, async () => await this.stepService.getOneById(+req.params.id, ["tasks", "project", "project.owner", "project.users"], cleanResDataStep), {params: req.params.id});
       if (!result) throw new CustomError("SC-NO-EXIST", 404)
-      if (result.project.owner.id !== req.user.userId) throw new CustomError("SC-NO-RIGHTS", 403);
+      if (result.project.owner.id !== req.user.userId && !result.project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("SC-NO-RIGHTS", 403);
       return result;
     });
   }

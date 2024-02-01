@@ -86,6 +86,7 @@ export class ProjectController extends GlobalController {
       if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
       const user:UserEntity = await this.userService.getOneById<UserEntity>(req.user.userId);
       project.users.push(user);
+      this.delCache(CacheEnum.PROJECT, {params: project.id})
       return await this.projectService.update(project.id, project);
     });
   }

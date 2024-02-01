@@ -1,5 +1,4 @@
-import bodyParser from "body-parser";
-import { IsArray, IsDateString, IsInt, IsNumber, IsString, Length, Max, Min} from "class-validator";
+import { IsArray, IsDateString, IsInt, IsNumber, IsString, Length, Max} from "class-validator";
 
 export class ProjectDto {
     @IsString()

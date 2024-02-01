@@ -1,4 +1,5 @@
 import { DocumentController } from "../controllers/document.controller";
+import { CreateDocumentDto, DocumentDto } from "../dto/document.dto";
 
 export const DocumentRoutes = [
     { 
@@ -13,14 +14,17 @@ export const DocumentRoutes = [
         route: "/api/document",
         controller: DocumentController,
         action: "create",
-        middlewares: [{name: 'checkToken'}]
+        middlewares: [{name: 'checkToken'},
+        {name: "dto", classDto: CreateDocumentDto}]
       },
       { 
         method: "put",
         route: "/api/document/:id",
         controller: DocumentController,
         action: "update",
-        middlewares: [{name: 'checkToken'}]
+        middlewares: [{name: 'checkToken'},
+        {name: "dto", classDto: DocumentDto}
+      ]
       },
       { 
         method: "delete",

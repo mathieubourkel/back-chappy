@@ -11,7 +11,7 @@ export class DocumentEntity {
     @Column({type:"varchar"})
     path: string;
 
-    @Column({type:"enum", enum:FileTypeEnum})
+    @Column({type:"enum", enum:FileTypeEnum, default:FileTypeEnum.PDF})
     type: FileTypeEnum;
 
     @ManyToOne (() => ProjectEntity, project => project.documents, { onDelete: "CASCADE" }) project:ProjectEntity;

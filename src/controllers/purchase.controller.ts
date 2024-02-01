@@ -30,7 +30,7 @@ export class PurchaseController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result = await this.purchaseService.update(+req.params.id, req.body);
+      const result = await this.purchaseService.update(+req.params.id, req.body, ["project"], cleanResDataPurchases);
       this.delCache(CacheEnum.PURCHASES, {params: result.project.id})
       this.delCache(CacheEnum.PURCHASE, {params: result.id})
       return result;
