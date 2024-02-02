@@ -16,7 +16,8 @@ export enum CacheEnum {
     PURCHASE = 14,
     PURCHASES = 15,
     COMMENT = 16,
-    COMMENTS = 17,
+    COMMENTS_PROJECT = 17,
     COMPANY = 18,
-    COMPANIES = 19
+    COMPANIES = 19,
+    COMMENTS_STEP = 20,
 }

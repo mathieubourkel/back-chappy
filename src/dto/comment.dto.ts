@@ -28,13 +28,6 @@ export class CreateCommentDto {
     @Min(1)
     idProject:number;
 
-    constructor(body:CreateCommentDto) {
-        const {content, table, idParent, idProject} = body;
-        this.content = content;
-        this.table = table;
-        this.idParent = idParent;
-        this.idProject = idProject;
-    }
 }
 
 export class ModifyCommentDto {
@@ -44,9 +37,4 @@ export class ModifyCommentDto {
     @MaxLength(500, {message: 'Votre message est trop long.'})
     content:string;
 
-    constructor(body:ModifyCommentDto) {
-        const {content} = body;
-        this.content = content;
-
-    }
 }

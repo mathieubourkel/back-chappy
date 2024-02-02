@@ -2,7 +2,6 @@ import { ProjectController } from "../controllers/project.controller";
 import {
     CreateProjectDto,
     ProjectDto,
-    UpdateUsersOnProjectDto
 } from "../dto/project.dto";
 
 export const ProjectRoutes = [ 
@@ -52,10 +51,7 @@ export const ProjectRoutes = [
       route: "/api/project/user/add",
       controller: ProjectController,
       action: "addUserToProject",
-      middlewares: [
-          {name: 'checkToken'},
-          {name: "dto", classDto: UpdateUsersOnProjectDto}
-      ]
+      middlewares: [{name: 'checkToken'}]
     },
     {
         method: "put",

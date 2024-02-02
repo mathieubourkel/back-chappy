@@ -1,4 +1,5 @@
 import { CommentController } from "../controllers/comment.controller";
+import {CreateCommentDto, ModifyCommentDto} from "../dto/comment.dto";
 
 export const CommentRoutes = [
     {
@@ -20,14 +21,20 @@ export const CommentRoutes = [
         route: "/api/comment",
         controller: CommentController,
         action: "create",
-        middlewares: [{name: 'checkToken'}]
+        middlewares: [
+            {name: 'checkToken'},
+            {name: "dto", classDto: CreateCommentDto}
+        ]
       },
       {
         method: "put",
         route:"/api/comment/:id",
         controller: CommentController,
         action: "update",
-        middlewares: [{name: 'checkToken'}]
+        middlewares: [
+            {name: 'checkToken'},
+            {name: "dto", classDto: ModifyCommentDto}
+        ]
       },
       {
         method: "delete",
