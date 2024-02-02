@@ -31,6 +31,7 @@ export class PurchaseController extends GlobalController {
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.purchaseService.update(+req.params.id, req.body, ["project"], cleanResDataPurchases);
+      if (!result) throw new CustomError("PC-PURC-NOTFIND", 400);
       this.delCache(CacheEnum.PURCHASES, {params: result.project.id})
       this.delCache(CacheEnum.PURCHASE, {params: result.id})
       return result;
@@ -40,6 +41,7 @@ export class PurchaseController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:PurchaseEntity = await this.purchaseService.getOneById<PurchaseEntity>(+req.params.id, ["project", "project.owner"], cleanResDataPurchaseForDel);
+      if (!result) throw new CustomError("PC-PURC-NOTFIND", 400);
       if (result.project.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
       this.delCache(CacheEnum.PURCHASES, {params: result.project.id})
       this.delCache(CacheEnum.PURCHASE, {params: result.id})

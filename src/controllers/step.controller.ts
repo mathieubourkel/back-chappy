@@ -30,6 +30,7 @@ export class StepController extends GlobalController {
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.stepService.update(+req.params.id, req.body, ["project", "project.owner"], cleanResDataStep);
+      if (!result) throw new CustomError("SC-PURC-NOTFIND", 400);
       this.delCache(CacheEnum.STEP, {params: result.id})
       this.delCache(CacheEnum.PROJECT, {params: result.project.id})
       return result
@@ -39,6 +40,7 @@ export class StepController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:StepEntity = await this.stepService.getOneById<StepEntity>(+req.params.id, ["project", "project.owner"], cleanResDataStepForCheck);
+      if (!result) throw new CustomError("SC-PURC-NOTFIND", 400);
       if (result.project.owner.id !== req.user.userId) throw new CustomError("SC-NO-RIGHTS", 403);
       this.delCache(CacheEnum.STEP, {params: result.id})
       this.delCache(CacheEnum.PROJECT, {params: result.project.id})

@@ -43,6 +43,7 @@ export class TaskController extends GlobalController {
   async getTaskById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:TaskEntity = await this.proceedCache<TaskEntity>(CacheEnum.TASK, async () => await this.taskService.getOneById(+req.params.id, ["category", "owner", "users", "project", "project.users"],cleanResDataTask), {params: req.params.id});
+      if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
       if (result.owner.id !== req.user.userId && !result.project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
       return result;
     });
@@ -51,6 +52,7 @@ export class TaskController extends GlobalController {
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const data = this.__buildRequestForCreation(req.body, req.user.userId)
+      if (!data) throw new CustomError("TC-BUILD-FAILED", 400);
       this.delCache(CacheEnum.STEP, {params: req.body.step})
       this.delCache(CacheEnum.PROJECT_TASKS, {params: req.body.project})
       return await this.taskService.create(data);
@@ -60,6 +62,7 @@ export class TaskController extends GlobalController {
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "category", "step"], cleanResDataTask);
+      if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
       this.delCache(CacheEnum.TASK, {params: result.id})
       this.delCache(CacheEnum.STEP, {params: result.step.id})
       this.delCache(CacheEnum.PROJECT_TASKS, {params: result.project.id})
@@ -70,6 +73,7 @@ export class TaskController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:TaskEntity = await this.taskService.getOneById<TaskEntity>(+req.params.id,["owner", "project", "project.owner", "step"],cleanResDataTaskForDel);
+      if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
       if (result.owner.id !== req.user.userId && result.project.owner.id !== req.user.userId) throw new CustomError("TC-NO-RIGHTS", 403);
       this.delCache(CacheEnum.TASK, {params: result.id})
       this.delCache(CacheEnum.STEP, {params: result.step.id})

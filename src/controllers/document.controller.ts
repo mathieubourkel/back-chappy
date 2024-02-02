@@ -27,6 +27,7 @@ export class DocumentController extends GlobalController {
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.documentService.update(+req.params.id, req.body, ["project"], cleanResDataDocument);
+      if (!result) throw new CustomError("DC-DOCUMENT-NOTFIND", 400);
       this.delCache(CacheEnum.DOCUMENTS, {params: result.project.id})
       this.delCache(CacheEnum.DOCUMENT, {params: result.id})
       return result;
@@ -36,6 +37,7 @@ export class DocumentController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:DocumentEntity = await this.documentService.getOneById<DocumentEntity>(+req.params.id, ["project", "project.owner"], cleanResDataDocumentForDel);
+      if (!result) throw new CustomError("DC-DOCUMENT-NOTFIND", 400);
       if (result.project.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403); 
       this.delCache(CacheEnum.DOCUMENTS, {params: result.project.id})
       this.delCache(CacheEnum.DOCUMENT, {params: result.id})

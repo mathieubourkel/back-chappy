@@ -32,6 +32,7 @@ export class CompanyController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:CompanyEntity = await this.companyService.getOneById<CompanyEntity>(+req.params.id);
+      if (!result) throw new CustomError("CC-COMPANYT-NOTFIND", 400);
       if (result.owner.id !== req.user.userId) throw new CustomError("CC-NO-RIGHTS", 403);
       this.delCache(CacheEnum.COMPANIES)
       return this.companyService.delete(result.id);

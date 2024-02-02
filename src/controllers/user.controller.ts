@@ -4,6 +4,7 @@ import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
 import bcrypt from "bcrypt";
 import { CompanyEntity } from "../entities/company.entity";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class UserController extends GlobalController {
 
@@ -30,6 +31,7 @@ export class UserController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       req.body.password = await this.__hashPassword(req.body.password)
       const result:UserEntity = await this.userService.create(req.body);
+      if (!result) throw new CustomError("UC-FAILED-CREA", 400);
       const datasCompany = {name: req.body.name, siret: req.body.siret, description: req.body.description, owner: result.id}
       if (req.body.name) await this.companyService.create(datasCompany)
       return result; 

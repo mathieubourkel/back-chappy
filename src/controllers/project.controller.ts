@@ -52,6 +52,7 @@ export class ProjectController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
       const data:ProjectEntity = await this.__buildRequestForCreation(req.body, +req.user.userId)
+      if (!data) throw new CustomError("PC-BUILD-FAILED", 400);
       return await this.projectService.create(data);
     });
   }
@@ -61,6 +62,7 @@ export class ProjectController extends GlobalController {
       const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.body.idProject,["users"], lightDataUsersOnProject);
       if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
       const user:UserEntity = await this.userService.getOneById(req.body.idUser);
+      if (!user) throw new CustomError("PC-USRJOIN-NOTFIND", 400);
       project.users.push(user);
       return await this.projectService.update(project.id, project);
     });
@@ -85,6 +87,7 @@ export class ProjectController extends GlobalController {
       const project:ProjectEntity = await this.projectService.getOneBySearchOptions<ProjectEntity>({ code: req.body.code },["users"]);
       if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
       const user:UserEntity = await this.userService.getOneById<UserEntity>(req.user.userId);
+      if (!user) throw new CustomError("PC-JOINUSER-NOTFIND", 400);
       project.users.push(user);
       this.delCache(CacheEnum.PROJECT, {params: project.id})
       return await this.projectService.update(project.id, project);
@@ -94,6 +97,7 @@ export class ProjectController extends GlobalController {
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.projectService.update(+req.params.id, req.body, ["owner"], dataProject);
+      if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
       this.delCache(CacheEnum.PROJECT, {params: result.id})
       return result;
     });
@@ -102,6 +106,7 @@ export class ProjectController extends GlobalController {
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const result:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.id, ["owner"], lightDataUsersOnProject);
+      if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
       if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
       this.delCache(CacheEnum.PROJECT, {params: result.id})
       this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
