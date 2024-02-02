@@ -50,7 +50,7 @@ export class ProjectController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
+      await this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
       const data:ProjectEntity = await this.__buildRequestForCreation(req.body, +req.user.userId)
       if (!data) throw new CustomError("PC-BUILD-FAILED", 400);
       return await this.projectService.create(data);
@@ -64,6 +64,8 @@ export class ProjectController extends GlobalController {
       const user:UserEntity = await this.userService.getOneById(req.body.idUser);
       if (!user) throw new CustomError("PC-USRJOIN-NOTFIND", 400);
       project.users.push(user);
+      await this.delCache(CacheEnum.PROJECT, {params: project.id});
+      await this.delCache(CacheEnum.PROJECT_MEMBERS, {params: project.id});
       return await this.projectService.update(project.id, project);
     });
   }
@@ -78,6 +80,8 @@ export class ProjectController extends GlobalController {
       if (userIndex !== -1) {
         project.users = project.users.filter(u => u.id !== user.id);
       }
+      await this.delCache(CacheEnum.PROJECT, {params: project.id});
+      await this.delCache(CacheEnum.PROJECT_MEMBERS, {params: project.id});
       return await this.projectService.update(project.id, project);
     });
   }
@@ -89,7 +93,7 @@ export class ProjectController extends GlobalController {
       const user:UserEntity = await this.userService.getOneById<UserEntity>(req.user.userId);
       if (!user) throw new CustomError("PC-JOINUSER-NOTFIND", 400);
       project.users.push(user);
-      this.delCache(CacheEnum.PROJECT, {params: project.id})
+      await this.delCache(CacheEnum.PROJECT, {params: project.id})
       return await this.projectService.update(project.id, project);
     });
   }
@@ -98,7 +102,7 @@ export class ProjectController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       const result = await this.projectService.update(+req.params.id, req.body, ["owner"], dataProject);
       if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
-      this.delCache(CacheEnum.PROJECT, {params: result.id})
+      await this.delCache(CacheEnum.PROJECT, {params: result.id})
       return result;
     });
   }
@@ -108,8 +112,8 @@ export class ProjectController extends GlobalController {
       const result:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.id, ["owner"], lightDataUsersOnProject);
       if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
       if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
-      this.delCache(CacheEnum.PROJECT, {params: result.id})
-      this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
+      await this.delCache(CacheEnum.PROJECT, {params: result.id})
+      await this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
       return await this.projectService.delete(result.id);
     });
   }

@@ -28,6 +28,14 @@ export class CreateProjectDto extends ProjectDto {
     owner:number
 }
 
+export class UpdateUsersOnProjectDto {
+
+    id:number
+    @IsArray()
+    @IsNumber({}, {each: true})
+    users:number[]
+}
+
 export const dataProject = {
     description: true,
     id: true,
