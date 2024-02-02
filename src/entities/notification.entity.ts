@@ -13,7 +13,7 @@ export class NotificationEntity {
     @Column({type:"varchar"})
     path: string;
 
-    @Column({type:"date"})
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     sendDate: Date;
 
     @Column({type:"bool", default: false})

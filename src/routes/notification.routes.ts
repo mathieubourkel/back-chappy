@@ -1,5 +1,5 @@
 import { NotificationController } from "../controllers/notification.controller";
-import { CreateNotificationDto, NotificationDto } from "../dto/notification.dto";
+import { CreateNotificationDto } from "../dto/notification.dto";
 
 export const NotificationRoutes = [
     { 
@@ -21,10 +21,8 @@ export const NotificationRoutes = [
         method: "put",
         route: "/api/notification/:id",
         controller: NotificationController,
-        action: "update",
-        middlewares: [{name: 'checkToken'},
-        {name: "dto", classDto: NotificationDto}
-      ]
+        action: "viewNotif",
+        middlewares: [{name: 'checkToken'}]
     },
       { 
         method: "delete",

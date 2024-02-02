@@ -1,6 +1,6 @@
 import { IsArray, IsDateString, IsNumber, IsString, Length } from "class-validator";
 
-export class NotificationDto {
+export class CreateNotificationDto {
     @IsString()
     @Length(1, 150)
     content:string;
@@ -10,9 +10,7 @@ export class NotificationDto {
     @IsDateString()
     sendDate:Date;
     isView:boolean
-}
 
-export class CreateNotificationDto extends NotificationDto {
     @IsArray()
     @IsNumber({}, {each: true})
     receivers: number[]

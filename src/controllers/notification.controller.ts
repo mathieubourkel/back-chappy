@@ -10,7 +10,7 @@ export class NotificationController extends GlobalController {
   async getNotificationsByUser(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { receivers: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.notificationService.getManyBySearchOptions<Array<NotificationEntity>>(searchOptions, ["receivers","sender"]);
+      return this.notificationService.getManyBySearchOptions<Array<NotificationEntity>>(searchOptions, ["receivers"]);
     });
   }
 
@@ -24,7 +24,7 @@ export class NotificationController extends GlobalController {
     });
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async viewNotif(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       return this.notificationService.update(+req.params.id, req.body);
     });
