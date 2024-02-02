@@ -6,13 +6,17 @@ import {
   cleanResDataTask,
   cleanResDataTaskCalendar,
   cleanResDataTaskForDel,
+  lightDataUsersOnTask,
 } from "../dto/task.dto";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { CacheEnum } from "../enums/cache.enum";
+import { UserEntity } from "../entities/user.entity";
+import { ReturningStatementNotSupportedError } from "typeorm";
 
 export class TaskController extends GlobalController {
 
   private taskService = new Service(TaskEntity);
+  private userService = new Service(UserEntity);
 
   async getTasksByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: { id: +req.params.idProject } };
@@ -60,12 +64,31 @@ export class TaskController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "step", "project"], cleanResDataTaskForDel);
-      if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
-      this.delCache(CacheEnum.TASK, {params: result.id})
-      this.delCache(CacheEnum.STEP, {params: result.step.id})
-      this.delCache(CacheEnum.PROJECT_TASKS, {params: result.project.id})
-      return result;
+      const task:TaskEntity = await this.taskService.getOneById(+req.params.id, ["owner", "users", "project", "step"], cleanResDataTask)
+      if (!task) throw new CustomError("TC-TASK-NOTFIND", 400);
+      if (task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId) throw new CustomError("TC-NO-RIGHTS", 403);
+      this.delCache(CacheEnum.TASK, {params: task.id})
+      this.delCache(CacheEnum.STEP, {params: task.step.id})
+      this.delCache(CacheEnum.PROJECT_TASKS, {params: task.project.id})
+      req.body.users = req.body.users.map((elem: number) => {
+        return { id: elem };
+      });
+      return await this.taskService.update(task.id, req.body, ["users"]);
+    });
+  }
+
+  async delUserToTask(req: Request, res: Response, next: NextFunction):Promise<void> {
+    await this.handleGlobal(req, res, next, async () => {
+      const task:TaskEntity = await this.taskService.getOneById<TaskEntity>(+req.body.idTask,["users", "owner", "project", "project.owner"], lightDataUsersOnTask);
+      if (!task) throw new CustomError("TC-DEL-NOTFIND", 400);
+      if(task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId) throw new CustomError("TC-DEL-NOTAUTHORIZED", 403);
+      const user:UserEntity = await this.userService.getOneById(+req.body.idUser);
+      const userIndex = task.users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        task.users = task.users.filter(u => u.id !== user.id);
+      }
+      await this.delCache(CacheEnum.TASK, {params: task.id});
+      return await this.taskService.update(task.id, task);
     });
   }
 

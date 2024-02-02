@@ -19,6 +19,9 @@ export class TaskDto {
     @IsInt()
     @Max(20)
     category:number;
+    @IsArray()
+    @IsNumber({}, {each: true})
+    users:number[];
 }
 
 export class CreateTaskDto extends TaskDto {
@@ -28,10 +31,16 @@ export class CreateTaskDto extends TaskDto {
     @IsInt()
     @Min(1)
     step:number;
-    @IsArray()
-    @IsNumber({}, {each: true})
-    users:number[];
     owner:number;
+}
+
+export class ManageUserTaskDto {
+    @IsInt()
+    @Min(1)
+    idTask:number;
+    @IsInt()
+    @Min(1)
+    idUser:number;
 }
 
 export const cleanResDataTask = {
@@ -46,14 +55,15 @@ export const cleanResDataTask = {
     users: {id: true, email: true},
     category: true,
     step: {id: true},
-    project: {id:true, users: {id: true}}
+    project: {id:true}
   }
 
   export const cleanResDataTaskForDel = {
     id: true,
     owner: {id: true},
     project: {id: true, owner: {id: true}},
-    step: {id: true}
+    step: {id: true},
+    users: {id: true}
   }
 
   export const cleanResDataTaskCalendar = {
@@ -68,4 +78,11 @@ export const cleanResDataTask = {
     category: true,
     step: {id: true, name: true},
     project: { id: true, owner: {id: true}, users: {id: true}}
+  }
+
+  export const lightDataUsersOnTask = {
+    id: true,
+    users: {id: true},
+    owner: {id: true},
+    project: { id: true, owner: {id: true}}
   }

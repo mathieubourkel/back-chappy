@@ -1,5 +1,5 @@
 import { TaskController } from "../controllers/task.controller";
-import { CreateTaskDto, TaskDto } from "../dto/task.dto";
+import { CreateTaskDto, ManageUserTaskDto, TaskDto } from "../dto/task.dto";
 
 export const TaskRoutes = [
     { 
@@ -50,6 +50,14 @@ export const TaskRoutes = [
         action: "update",
         middlewares: [{name: 'checkToken'},
         {name: "dto", classDto: TaskDto}]
+      },
+      { 
+        method: "put",
+        route: "/api/task/user/delete",
+        controller: TaskController,
+        action: "delUserToTask",
+        middlewares: [{name: 'checkToken'},
+        {name: "dto", classDto: ManageUserTaskDto}]
       },
       { 
         method: "post",
