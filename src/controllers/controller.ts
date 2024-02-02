@@ -47,9 +47,9 @@ export abstract class GlobalController {
 
   async delCache(name: CacheEnum, query?: QueryInterface) {
     try {
-      (await this.startCache()).del(this.BuildCacheKeyName(name, query));
+      await (await this.startCache()).del(this.BuildCacheKeyName(name, query));
     } catch (error) {
-      Promise.reject(error);
+      await Promise.reject(error);
     }
   }
 
@@ -71,7 +71,7 @@ export abstract class GlobalController {
         ).set(this.BuildCacheKeyName(name, query), JSON.stringify(datas));
       return datas as T;
     } catch (error) {
-      Promise.reject(error);
+      await Promise.reject(error);
     }
   }
 }
