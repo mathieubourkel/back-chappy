@@ -17,7 +17,7 @@ export class TaskController extends GlobalController {
   async getTasksByIdProject(req: Request, res: Response, next: NextFunction) {
     const searchOptions = { project: { id: +req.params.idProject } };
     await this.handleGlobal(req, res, next, async () => {
-      const result:Array<TaskEntity> = await this.proceedCache<Array<TaskEntity>>(CacheEnum.TASKS, async () => await this.taskService.getManyBySearchOptions(searchOptions, ["project","category","users","step", "project.owner", "project.users"],cleanResDataTaskCalendar), {params: req.params.idProject});
+      const result:Array<TaskEntity> = await this.proceedCache<Array<TaskEntity>>(CacheEnum.TASKS, async () => await this.taskService.getManyBySearchOptions(searchOptions, ["project","users","step", "project.owner", "project.users"],cleanResDataTaskCalendar), {params: req.params.idProject});
       if (!result) throw new CustomError("TC-NO-EXIST", 404)
       if (result.length === 0) return result;
       if (result[0].project.owner.id !== req.user.userId && !result[0].project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
@@ -41,7 +41,7 @@ export class TaskController extends GlobalController {
 
   async getTaskById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result:TaskEntity = await this.proceedCache<TaskEntity>(CacheEnum.TASK, async () => await this.taskService.getOneById(+req.params.id, ["category", "owner", "users", "project", "project.users"],cleanResDataTask), {params: req.params.id});
+      const result:TaskEntity = await this.proceedCache<TaskEntity>(CacheEnum.TASK, async () => await this.taskService.getOneById(+req.params.id, ["owner", "users", "project", "project.users"],cleanResDataTask), {params: req.params.id});
       if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
       if (result.owner.id !== req.user.userId && !result.project.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
       return result;
@@ -60,7 +60,7 @@ export class TaskController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "category", "step"], cleanResDataTask);
+      const result = await this.taskService.update(+req.params.id, req.body, ["owner", "users", "step", "project"], cleanResDataTaskForDel);
       if (!result) throw new CustomError("TC-TASK-NOTFIND", 400);
       this.delCache(CacheEnum.TASK, {params: result.id})
       this.delCache(CacheEnum.STEP, {params: result.step.id})

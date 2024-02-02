@@ -17,7 +17,7 @@ export class TaskDto {
     @IsDateString()
     endDate:Date;
     @IsInt()
-    @Min(1)
+    @Max(20)
     category:number;
 }
 
@@ -44,7 +44,7 @@ export const cleanResDataTask = {
     startDate: true,
     owner: {id: true},
     users: {id: true, email: true},
-    category: {id:true, name: true},
+    category: true,
     step: {id: true},
     project: {id:true, users: {id: true}}
   }
@@ -65,7 +65,7 @@ export const cleanResDataTask = {
     endDate: true,
     startDate: true,
     users: {id: true, email: true},
-    category: {id:true, name: true},
+    category: true,
     step: {id: true, name: true},
     project: { id: true, owner: {id: true}, users: {id: true}}
   }

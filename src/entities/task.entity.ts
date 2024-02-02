@@ -2,8 +2,8 @@ import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColum
 import { StatusEnum } from "../enums/status.enum";
 import { UserEntity } from "./user.entity";
 import { StepEntity } from "./step.entity";
-import { CategoryEntity } from "./category.entity";
 import { ProjectEntity } from "./project.entity";
+import { CategoriesEnum } from "../enums/categories.enum";
 
 @Entity({name:"task"})
 export class TaskEntity {
@@ -26,6 +26,9 @@ export class TaskEntity {
     @Column({type:"date"})
     startDate: Date;
 
+    @Column({type:"enum", enum:CategoriesEnum, default:CategoriesEnum.PLOMBERIE})
+    category: CategoriesEnum
+
     @Column({type:"date"})
     endDate: Date;
 
@@ -36,5 +39,4 @@ export class TaskEntity {
     @ManyToOne (() => StepEntity, step => step.tasks, { onDelete: "CASCADE" }) step:StepEntity;
     @ManyToOne (() => ProjectEntity, project => project.tasks, { onDelete: "CASCADE" }) project:ProjectEntity;
     @ManyToOne (() => UserEntity, owner => owner.myOwnTasks) owner:UserEntity;
-    @ManyToOne (() => CategoryEntity, category => category.tasks) category:CategoryEntity;
 }

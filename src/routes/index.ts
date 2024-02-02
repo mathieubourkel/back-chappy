@@ -9,7 +9,6 @@ import { AuthRoutes } from "./auth.routes";
 import { StepRoutes } from "./step.routes";
 import { ProjectRoutes } from "./project.routes";
 import { TaskRoutes } from "./task.routes";
-import { CategoryRoutes } from "./category.routes";
 import { CommentRoutes } from "./comment.routes";
 import { DocumentRoutes } from "./document.routes";
 import { NotificationRoutes } from "./notification.routes";
@@ -22,7 +21,6 @@ export class Routes {
     constructor() {
         this.routes = [
             ...AuthRoutes,
-            ...CategoryRoutes,
             ...CommentRoutes,
             ...DocumentRoutes,
             ...NotificationRoutes,
