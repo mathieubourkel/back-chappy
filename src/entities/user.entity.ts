@@ -6,7 +6,6 @@ import { UserRoleEnum } from "../enums/user.role.enum";
 import { CompanyEntity } from "./company.entity";
 import { CategoryEntity } from "./category.entity";
 import { CommentEntity } from "./comment.entity";
-import { NotificationEntity } from "./notification.entity";
 
 @Entity({name:"user"})
 export class UserEntity {
@@ -56,7 +55,6 @@ export class UserEntity {
     participations: ProjectEntity[];
 
     @OneToMany (() => CommentEntity, comment => comment.author) comments:CommentEntity[];
-    @OneToMany (() => NotificationEntity, notification => notification.sender) mySentNotifications: NotificationEntity[]
     @OneToMany (() => CategoryEntity, category => category.user) myCreateCategories: CategoryEntity[];
     @OneToMany (() => TaskEntity, task => task.owner) myOwnTasks: TaskEntity[];
 }

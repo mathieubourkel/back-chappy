@@ -13,16 +13,13 @@ export class NotificationEntity {
     @Column({type:"varchar"})
     path: string;
 
-    @Column({type:"int"})
-    timestamp: number;
+    @Column({type:"date"})
+    sendDate: Date;
 
-    @Column({type:"bool"})
+    @Column({type:"bool", default: false})
     isView: boolean;
 
     @ManyToMany (() => UserEntity, {cascade: true})
     @JoinTable()
     receivers: UserEntity[]
-
-    @ManyToOne (() => UserEntity, sender => sender.mySentNotifications) sender:UserEntity;
-
 }

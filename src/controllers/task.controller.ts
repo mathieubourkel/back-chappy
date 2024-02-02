@@ -7,7 +7,6 @@ import {
   cleanResDataTaskCalendar,
   cleanResDataTaskForDel,
 } from "../dto/task.dto";
-import { redis } from "..";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { CacheEnum } from "../enums/cache.enum";
 

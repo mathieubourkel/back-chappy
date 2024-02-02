@@ -1,10 +1,10 @@
 import { NotificationController } from "../controllers/notification.controller";
-import { CreateNotificationDto } from "../dto/notification.dto";
+import { CreateNotificationDto, NotificationDto } from "../dto/notification.dto";
 
 export const NotificationRoutes = [
     { 
         method: "get",
-        route: "/api/notifications/:idUser",
+        route: "/api/notifications",
         controller: NotificationController,
         action: "getNotificationsByUser",
         middlewares: [{name: 'checkToken'}]
@@ -17,6 +17,15 @@ export const NotificationRoutes = [
         middlewares: [{name: 'checkToken'},
         {name: "dto", classDto: CreateNotificationDto}]
       },
+      { 
+        method: "put",
+        route: "/api/notification/:id",
+        controller: NotificationController,
+        action: "update",
+        middlewares: [{name: 'checkToken'},
+        {name: "dto", classDto: NotificationDto}
+      ]
+    },
       { 
         method: "delete",
         route: "/api/notification/:id",

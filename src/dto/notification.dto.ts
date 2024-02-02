@@ -1,24 +1,19 @@
-import { IsBoolean, IsString, Length } from "class-validator";
+import { IsArray, IsDateString, IsNumber, IsString, Length } from "class-validator";
 
-export class CreateNotificationDto {
+export class NotificationDto {
     @IsString()
     @Length(1, 150)
     content:string;
     @IsString()
     @Length(1, 150)
     path:string;
-    @IsBoolean()
+    @IsDateString()
+    sendDate:Date;
     isView:boolean
-    timestamp:Date;
 }
 
-export const cleanResDataPurchases = {
-    ref: true,
-    id: true,
-    name: true,
-    status: true,
-    price: true,
-    commandDate: true,
-    deliveryDate: true,
-    project: {id:true, users: {id: true}, owner: {id: true}}
-  }
+export class CreateNotificationDto extends NotificationDto {
+    @IsArray()
+    @IsNumber({}, {each: true})
+    receivers: number[]
+}
