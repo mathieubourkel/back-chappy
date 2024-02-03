@@ -21,13 +21,7 @@ export class CreateCommentDto {
     @IsInt()
     @Min(1)
     idParent:number;
-
     author:number;
-
-    @IsInt()
-    @Min(1)
-    idProject:number;
-
 }
 
 export class ModifyCommentDto {
@@ -38,3 +32,12 @@ export class ModifyCommentDto {
     content:string;
 
 }
+
+export const dataComment = {
+    content: true,
+    id: true,
+    author: {id: true, firstname: true, email: true, lastname: true},
+    idParent: true,
+    table: true,
+  }
+

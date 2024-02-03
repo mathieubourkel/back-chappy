@@ -20,7 +20,6 @@ export class TaskDto {
     @Max(20)
     category:number;
     @IsArray()
-    @IsNumber({}, {each: true})
     users:number[];
 }
 
@@ -55,7 +54,7 @@ export const cleanResDataTask = {
     users: {id: true, email: true},
     category: true,
     step: {id: true},
-    project: {id:true}
+    project: {id:true, owner: {id:true}}
   }
 
   export const cleanResDataTaskForDel = {

@@ -11,7 +11,6 @@ import {
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { CacheEnum } from "../enums/cache.enum";
 import { UserEntity } from "../entities/user.entity";
-import { ReturningStatementNotSupportedError } from "typeorm";
 
 export class TaskController extends GlobalController {
 
@@ -54,25 +53,22 @@ export class TaskController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const data = this.__buildRequestForCreation(req.body, req.user.userId)
-      if (!data) throw new CustomError("TC-BUILD-FAILED", 400);
+      req.body.owner = req.user.userId
       this.delCache(CacheEnum.STEP, {params: req.body.step})
       this.delCache(CacheEnum.PROJECT_TASKS, {params: req.body.project})
-      return await this.taskService.create(data);
+      return await this.taskService.create(req.body);
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const task:TaskEntity = await this.taskService.getOneById(+req.params.id, ["owner", "users", "project", "step"], cleanResDataTask)
+      const task:TaskEntity = await this.taskService.getOneById(+req.params.id, ["owner", "users", "project", "step", "project.owner"], cleanResDataTask)
       if (!task) throw new CustomError("TC-TASK-NOTFIND", 400);
-      if (task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId) throw new CustomError("TC-NO-RIGHTS", 403);
+      console.log(task)
+      if (task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId && !task.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-NO-RIGHTS", 403);
       this.delCache(CacheEnum.TASK, {params: task.id})
       this.delCache(CacheEnum.STEP, {params: task.step.id})
       this.delCache(CacheEnum.PROJECT_TASKS, {params: task.project.id})
-      req.body.users = req.body.users.map((elem: number) => {
-        return { id: elem };
-      });
       return await this.taskService.update(task.id, req.body, ["users"]);
     });
   }
@@ -81,7 +77,7 @@ export class TaskController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       const task:TaskEntity = await this.taskService.getOneById<TaskEntity>(+req.body.idTask,["users", "owner", "project", "project.owner"], lightDataUsersOnTask);
       if (!task) throw new CustomError("TC-DEL-NOTFIND", 400);
-      if(task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId) throw new CustomError("TC-DEL-NOTAUTHORIZED", 403);
+      if(task.owner.id !== req.user.userId && task.project.owner.id !== req.user.userId && !task.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("TC-DEL-NOTAUTHORIZED", 403);
       const user:UserEntity = await this.userService.getOneById(+req.body.idUser);
       const userIndex = task.users.findIndex(u => u.id === user.id);
       if (userIndex !== -1) {
@@ -102,14 +98,6 @@ export class TaskController extends GlobalController {
       this.delCache(CacheEnum.PROJECT_TASKS, {params: result.project.id})
       return await this.taskService.delete(result.id);
     });
-  }
-
-  private __buildRequestForCreation(body, userId:number){
-    body.users = body.users.map((elem: number) => {
-      return { id: elem };
-    });
-    body.owner = userId;
-    return body
   }
 }
 
