@@ -24,6 +24,7 @@ export abstract class GlobalController {
             : HttpMessagesUtils[status || 200],
       });
     } catch (error) {
+      console.log(error)
       next(error);
     }
   }

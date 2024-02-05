@@ -27,3 +27,8 @@ export class CompanyEntity {
     owner: UserEntity
 
 }
+
+export const resDataCompanyClean = {
+    id: true,
+    owner: {id: true}
+}

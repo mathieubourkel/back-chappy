@@ -48,11 +48,30 @@ export class UserController extends GlobalController {
     });
   }
 
+  async companyRejoin(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      return this.userService.update(+req.user.userId, {company: +req.body.id},['company']);
+    });
+  }
+
   async resetPwd(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       const user:UserEntity = await this.userService.getOneBySearchOptions({email: req.body.email}, [], {id: true, password: true})
       if (!user) throw new CustomError("UC-USER-NOTFIND", 400);
-      return this.userService.update(user.id, req.body.password);
+      const isPasswordMatched:boolean = await this.__decryptPassword(req.body.oldPassword, user.password);
+      if (!isPasswordMatched) throw new CustomError("AUTH-C", 401, "Bad Credentials");
+      req.body.newPassword = await this.__hashPassword(req.body.newPassword)
+      return this.userService.update(user.id, {password: req.body.newPassword});
+    });
+  }
+
+  
+  async quitCompany(req: Request, res: Response, next: NextFunction):Promise<void> {
+    await this.handleGlobal(req, res, next, async () => {
+      const user:UserEntity = await this.userService.getOneById<UserEntity>(+req.user.userId,["company"]);
+      if (!user) throw new CustomError("UC-DEL-NOTFIND", 400);
+      user.company.id = null
+      return await this.userService.update(user.id, user, ["company"]);
     });
   }
 
@@ -60,5 +79,9 @@ export class UserController extends GlobalController {
     await this.handleGlobal(req, res, next, async () => {
       return this.userService.delete(+req.params.id);
     });
+  }
+
+  private async __decryptPassword(inputFromRequest: string, passwordFromUserBDD: string):Promise<boolean> {
+    return await bcrypt.compare(inputFromRequest, passwordFromUserBDD);
   }
 }

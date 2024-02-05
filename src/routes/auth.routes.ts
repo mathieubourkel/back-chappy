@@ -3,7 +3,7 @@ import { CompanyController } from "../controllers/company.controller";
 import { UserController } from "../controllers/user.controller";
 import { LoginDto } from "../dto/auth.dto";
 import { CompanyDto } from "../dto/company.dto";
-import { CreateUserDto, CreateUserWithCompany, ResetPwd } from "../dto/user.dto";
+import { CreateUserDto, CreateUserWithCompany, RejoinCompany, ResetPwd } from "../dto/user.dto";
 
 export const AuthRoutes = [ 
 { 
@@ -28,11 +28,26 @@ export const AuthRoutes = [
     middlewares: [{name: 'dto', classDto: CreateUserDto}]
   },
   { 
-    method: "post",
+    method: "put",
     route: "/auth/resetPwd",
     controller: UserController,
     action: "resetPwd",
     middlewares: [{name: 'dto', classDto: ResetPwd}]
+  },
+  { 
+    method: "put",
+    route: "/api/user/rejoinCompany",
+    controller: UserController,
+    action: "companyRejoin",
+    middlewares: [{name: 'checkToken'},
+    {name: 'dto', classDto: RejoinCompany}]
+  },
+  { 
+    method: "put",
+    route: "/api/user/quitCompany",
+    controller: UserController,
+    action: "quitCompany",
+    middlewares: [{name: 'checkToken'}]
   },
   { 
     method: "post",
@@ -40,13 +55,6 @@ export const AuthRoutes = [
     controller: UserController,
     action: "create",
     middlewares: [{name: 'dto', classDto: CreateUserWithCompany}]
-  },
-  { 
-    method: "post",
-    route: "/auth/company/register",
-    controller: CompanyController,
-    action: "create",
-    middlewares: [{name: 'dto', classDto: CompanyDto}]
   },
   { 
     method: "get",
@@ -89,6 +97,14 @@ export const AuthRoutes = [
     action: "getAll",
     middlewares: [{name: 'checkToken'}]
   },
+  { 
+    method: "post",
+    route: "/api/company",
+    controller: CompanyController,
+    action: "createWhenLogged",
+    middlewares: [{name: 'checkToken'},
+    {name:'dto', classDto: CompanyDto}]
+  }, 
   
   { 
     method: "put",
