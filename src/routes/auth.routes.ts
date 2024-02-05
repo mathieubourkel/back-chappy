@@ -3,7 +3,7 @@ import { CompanyController } from "../controllers/company.controller";
 import { UserController } from "../controllers/user.controller";
 import { LoginDto } from "../dto/auth.dto";
 import { CompanyDto } from "../dto/company.dto";
-import { CreateUserDto, CreateUserWithCompany } from "../dto/user.dto";
+import { CreateUserDto, CreateUserWithCompany, ResetPwd } from "../dto/user.dto";
 
 export const AuthRoutes = [ 
 { 
@@ -26,6 +26,13 @@ export const AuthRoutes = [
     controller: UserController,
     action: "create",
     middlewares: [{name: 'dto', classDto: CreateUserDto}]
+  },
+  { 
+    method: "post",
+    route: "/auth/resetPwd",
+    controller: UserController,
+    action: "resetPwd",
+    middlewares: [{name: 'dto', classDto: ResetPwd}]
   },
   { 
     method: "post",
@@ -59,7 +66,7 @@ export const AuthRoutes = [
 
   { 
     method: "put",
-    route: "/api/user/:id",
+    route: "/api/user",
     controller: UserController,
     action: "update",
     middlewares: [{name: 'checkToken'},

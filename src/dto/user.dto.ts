@@ -53,3 +53,14 @@ export class CreateUserWithCompany extends CreateUserDto {
     description: string
     owner:number
 }
+
+export class ResetPwd {
+    @IsString()
+    @IsNotEmpty()
+   // @Length(12, 30)
+    oldPassword: string
+    @IsString()
+    @IsNotEmpty()
+   // @Length(12, 30)
+    newPassword: string
+}

@@ -3,16 +3,10 @@ import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "./data-source";
 import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
-import { createClient } from "redis";
 
 const app = express();
 const routeClass = new Routes()
 routeClass.applyGlobalMiddleware(app);
-
-export const redis = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` });
-(async () => {
-    await redis.connect();
-})();
 
 AppDataSource.initialize()
   .then(async () => {
@@ -33,10 +27,7 @@ AppDataSource.initialize()
     })
     await routeClass.applyGlobalErrorMiddleware(app)
   })
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("Unable to start DB", error));
 
-// CONF ECOUTE
 app.listen(process.env.VITE_BACK_PORT);
-console.log(
-  `${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`
-);
+console.log(`${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`);

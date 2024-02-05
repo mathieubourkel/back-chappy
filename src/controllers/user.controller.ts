@@ -29,6 +29,8 @@ export class UserController extends GlobalController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
+      const user = await this.userService.getOneBySearchOptions({email: req.body.email}, [], {id: true});
+      if (user) throw new CustomError("UC-ALRDY-EXIST", 400);
       req.body.password = await this.__hashPassword(req.body.password)
       const result:UserEntity = await this.userService.create(req.body);
       if (!result) throw new CustomError("UC-FAILED-CREA", 400);
@@ -40,7 +42,17 @@ export class UserController extends GlobalController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.userService.update(+req.params.id, req.body);
+      const user:UserEntity = await this.userService.getOneById(req.user.userId, [], {id: true})
+      if (!user) throw new CustomError("UC-USER-NOTFIND", 400);
+      return this.userService.update(user.id, req.body);
+    });
+  }
+
+  async resetPwd(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      const user:UserEntity = await this.userService.getOneBySearchOptions({email: req.body.email}, [], {id: true, password: true})
+      if (!user) throw new CustomError("UC-USER-NOTFIND", 400);
+      return this.userService.update(user.id, req.body.password);
     });
   }
 

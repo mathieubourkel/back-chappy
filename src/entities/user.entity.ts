@@ -27,8 +27,8 @@ export class UserEntity {
     @Column({type: "varchar"})
     address: string
 
-    @Column({type:"int"})
-    zip: number;
+    @Column({type:"varchar"})
+    zip: string;
 
     @Column({type:"varchar"})
     city: string;
