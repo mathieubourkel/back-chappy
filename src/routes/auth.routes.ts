@@ -90,6 +90,13 @@ export const AuthRoutes = [
 
   // COMPANY
 
+  {
+    method: "post",
+    route: "auth/register/compny",
+    controller: CompanyController,
+    action: "create",
+    middlewares: [{name: "dto", classDto:CompanyDto }]
+  },
   { 
     method: "get",
     route: "/api/companies",

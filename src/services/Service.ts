@@ -1,5 +1,5 @@
 import { EntityTarget, Repository } from "typeorm";
-import { AppDataSource } from "../data-source";
+import { dataBaseSource } from "../data-source";
 import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class Service {
@@ -7,7 +7,7 @@ export class Service {
   private repository:Repository<any>;
   
   constructor(entity:EntityTarget<any>){
-    this.repository = AppDataSource.getRepository(entity);
+    this.repository = dataBaseSource.getRepository(entity);
   }
 
   private async handleService<T>(name: string, callback: () => Promise<T>): Promise<T> {

@@ -31,9 +31,13 @@ export class Routes {
         ]
     }
 
+    // methode qui configure les middleware
     applyGlobalMiddleware(app) {
+        // middleware qui analyse des les corps des requestes enformat JSON
         app.use(bodyParser.json());
+        // celui ci analyse les cookies attaché a l'objet de requête du client
         app.use(cookieParser());
+        // celui ci active le partage de ressources entre origines
         app.use(cors(corsOptions));
     }
 
