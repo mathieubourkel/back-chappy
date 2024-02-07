@@ -8,50 +8,64 @@ import { UserEntity } from "../entities/user.entity";
 import { CompanyService } from "../services/CompanyService";
 import { CompanyDto } from "../dto/company.dto";
 
-export class CompanyController extends GlobalController {
-
+export class CompanyController {
   private companyService: CompanyService;
 
   constructor() {
-    super();
     this.companyService = new CompanyService();
   }
 
-  async create(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const companyDto: CompanyDto = req.body;
-      const newCompany = await this.companyService.create(companyDto)
-      res.status(201).json(newCompany)
+      const newCompany = await this.companyService.create(companyDto);
+      res.status(201).json(newCompany);
     } catch (error) {
       console.error("Erreur lors de la création de l'entreprise:", error);
       next();
     }
-  };
+  }
 
-   async update(req: Request, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
-      
       const companyDto: CompanyDto = req.body;
-      const updateCompany = await this.companyService.update(+req.params.id, companyDto)
+      const updateCompany = await this.companyService.update(
+        +req.params.id,
+        companyDto
+      );
       const response = {
         message: "Modification apporté avec succès",
-        company: updateCompany
-      }
-      res.status(201).json(response)
+        company: updateCompany,
+      };
+      res.status(201).json(response);
     } catch (error) {
       console.error("Erreur lors de la modification de l'entreprise:", error);
       next();
     }
   }
 
+  async getAllCompanies(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const companies = await this.companyService.getAll();
+      console.log(companies)
+      return {
+        data: { companies },
+        message: "Voici toutes les entreprises enregistrées à ce jour",
+        date: new Date(),
+      };
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération de toutes les entreprises :",
+        error
+      );
+      res
+        .status(500)
+        .json({
+          message: "Échec de la récupération de toutes les entreprises",
+        });
+    }
+  }
 
-  // await this.handleGlobal(req, res, next, async () => {
-  //   return this.companyService.update(+req.params.id, req.body);
-  // });
   // private userService = new Service(UserEntity)
 
   // async getAll(req: Request, res: Response, next: NextFunction) {
@@ -59,8 +73,6 @@ export class CompanyController extends GlobalController {
   //     return await this.proceedCache<Array<CompanyEntity>>(CacheEnum.COMPANIES, async () => await this.companyService.getAll<Array<CompanyEntity>>());
   //   });
   // }
-
- 
 
   // async createWhenLogged(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
@@ -73,8 +85,6 @@ export class CompanyController extends GlobalController {
   //   });
   // }
 
- 
-
   // async delete(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
   //     const result:CompanyEntity = await this.companyService.getOneById<CompanyEntity>(+req.params.id, ["owner"], resDataCompanyClean);
@@ -84,5 +94,4 @@ export class CompanyController extends GlobalController {
   //     return this.companyService.delete(result.id);
   //   });
   // }
-    
 }

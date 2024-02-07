@@ -26,7 +26,6 @@ export class CompanyService {
     }): Promise<CompanyEntity> {
         try {
             const companyUpdate = await this.companyRepository.findOne({ where: { id }});
-            // problème a voir la gestion d'erreur de route bloque mon message d'erreur
             if (!companyUpdate) {
                 throw new Error("Company not found");
             }
@@ -39,5 +38,15 @@ export class CompanyService {
             console.log("error", error)
             throw new Error(error)
         }
+        };
+
+        async getAll(): Promise<CompanyEntity[]> {
+            try {
+                const company = await this.companyRepository.find();
+                return company;
+            } catch (error) {
+                console.error("Erreur lors de la récupération de toutes les entreprises :", error);
+                throw new Error("Échec de la récupération de toutes les entreprises");
+            }
         };
 };

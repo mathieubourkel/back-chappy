@@ -109,8 +109,8 @@ export const AuthRoutes = [
     method: "get",
     route: "/api/companies",
     controller: CompanyController,
-    action: "getAll",
-    middlewares: [{name: 'checkToken'}]
+    action: "getAllCompanies",
+    // middlewares: [{name: 'checkToken'}]
   },
   { 
     method: "post",
