@@ -24,14 +24,34 @@ export class CompanyController extends GlobalController {
   ) {
     try {
       const companyDto: CompanyDto = req.body;
-      const newCompny = await this.companyService.create(companyDto)
-      res.status(201).json(newCompny)
+      const newCompany = await this.companyService.create(companyDto)
+      res.status(201).json(newCompany)
     } catch (error) {
       console.error("Erreur lors de la création de l'entreprise:", error);
       next();
     }
   };
 
+   async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      
+      const companyDto: CompanyDto = req.body;
+      const updateCompany = await this.companyService.update(+req.params.id, companyDto)
+      const response = {
+        message: "Modification apporté avec succès",
+        company: updateCompany
+      }
+      res.status(201).json(response)
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'entreprise:", error);
+      next();
+    }
+  }
+
+
+  // await this.handleGlobal(req, res, next, async () => {
+  //   return this.companyService.update(+req.params.id, req.body);
+  // });
   // private userService = new Service(UserEntity)
 
   // async getAll(req: Request, res: Response, next: NextFunction) {
@@ -53,11 +73,7 @@ export class CompanyController extends GlobalController {
   //   });
   // }
 
-  // async update(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return this.companyService.update(+req.params.id, req.body);
-  //   });
-  // }
+ 
 
   // async delete(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
