@@ -92,7 +92,7 @@ export const AuthRoutes = [
 
   {
     method: "post",
-    route: "auth/register/compny",
+    route: "/auth/company/register",
     controller: CompanyController,
     action: "create",
     middlewares: [{name: "dto", classDto:CompanyDto }]
