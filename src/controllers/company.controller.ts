@@ -64,15 +64,24 @@ export class CompanyController {
           message: "Échec de la récupération de toutes les entreprises",
         });
     }
+  };
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
+    try {
+      const deletedCompany = await this.companyService.delete(parseInt(id));
+      if (!deletedCompany) {
+        res.status(404).json({ message: `L'entreprise avec l'ID ${id} n'a pas été trouvée.` });
+        return;
+      }
+      res.json({ message: 'L\'entreprise a été supprimée avec succès.', deletedCompany});
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'entreprise :', error);
+      res.status(500).json({ message: 'Échec de la suppression de l\'entreprise.' });
+    }
   }
 
   // private userService = new Service(UserEntity)
-
-  // async getAll(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return await this.proceedCache<Array<CompanyEntity>>(CacheEnum.COMPANIES, async () => await this.companyService.getAll<Array<CompanyEntity>>());
-  //   });
-  // }
 
   // async createWhenLogged(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
