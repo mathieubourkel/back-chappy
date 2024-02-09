@@ -9,7 +9,8 @@ build-prod:
   before_script:
     - docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" 
   script:
-    - docker build --target=production -t $CI_REGISTRY_IMAGE:prod  .
-    - docker push $CI_REGISTRY_IMAGE:prod
+    - echo $TAG_PROD
+    - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
+    - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
   rules:
   - when: manual
