@@ -31,3 +31,4 @@ AppDataSource.initialize()
 
 app.listen(process.env.VITE_BACK_PORT);
 console.log(`${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`);
+console.log("variables:", process.env.MYSQL_DATABASE, process.env.FRONT_HOST, process.env.REDIS_PORT, process.env.VITE_BACK_HOST)
