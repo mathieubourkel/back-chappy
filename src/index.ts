@@ -1,42 +1,34 @@
 import express from "express";
-import { Routes } from "./routes";
-import { Request, Response } from "express";
-import * as bodyParser from "body-parser";
-import { dataBaseSource } from "./data-source";
-import { errorHandler } from "./middlewares/ErrorHandler";
-import { CustomError } from "./utils/CustomError";
-
+import { Request, Response, NextFunction } from "express";
+import { AppDataSource } from "./data-source";
+import { Routes } from "./routes/";
+import { applyMiddlewares } from "./middlewares/manage.middlewares";
 
 const app = express();
-app.use(bodyParser.json());
+const routeClass = new Routes()
+routeClass.applyGlobalMiddleware(app);
 
-dataBaseSource.AppDataSource.initialize()
+AppDataSource.initialize()
   .then(async () => {
-    Routes.forEach((_route) => {
-      const { method, route, action, controller } = _route;
+    routeClass.routes.forEach((objRoute) => {
+      const { method, route, action, controller} = objRoute;
       (app as any)[method](
         route,
-        (req: Request, res: Response, next: Function) => {
-          const result = new (controller as any)()[action](req, res, next);
-          if (result instanceof Promise) {
-            result.then((result) =>
-              result !== null && result !== undefined
-                ? res.send(result)
-                : undefined
-            );
-          } else if (result !== null && result !== undefined) {
-            res.json(result);
-          }
-        }
+
+        async (req: Request, res: Response, next: NextFunction ) => {
+          await applyMiddlewares(req, res, next, objRoute)
+        },
+
+        async (req: Request, res: Response, next: NextFunction ) => {
+          new (controller as any)()[action](req, res, next);
+        },
+
       );
-    });
-    // middleware gestion des erreurs
-    app.use((err: CustomError, req: Request, res: Response, next: Function) => {
-      errorHandler(err, res);
-    });
+    })
+    await routeClass.applyGlobalErrorMiddleware(app)
   })
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("Unable to start DB", error));
 
-app.listen(3000);
-
-console.log("express runing");
+app.listen(process.env.VITE_BACK_PORT);
+console.log(`${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`);
+console.log("variables:", process.env.MYSQL_DATABASE, process.env.FRONT_HOST, process.env.REDIS_PORT, process.env.VITE_BACK_HOST)

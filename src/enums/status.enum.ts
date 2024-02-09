@@ -1,6 +1,10 @@
-export enum Status {
-    inprogress = 'En cours',
-    pending = 'En attente',
-    done = 'Terminé',
-  }
+export enum StatusEnum {
+  IN_PROGRESS, // en cours
+  HOLD, // en attente
+  DONE // terminé
+}
+
+
+
+
   

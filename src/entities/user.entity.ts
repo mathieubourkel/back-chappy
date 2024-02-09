@@ -1,15 +1,13 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { UserStatus } from "../enums/user.status.enum";
-import { Task } from "./task.entity";
-import { UserRole } from "../enums/user.role.enum";
-import { Company } from "./company.entity";
-import { Category } from "./category.entity";
-import { Comment } from "./comment.entity";
-import { Notification } from "./notification.entity";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ProjectEntity } from "./project.entity";
+import { UserStatusEnum } from "../enums/user.status.enum";
+import { TaskEntity } from "./task.entity";
+import { UserRoleEnum } from "../enums/user.role.enum";
+import { CompanyEntity } from "./company.entity";
+import { CommentEntity } from "./comment.entity";
 
-@Entity()
-export class User {
+@Entity({name:"user"})
+export class UserEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -21,10 +19,16 @@ export class User {
     lastname: string;
 
     @Column({type:"varchar"})
+    email: string;
+
+    @Column({type:"varchar"})
     password: string;
 
-    @Column({type:"int"})
-    zip: number;
+    @Column({type: "varchar"})
+    address: string
+
+    @Column({type:"varchar"})
+    zip: string;
 
     @Column({type:"varchar"})
     city: string;
@@ -32,18 +36,23 @@ export class User {
     @Column({type:"varchar"})
     phone: string;
 
-    @Column({type:"enum", enum: UserStatus})
-    status: UserStatus;
+    @Column({type:"enum", enum: UserStatusEnum, default: UserStatusEnum.PENDING})
+    status: UserStatusEnum;
 
-    @Column({type:"enum", enum: UserRole})
-    role: UserRole;
+    @Column({type:"enum", enum: UserRoleEnum, default: UserRoleEnum.USER})
+    role: UserRoleEnum;
 
-    @ManyToOne (() => Company, company => company.users) company: Company;
-    @OneToOne  (() => Company, company => company.owner) myCompany: Company
+    @Column({type:"text", nullable: true})
+    refreshToken: string;
 
-    @OneToMany (() => Project, project => project.owner) projects:Project[];
-    @OneToMany (() => Comment, comment => comment.author) comments:Comment[];
-    @OneToMany (() => Notification, notification => notification.sender) mySentNotifications: Notification[]
-    @OneToMany (() => Category, category => category.user) myCreateCategories: Category[];
-    @OneToMany (() => Task, task => task.owner) myOwnTasks: Task[];
+    @ManyToOne (() => CompanyEntity, company => company.users) company: CompanyEntity;
+    @OneToOne  (() => CompanyEntity, company => company.owner) myCompany: CompanyEntity;
+
+    @OneToMany (() => ProjectEntity, project => project.owner) projects:ProjectEntity[];
+
+    @ManyToMany(() => ProjectEntity, (participation) => participation.users)
+    participations: ProjectEntity[];
+
+    @OneToMany (() => CommentEntity, comment => comment.author) comments:CommentEntity[];
+    @OneToMany (() => TaskEntity, task => task.owner) myOwnTasks: TaskEntity[];
 }

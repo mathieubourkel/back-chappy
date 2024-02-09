@@ -1,7 +1,7 @@
-export enum UserStatus {
-    active = 'Active',
-    pending = 'En attente',
-    deleted = 'Supprimé',
-    blocked = "Bloqué"
+export enum UserStatusEnum {
+    ACTIVE, // active
+    PENDING, // en attente
+    DELETED, // supprimé
+    BLOCKED, // bloqué
   }
   

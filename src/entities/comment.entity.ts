@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserEntity } from "./user.entity";
 
-@Entity()
-export class Comment {
+@Entity({name:"comment"})
+export class CommentEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -16,6 +16,6 @@ export class Comment {
     @Column({type:"int"})
     idParent: number;
 
-    @ManyToOne (() => User, author => author.comments) author: User;
+    @ManyToOne (() => UserEntity, author => author.comments) author: UserEntity;
 
 }

@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-     "lib": [
-        "es5",
-        "es6",
-        "dom"
-     ],
-     "target": "es5",
-     "module": "commonjs",
+     "target": "es2022",
+     "module": "CommonJS",
      "moduleResolution": "node",
      "outDir": "./build",
      "emitDecoratorMetadata": true,
      "experimentalDecorators": true,
      "sourceMap": true,
-     "esModuleInterop": true
-  }
+     "esModuleInterop": true,
+     "typeRoots": ["./src/@types", "./node_modules/@types"]
+  },
+  // "typeRoots": ["./src/@types", "./node_modules/@types"],
+  // "files": ["src/@types/express/index.d.ts"]
 }

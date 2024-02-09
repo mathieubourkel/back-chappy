@@ -1,10 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { Status } from "../enums/status.enum";
-import { PurchaseStatus } from "../enums/purchase.status.enum";
+import { ProjectEntity } from "./project.entity";
+import { PurchaseStatusEnum } from "../enums/purchase.status.enum";
 
-@Entity()
-export class Purchase {
+@Entity({name:"purchase"})
+export class PurchaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -15,8 +14,8 @@ export class Purchase {
     @Column({type:"varchar"})
     ref: string;
 
-    @Column({type:"enum", enum: Status})
-    status: PurchaseStatus
+    @Column({type:"enum", enum:PurchaseStatusEnum, default:PurchaseStatusEnum.PENDING})
+    status: PurchaseStatusEnum
 
     @Column({type:"int"})
     price: number;
@@ -27,6 +26,6 @@ export class Purchase {
     @Column({type:"date"})
     deliveryDate: Date;
 
-    @ManyToOne (() => Project, project => project.purchases) project:Project;
+    @ManyToOne (() => ProjectEntity, project => project.purchases, { onDelete: "CASCADE" }) project:ProjectEntity;
 
 }

@@ -1,30 +1,30 @@
-import { NextFunction, Request, Response } from "express";
-import { Notification } from "../entities/notification.entity";
+import { NextFunction, Response, Request } from "express";
+import { NotificationEntity } from "../entities/notification.entity";
 import { Service } from "../services/Service";
-import { CustomError } from "../utils/CustomError";
 import { GlobalController } from "./controller";
 
 export class NotificationController extends GlobalController {
 
-  private notificationService = new Service(Notification)
+  private notificationService = new Service(NotificationEntity)
 
   async getNotificationsByUser(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { receivers: [{id:req.body.idUser}] };
+    const searchOptions = { receivers: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.notificationService.getManyBySearchOptions(searchOptions, [
-        "receivers",
-        "sender"
-      ]);
+      return this.notificationService.getManyBySearchOptions<Array<NotificationEntity>>(searchOptions, ["receivers"]);
     });
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
+      req.body.sender = req.user.userId
+      req.body.receivers = req.body.receivers.map((elem: number) => {
+        return { id: elem };
+      });
       return this.notificationService.create(req.body);
     });
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async viewNotif(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
       return this.notificationService.update(+req.params.id, req.body);
     });

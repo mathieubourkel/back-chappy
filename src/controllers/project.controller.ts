@@ -1,83 +1,142 @@
-import { NextFunction, Request, Response } from "express";
-import { Project } from "../entities/project.entity";
+import { NextFunction, Response, Request } from "express";
+import { ProjectEntity } from "../entities/project.entity";
 import { Service } from "../services/Service";
 import { GlobalController } from "./controller";
-import { User } from "../entities/user.entity";
-import { CreateProjectDto } from "../dto/project.dto";
-import { validate } from "class-validator";
-import { CustomError } from "../utils/CustomError";
+import {
+  lightDataUsersOnProject,
+  dataUsersOnProject,
+  fullDataProject, dataProject,
+} from "../dto/project.dto";
+import { UserEntity } from "../entities/user.entity";
+import { CustomError } from "../middlewares/error.handler.middleware";
+import { CacheEnum } from "../enums/cache.enum";
 
 export class ProjectController extends GlobalController {
-  private projectService = new Service(Project);
-  private userService = new Service(User);
+
+  private projectService = new Service(ProjectEntity);
+  private userService = new Service(UserEntity);
 
   async getProjectsFromOwner(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { owner: { id: +req.body.idUser } };
+    const searchOptions = { owner: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getManyBySearchOptions(searchOptions, [
-        "steps",
-      ]);
+      return await this.proceedCache<Array<ProjectEntity>>(CacheEnum.PROJECTS, async () => await this.projectService.getManyBySearchOptions<Array<ProjectEntity>>(searchOptions, ["steps"]), {params: req.user.userId});
     });
   }
 
   async getProjectsFromMember(req: Request, res: Response, next: NextFunction) {
-    const searchOptions = { users: { id: +req.body.idUser } };
+    const searchOptions = { users: { id: +req.user.userId } };
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getManyBySearchOptions(searchOptions, [
-        "steps",
-        "owner",
-      ]);
+      return await this.projectService.getManyBySearchOptions<Array<ProjectEntity>>(searchOptions, ["steps","owner"]);
     });
+  }
+
+  async getMembersByProject(req:Request, res:Response, next:NextFunction): Promise<void> {
+    await this.handleGlobal(req, res, next, async (): Promise<unknown> => {
+      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT_MEMBERS, async () => await this.projectService.getOneById(+req.params.idProject, ["users", "owner", "users.myOwnTasks", "users.company"], dataUsersOnProject), {params: req.params.idProject});
+      if (!result) throw new CustomError("PC-NO-EXIST", 404)
+      if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) : boolean => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      return result;
+    })
   }
 
   async getProjectById(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getOneById(+req.params.id, ["steps", "owner"]);
-    });
-  }
-
-  async getProjectNameById(req: Request, res: Response, next: NextFunction) {
-    await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.getOneById(+req.params.id, [], { name: true });
+      const result:ProjectEntity = await this.proceedCache<ProjectEntity>(CacheEnum.PROJECT, async () => await this.projectService.getOneById(+req.params.id, ["users", "owner", "steps", "documents", "purchases"], fullDataProject),{params: req.params.id});
+      if (!result) throw new CustomError("PC-NO-EXIST", 404)
+      if (result.owner.id !== req.user.userId && !result.users.find((user: { id: number }) => user.id === req.user.userId)) throw new CustomError("PC-NO-RIGHTS", 403);
+      return result;
     });
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const userDto:any = new CreateProjectDto(req.body);
-      const errors = await validate(userDto, {whitelist: true});
-      console.log(errors)
-      if (errors.length > 0) {
-        throw new CustomError("PC-DTO-CHECK", 400);
-      }
-      userDto.users = userDto.users.map((elem: number) => {
-        return { id: elem };
-      });
-      return this.projectService.create(userDto);
+      await this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
+      const data:ProjectEntity = await this.__buildRequestForCreation(req.body, +req.user.userId)
+      if (!data) throw new CustomError("PC-BUILD-FAILED", 400);
+      return await this.projectService.create(data);
     });
   }
 
   async addUserToProject(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const project: any = await this.projectService.getOneById(
-        +req.params.idProject,
-        ["users"]
-      );
-      const user: any = await this.userService.getOneById(req.body.idUser);
+      const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.body.idProject,["users"], lightDataUsersOnProject);
+      if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
+      const user:UserEntity = await this.userService.getOneById(req.body.idUser);
+      if (!user) throw new CustomError("PC-USRJOIN-NOTFIND", 400);
       project.users.push(user);
-      return this.projectService.update(+req.params.idProject, project);
+      await this.delCache(CacheEnum.PROJECT, {params: project.id});
+      await this.delCache(CacheEnum.PROJECT_MEMBERS, {params: project.id});
+      return await this.projectService.update(project.id, project);
+    });
+  }
+
+  async delUserToProject(req: Request, res: Response, next: NextFunction):Promise<void> {
+    await this.handleGlobal(req, res, next, async () => {
+      const project:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.body.idProject,["users", "owner"], lightDataUsersOnProject);
+      if (!project) throw new CustomError("PC-DEL-NOTFIND", 400);
+      if(project.owner.id !== req.user.userId) throw new CustomError("PC-DEL-NOTAUTHORIZED", 403);
+      const user:UserEntity = await this.userService.getOneById(+req.body.idUser);
+      const userIndex = project.users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        project.users = project.users.filter(u => u.id !== user.id);
+      }
+      await this.delCache(CacheEnum.PROJECT, {params: project.id});
+      await this.delCache(CacheEnum.PROJECT_MEMBERS, {params: project.id});
+      return await this.projectService.update(project.id, project);
+    });
+  }
+
+  async joinProjectByCode(req: Request, res: Response, next: NextFunction) {
+    await this.handleGlobal(req, res, next, async () => {
+      const project:ProjectEntity = await this.projectService.getOneBySearchOptions<ProjectEntity>({ code: req.body.code },["users"]);
+      if (!project) throw new CustomError("PC-JOIN-NOTFIND", 400);
+      const user:UserEntity = await this.userService.getOneById<UserEntity>(req.user.userId);
+      if (!user) throw new CustomError("PC-JOINUSER-NOTFIND", 400);
+      project.users.push(user);
+      await this.delCache(CacheEnum.PROJECT, {params: project.id})
+      return await this.projectService.update(project.id, project);
     });
   }
 
   async update(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.update(+req.params.id, req.body);
+      const result = await this.projectService.update(+req.params.id, req.body, ["owner"], dataProject);
+      if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
+      await this.delCache(CacheEnum.PROJECT, {params: result.id})
+      return result;
     });
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      return this.projectService.delete(+req.params.id);
+      const result:ProjectEntity = await this.projectService.getOneById<ProjectEntity>(+req.params.id, ["owner"], lightDataUsersOnProject);
+      if (!result) throw new CustomError("PC-PROJ-NOTFIND", 400);
+      if (result.owner.id !== req.user.userId) throw new CustomError("PC-NO-RIGHTS", 403);  
+      await this.delCache(CacheEnum.PROJECT, {params: result.id})
+      await this.delCache(CacheEnum.PROJECTS, {params: req.user.userId})
+      return await this.projectService.delete(result.id);
     });
+  }
+
+  private __buildRequestForCreation(body, userId:number){
+      body.code = this.__generateInvitationCode();
+      body.users = body.users.map((elem: number) => {
+        return { id: elem };
+      });
+      body.companies = body.companies.map((elem: number) => {
+        return { id: elem };
+      });
+      body.owner = userId;
+      return body
+  }
+
+  private __generateInvitationCode(): string {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+    for (let i = 0; i < 16; i++) {
+      const randomCode = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomCode);
+    }
+    return code;
   }
 }

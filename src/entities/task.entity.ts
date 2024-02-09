@@ -1,11 +1,12 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Status } from "../enums/status.enum";
-import { User } from "./user.entity";
-import { Step } from "./step.entity";
-import { Category } from "./category.entity";
+import { StatusEnum } from "../enums/status.enum";
+import { UserEntity } from "./user.entity";
+import { StepEntity } from "./step.entity";
+import { ProjectEntity } from "./project.entity";
+import { CategoriesEnum } from "../enums/categories.enum";
 
-@Entity()
-export class Task {
+@Entity({name:"task"})
+export class TaskEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -16,8 +17,8 @@ export class Task {
     @Column({type:"varchar"})
     description: string;
 
-    @Column({type:"enum", enum: Status})
-    status: Status
+    @Column({type:"enum", enum:StatusEnum, default:StatusEnum.IN_PROGRESS})
+    status: StatusEnum
 
     @Column({type:"int"})
     budget: number;
@@ -25,15 +26,17 @@ export class Task {
     @Column({type:"date"})
     startDate: Date;
 
+    @Column({type:"enum", enum:CategoriesEnum, default:CategoriesEnum.PLOMBERIE})
+    category: CategoriesEnum
+
     @Column({type:"date"})
     endDate: Date;
 
-    @ManyToMany (() => User, {cascade: true})
+    @ManyToMany (() => UserEntity, {cascade: true})
     @JoinTable()
-    users: User[]
+    users: UserEntity[]
 
-    @ManyToOne (() => Step, step => step.tasks) step:Step;
-    @ManyToOne (() => User, owner => owner.myOwnTasks) owner:User;
-    @ManyToOne (() => Category, category => category.tasks) category:Category;
-
+    @ManyToOne (() => StepEntity, step => step.tasks, { onDelete: "CASCADE" }) step:StepEntity;
+    @ManyToOne (() => ProjectEntity, project => project.tasks, { onDelete: "CASCADE" }) project:ProjectEntity;
+    @ManyToOne (() => UserEntity, owner => owner.myOwnTasks) owner:UserEntity;
 }

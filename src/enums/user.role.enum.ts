@@ -1,5 +1,5 @@
-export enum UserRole {
-    user = 'Utilisateur lambda',
-    admin = 'Administrateur',
+export enum UserRoleEnum {
+    USER, // utilisateur lambda
+    ADMIN  // Administrateur
   }
   

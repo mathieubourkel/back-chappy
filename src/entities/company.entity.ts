@@ -1,9 +1,9 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { User } from "./user.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ProjectEntity } from "./project.entity";
+import { UserEntity } from "./user.entity";
 
-@Entity()
-export class Company {
+@Entity({name:"company"})
+export class CompanyEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -11,17 +11,24 @@ export class Company {
     @Column({type:"varchar"})
     name: string;
 
-    @Column({type:"int"})
-    siret: number;
+    @Column({type:"varchar"})
+    siret: string;
 
     @Column({type:"varchar"})
     description: string;
 
-    @ManyToMany (() => Project, {cascade: true})
+    @ManyToMany (() => ProjectEntity,(participation) => participation.companies)
     @JoinTable()
-    projects: Project[]
+    participations: ProjectEntity[]
 
-    @OneToMany (() => User, user => user.company) users:User[];
-    @OneToOne (() => User, owner => owner.company) owner:User;
+    @OneToMany (() => UserEntity, user => user.company) users:UserEntity[];
+    @OneToOne (() => UserEntity, user => user.company)
+    @JoinColumn()
+    owner: UserEntity
 
+}
+
+export const resDataCompanyClean = {
+    id: true,
+    owner: {id: true}
 }
