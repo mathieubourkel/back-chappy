@@ -34,3 +34,6 @@ deploy:
   rules:
   - when: manual
 
+only:
+  - main
+
