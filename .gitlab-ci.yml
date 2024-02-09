@@ -2,6 +2,10 @@ stages:
   - publish
   - deploy
 
+workflow:
+  rules: 
+    - if: $CI_COMMIT_BRANCH == "main"
+
 publish:
   image: docker:stable
   stage: publish
@@ -15,7 +19,6 @@ publish:
     - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
     - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
   rules:
-  - if: $CI_COMMIT_BRANCH == "main"
   - when: manual
 
 deploy:
@@ -33,6 +36,5 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker container rm -f back_chappy_prod || true"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose up -d"
   rules:
-  - if: $CI_COMMIT_BRANCH == "main"
   - when: manual
 
