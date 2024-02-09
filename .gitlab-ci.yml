@@ -20,7 +20,8 @@ publish:
 deploy:
   image: alpine:latest
   stage: deploy
-  tags: deployment
+  tags: 
+    - deployment
   environment:
     name: production
     url: http://ec2-15-237-216-144.eu-west-3.compute.amazonaws.com
