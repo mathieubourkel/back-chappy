@@ -14,20 +14,14 @@ publish:
   before_script:
     - docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" 
   script:
-    - echo $CI_REGISTRY
-    - echo $CI_REGISTRY_IMAGE:$TAG_PROD
     - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
     - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
 
 deploy:
   image: alpine:latest
   stage: deploy
-  environment:
-    name: production
-    url: https://$AWS_DNS
   script:
     - chmod og= $ID_RSA
-    - echo $ID_RSA
     - apk update && apk add openssh-client
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker login $CI_REGISTRY -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD'"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker pull $CI_REGISTRY_IMAGE:$TAG_PROD"
