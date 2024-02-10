@@ -18,8 +18,6 @@ publish:
     - echo $CI_REGISTRY_IMAGE:$TAG_PROD
     - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
     - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
-  rules:
-  - when: manual
 
 deploy:
   image: alpine:latest
