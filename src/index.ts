@@ -33,8 +33,8 @@ AppDataSource.initialize()
 
 if (process.env.NODE_ENV === "production") {
   const options = {
-    key: fs.readFileSync(`${__dirname}/certs/live/${process.env.DNS_PROD}/privkey.pem`),
-    cert: fs.readFileSync(`${__dirname}/certs/live/${process.env.DNS_PROD}/cert.pem`),
+    key: fs.readFileSync(`${__dirname}/certs/live/${process.env.VITE_BACK_HOST}/privkey.pem`),
+    cert: fs.readFileSync(`${__dirname}/certs/live/${process.env.VITE_BACK_HOST}/cert.pem`),
   };
   const server = https.createServer(options, app);
   server.listen(process.env.VITE_BACK_PORT, () => {
