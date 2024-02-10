@@ -1,10 +1,18 @@
 import express from "express";
+import https from "https";
 import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "./data-source";
 import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
+import fs from "fs"
 
 const app = express();
+const options = {
+  key: fs.readFileSync(`${__dirname}/express.pem`),
+  cert: fs.readFileSync(`${__dirname}/express.cert`),
+};
+
+const server = https.createServer(options, app);
 const routeClass = new Routes()
 routeClass.applyGlobalMiddleware(app);
 
@@ -29,6 +37,6 @@ AppDataSource.initialize()
   })
   .catch((error) => console.log("Unable to start DB", error));
 
-app.listen(process.env.VITE_BACK_PORT);
-console.log(`${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`);
-console.log("variables:", process.env.MYSQL_DATABASE, process.env.FRONT_HOST, process.env.REDIS_PORT, process.env.VITE_BACK_HOST)
+server.listen(process.env.VITE_BACK_PORT, () => {
+  console.log(`${process.env.NODE_ENV} : Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`);
+});
