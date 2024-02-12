@@ -32,6 +32,26 @@ export class UserController {
     }
   }
 
+  async update (req: Request, res: Response, next: NextFunction) {
+    try {
+      const userDto: UserDto = req.body;
+      const updateUser = await this.userService.update(
+        +req.params.id,
+        userDto
+      );
+      const response = {
+        message: "Modification apporté avec succès",
+        company: updateUser,
+        date: new Date
+      };
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'utilisateur:", error);
+      next();
+    }
+  }
+  
+
   // async getAll(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
   //     return this.userService.getAll();
