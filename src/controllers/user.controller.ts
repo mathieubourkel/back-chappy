@@ -51,6 +51,26 @@ export class UserController {
     }
   }
   
+  async getAll(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const users = await this.userService.getAll();
+      return {
+        data: { users },
+        message: "Voici tous les utilisateurs enregistrés à ce jour",
+        date: new Date(),
+      };
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération de tous les utilisateurs :",
+        error
+      );
+      res
+        .status(500)
+        .json({
+          message: "Échec de la récupération de tous les utilisateurs",
+        });
+    }
+  };
 
   // async getAll(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {

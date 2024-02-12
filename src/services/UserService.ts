@@ -74,4 +74,17 @@ export class UserService {
       throw new Error(error)
     }
   }
+
+  async getAll(): Promise<UserEntity[]> {
+    try {
+      const user = await this.userRepository.find();
+      return user;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération de toutes les entreprises :",
+        error
+      );
+      throw new Error("Échec de la récupération de toutes les entreprises");
+    }
+  }
 }

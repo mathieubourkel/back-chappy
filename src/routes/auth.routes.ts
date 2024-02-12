@@ -22,6 +22,13 @@ export const AuthRoutes = [
     // middlewares: [{name: 'checkToken'},
     // {name: "dto", classDto: UserDto}]
   },
+  { 
+    method: "get",
+    route: "/api/users",
+    controller: UserController,
+    action: "getAll",
+    // middlewares: [{name: 'checkToken'}]
+  },
 { 
     method: "post",
     route: "/auth/login",
@@ -65,13 +72,7 @@ export const AuthRoutes = [
     action: "create",
     middlewares: [{name: 'dto', classDto: CreateUserWithCompany}]
   },
-  { 
-    method: "get",
-    route: "/api/users",
-    controller: UserController,
-    action: "getAll",
-    middlewares: [{name: 'checkToken'}]
-  },
+  
 
   {
     method: "get",
