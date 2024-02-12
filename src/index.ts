@@ -7,7 +7,7 @@ import { applyMiddlewares } from "./middlewares/manage.middlewares";
 const app = express();
 const routeClass = new Routes()
 // function qui applique le middleware global
-// routeClass.applyGlobalMiddleware(app);
+routeClass.applyGlobalMiddleware(app);
 
 // initialise la connection a la source de donnée
 dataBaseSource.AppDataSource.initialize()

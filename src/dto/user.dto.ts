@@ -1,6 +1,6 @@
 import { IsEmail, IsInt, IsNotEmpty, IsString, Length, MinLength } from "class-validator";
 
-export class CreateUserDto {
+export class UserDto {
     @IsString()
     @Length(1, 25, {message: "l'erreur vient du firstname"})
     @IsNotEmpty()
@@ -35,7 +35,7 @@ export class CreateUserDto {
    
 }
 
-export class CreateUserWithCompany extends CreateUserDto {
+export class CreateUserWithCompany extends UserDto {
     @IsString()
     @Length(1, 50)
     @IsNotEmpty()

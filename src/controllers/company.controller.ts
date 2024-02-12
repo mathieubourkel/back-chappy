@@ -1,10 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { CompanyEntity, resDataCompanyClean } from "../entities/company.entity";
-import { Service } from "../services/Service";
-import { GlobalController } from "./controller";
-import { CacheEnum } from "../enums/cache.enum";
-import { CustomError } from "../middlewares/error.handler.middleware";
-import { UserEntity } from "../entities/user.entity";
 import { CompanyService } from "../services/CompanyService";
 import { CompanyDto } from "../dto/company.dto";
 
@@ -71,10 +65,10 @@ export class CompanyController {
     try {
       const deletedCompany = await this.companyService.delete(parseInt(id));
       if (!deletedCompany) {
-        res.status(404).json({ message: `L'entreprise avec l'ID ${id} n'a pas été trouvée.` });
+        res.status(404).json({ message: "L'entreprise n'a pas été trouvée." });
         return;
       }
-      res.json({ message: 'L\'entreprise a été supprimée avec succès.', deletedCompany});
+      res.json({ message: 'L\'entreprise a été supprimée avec succès.'});
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'entreprise :', error);
       res.status(500).json({ message: 'Échec de la suppression de l\'entreprise.' });
@@ -91,16 +85,6 @@ export class CompanyController {
   //     this.delCache(CacheEnum.COMPANIES)
   //     req.body.owner = req.user.userId
   //     return await this.companyService.create(req.body);
-  //   });
-  // }
-
-  // async delete(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     const result:CompanyEntity = await this.companyService.getOneById<CompanyEntity>(+req.params.id, ["owner"], resDataCompanyClean);
-  //     if (!result) throw new CustomError("CC-COMPANYT-NOTFIND", 400);
-  //     if (result.owner.id !== req.user.userId) throw new CustomError("CC-NO-RIGHTS", 403);
-  //     this.delCache(CacheEnum.COMPANIES)
-  //     return this.companyService.delete(result.id);
   //   });
   // }
 }
