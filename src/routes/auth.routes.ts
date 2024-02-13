@@ -29,6 +29,13 @@ export const AuthRoutes = [
     action: "getAll",
     // middlewares: [{name: 'checkToken'}]
   },
+  { 
+    method: "delete",
+    route: "/api/user/:id",
+    controller: UserController,
+    action: "delete",
+    // middlewares: [{name: 'checkToken'}]
+  },
 { 
     method: "post",
     route: "/auth/login",
@@ -81,13 +88,7 @@ export const AuthRoutes = [
     action: "getInfosUserConnected",
     middlewares: [{name: 'checkToken'}]
   },
-  { 
-    method: "delete",
-    route: "/api/user/:id",
-    controller: UserController,
-    action: "delete",
-    middlewares: [{name: 'checkToken'}]
-  },
+ 
 
   // COMPANY
 

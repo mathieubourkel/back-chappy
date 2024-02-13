@@ -72,11 +72,22 @@ export class UserController {
     }
   };
 
-  // async getAll(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return this.userService.getAll();
-  //   });
-  // }
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const {id} = req.params;
+    try {
+      const deletedUser = await this.userService.delete(parseInt(id));
+      if (!deletedUser) {
+        res.status(404).json({ message: "L'utilisateur n'a pas été trouvé." });
+        return;
+      }
+      return { message: 'L\'utilisateur a été supprimée avec succès.'};
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'utilisateur :', error);
+      return { message: 'Échec de la suppression de l\'utilisateur.' };
+    }
+  }
+
+ 
 
   // async getInfosUserConnected(req:Request, res:Response, next:NextFunction) {
   //   await this.handleGlobal(req, res, next, async ()=> {
@@ -84,18 +95,7 @@ export class UserController {
   //   })
   // }
 
-  // async create(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     const user = await this.userService.getOneBySearchOptions({email: req.body.email}, [], {id: true});
-  //     if (user) throw new CustomError("UC-ALRDY-EXIST", 400);
-  //     req.body.password = await this.__hashPassword(req.body.password)
-  //     const result:UserEntity = await this.userService.create(req.body);
-  //     if (!result) throw new CustomError("UC-FAILED-CREA", 400);
-  //     const datasCompany = {name: req.body.name, siret: req.body.siret, description: req.body.description, owner: result.id}
-  //     if (req.body.name) await this.companyService.create(datasCompany)
-  //     return result;
-  //   });
-  // }
+  
 
   // async update(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
@@ -129,15 +129,5 @@ export class UserController {
   //     user.company.id = null
   //     return await this.userService.update(user.id, user, ["company"]);
   //   });
-  // }
-
-  // async delete(req: Request, res: Response, next: NextFunction) {
-  //   await this.handleGlobal(req, res, next, async () => {
-  //     return this.userService.delete(+req.params.id);
-  //   });
-  // }
-
-  // private async __decryptPassword(inputFromRequest: string, passwordFromUserBDD: string):Promise<boolean> {
-  //   return await bcrypt.compare(inputFromRequest, passwordFromUserBDD);
   // }
 }

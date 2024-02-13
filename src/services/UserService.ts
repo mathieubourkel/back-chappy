@@ -87,4 +87,9 @@ export class UserService {
       throw new Error("Échec de la récupération de toutes les entreprises");
     }
   }
+
+  async delete(id: number): Promise<unknown> {
+    const company = await this.userRepository.findOne({ where: { id } });
+    return this.userRepository.delete(id);
+  }
 }
