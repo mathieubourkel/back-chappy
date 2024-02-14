@@ -3,7 +3,7 @@ export interface RouteInterface {
     route: string,
     controller: any
     action: string
-    middlewares?: MiddlewaresInterface
+    dto: any
 }
 
 export interface MiddlewareInterface {

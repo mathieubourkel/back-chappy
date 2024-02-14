@@ -12,16 +12,16 @@ export const AuthRoutes = [
     route: "/auth/register",
     controller: UserController,
     action: "create",
-    // middlewares: [{name: 'dto', classDto: CreateUserDto}]
+    middlewares: [{name: 'dto', classDto: UserDto}]
   },
   { 
     method: "put",
     route: "/api/user/:id",
     controller: UserController,
     action: "update",
-    // middlewares: [{name: 'checkToken'},
-    // {name: "dto", classDto: UserDto}]
+    middlewares: [{name: "dto", classDto: UserDto}]
   },
+  // {name: 'checkToken'},
   { 
     method: "get",
     route: "/api/users",
@@ -97,14 +97,14 @@ export const AuthRoutes = [
     route: "/auth/company/register",
     controller: CompanyController,
     action: "create",
-    // middlewares: [{name: "dto", classDto:CompanyDto }]
+    middlewares: [{name: "dto", classDto:CompanyDto }]
   },
   { 
     method: "put",
     route: "/api/company/:id",
     controller: CompanyController,
     action: "update",
-    // middlewares: [{name: "dto", classDto: CompanyDto}]
+    middlewares: [{name: "dto", classDto: CompanyDto}]
   },
   // {name: 'checkToken'},
   { 

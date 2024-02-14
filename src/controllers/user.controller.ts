@@ -27,8 +27,7 @@ export class UserController {
       return result;
     } catch (error) {
       console.log("error", error)
-      // return {message: "Erreur lors de l'enregistrement du compte utilisateur"}
-      next();
+      return {message: error.message}
     }
   }
 
@@ -47,7 +46,7 @@ export class UserController {
       return response;
     } catch (error) {
       console.error("Erreur lors de la modification de l'utilisateur:", error);
-      next();
+      return {message: error.message}
     }
   }
   
@@ -64,11 +63,7 @@ export class UserController {
         "Erreur lors de la récupération de tous les utilisateurs :",
         error
       );
-      res
-        .status(500)
-        .json({
-          message: "Échec de la récupération de tous les utilisateurs",
-        });
+      return {message: error.message}
     }
   };
 
@@ -83,7 +78,7 @@ export class UserController {
       return { message: 'L\'utilisateur a été supprimée avec succès.'};
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'utilisateur :', error);
-      return { message: 'Échec de la suppression de l\'utilisateur.' };
+      return {message: error.message}
     }
   }
 

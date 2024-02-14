@@ -13,10 +13,10 @@ export class CompanyController {
     try {
       const companyDto: CompanyDto = req.body;
       const newCompany = await this.companyService.create(companyDto);
-      res.status(201).json(newCompany);
+      return newCompany;
     } catch (error) {
       console.error("Erreur lors de la création de l'entreprise:", error);
-      next();
+      return {message: error.message}
     }
   }
 
@@ -31,10 +31,11 @@ export class CompanyController {
         message: "Modification apporté avec succès",
         company: updateCompany,
       };
-      res.status(201).json(response);
+     return response;
     } catch (error) {
       console.error("Erreur lors de la modification de l'entreprise:", error);
-      next();
+      return {message: error.message}
+      
     }
   }
 
@@ -52,11 +53,8 @@ export class CompanyController {
         "Erreur lors de la récupération de toutes les entreprises :",
         error
       );
-      res
-        .status(500)
-        .json({
-          message: "Échec de la récupération de toutes les entreprises",
-        });
+      return {message: error.message}
+
     }
   };
 
@@ -65,13 +63,13 @@ export class CompanyController {
     try {
       const deletedCompany = await this.companyService.delete(parseInt(id));
       if (!deletedCompany) {
-        res.status(404).json({ message: "L'entreprise n'a pas été trouvée." });
-        return;
+        
+        return { message: "L'entreprise n'a pas été trouvée." };
       }
-      res.json({ message: 'L\'entreprise a été supprimée avec succès.'});
+      return { message: 'L\'entreprise a été supprimée avec succès.'}
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'entreprise :', error);
-      res.status(500).json({ message: 'Échec de la suppression de l\'entreprise.' });
+      return {message: error.message}
     }
   }
 

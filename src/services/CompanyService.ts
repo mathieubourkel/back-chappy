@@ -1,3 +1,4 @@
+import { validate } from "class-validator";
 import { dataBaseSource } from "../data-source";
 import { CompanyEntity } from "../entities/company.entity";
 
@@ -11,6 +12,11 @@ export class CompanyService {
     description: string;
   }): Promise<CompanyEntity> {
     try {
+      const errors = await validate(body);
+      if (errors.length > 0) {
+        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
+      throw new Error(validationErrors);
+      }
       const company = await this.companyRepository.save(
         this.companyRepository.create(body)
       );
@@ -18,7 +24,7 @@ export class CompanyService {
       return company;
     } catch (error) {
       console.log("error", error);
-      throw new Error(error);
+      throw new Error(error.message)
     }
   }
 
@@ -31,6 +37,11 @@ export class CompanyService {
     }
   ): Promise<CompanyEntity> {
     try {
+      const errors = await validate(body);
+      if (errors.length > 0) {
+        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
+      throw new Error(validationErrors);
+      }
       const companyUpdate = await this.companyRepository.findOne({
         where: { id },
       });
@@ -48,7 +59,7 @@ export class CompanyService {
       );
     } catch (error) {
       console.log("error", error);
-      throw new Error(error);
+      throw new Error(error.message)
     }
   }
 
