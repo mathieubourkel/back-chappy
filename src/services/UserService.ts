@@ -8,23 +8,20 @@ export class UserService {
   private userRepository =
     dataBaseSource.AppDataSource.getRepository<UserEntity>(UserEntity);
 
+
+  async getByEmail(email:string):Promise<UserEntity>{
+    try {
+      return await this.userRepository.findOne({
+        where: { email },
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
   async create(body: UserDto): Promise<UserEntity> {
     try {
-      const errors = await validate(body);
-      if (errors.length > 0) {
-        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
-      throw new Error(validationErrors);
-      }
-      const existingUser = await this.userRepository.findOne({
-        where: { email: body.email },
-      });
-      console.log("email", body.email);
-      if (existingUser) {
-        throw new Error("Cette adresse e-mail est déjà utilisée.");
-      }
-      const hashedPassword = await bcrypt.hash(body.password, 10)
       const user = await this.userRepository.save(
-        this.userRepository.create({ ...body, password: hashedPassword })
+        this.userRepository.create(body)
       );
       console.log(user);
       return user;
@@ -33,8 +30,16 @@ export class UserService {
       throw Error(error);
     }
   }
+  async hashString(string :string):Promise<string>{
+    try {
+      return await bcrypt.hash(string, 10)
+    } catch (error) {
+      
+      throw new Error(error);
+    }
+  }
 
-  async update(id: number, body:UserDto): Promise<UserEntity>{
+  async update(id: number, body:any): Promise<UserEntity>{
    
     try {
       const errors = await validate(body);

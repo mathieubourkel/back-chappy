@@ -1,13 +1,16 @@
-import express from "express";
+import express, { request, response } from "express";
 import { Request, Response, NextFunction } from "express";
 import { dataBaseSource } from "./data-source";
 import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
+import { verifyDtoMiddleware } from "./middlewares/dto.middleware";
+import bodyParser from "body-parser";
 
 const app = express();
 const routeClass = new Routes()
 // function qui applique le middleware global
-routeClass.applyGlobalMiddleware(app);
+// routeClass.applyGlobalMiddleware(app);
+app.use(bodyParser.json());
 
 // initialise la connection a la source de donnée
 dataBaseSource.AppDataSource.initialize()
@@ -15,9 +18,9 @@ dataBaseSource.AppDataSource.initialize()
   .then(async () => {
     // cette ligne itère a travers chaque objet de routes dans l'attribut "routes" de l'objet "routeClass"
     routeClass.routes.forEach((route) => {
-      console.log("route", route); 
+      // console.log("route", route); 
       (app as any)[route.method](route.route, (req: Request, res : Response, next : Function)=>{
-          console.log("appel de la route",route);
+          // console.log("appel de la route",route);
           
           //app[get](/test, () =>{})
           const result = ( new (route.controller as any))[route.action](req,res,next)

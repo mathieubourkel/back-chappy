@@ -7,6 +7,7 @@ import { CompanyEntity } from "../entities/company.entity";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { UserService } from "../services/UserService";
 import { UserDto } from "../dto/user.dto";
+import { validate } from "class-validator";
 
 export class UserController {
   private userService: UserService;
@@ -15,19 +16,31 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async create(req: Request, res: Response, next: NextFunction):Promise<{user: UserEntity, message: string, date: Date}> {
     try {
-      const userDto: UserDto = req.body;
-      console.log(userDto)
-      const result = {
-        user: await this.userService.create( userDto),
+      let errors = await validate(new UserDto(req.body))
+      if(errors.length> 0 ){
+        const array = errors.map(error=>{
+          return error.constraints;
+        })
+        res.status(404).send(array)
+        return;
+      }
+      const existingUser = await this.userService.getByEmail(req.body.email);
+      if (existingUser) {
+        throw new Error("Cette adresse e-mail est déjà utilisée.");
+      }
+      req.body.password = await this.userService.hashString(req.body.password);
+      return {
+        user: await this.userService.create( req.body),
         message: "Utilisateur créé avec succès",
         date: new Date(),
       };
-      return result;
+   
     } catch (error) {
       console.log("error", error)
-      return {message: error.message}
+      const message = error.message ? error.message : error
+      res.status(400).send(message) 
     }
   }
 

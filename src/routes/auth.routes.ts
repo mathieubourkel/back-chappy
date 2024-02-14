@@ -4,6 +4,7 @@ import { UserController } from "../controllers/user.controller";
 import { LoginDto } from "../dto/auth.dto";
 import { CompanyDto } from "../dto/company.dto";
 import { UserDto, CreateUserWithCompany, RejoinCompany, ResetPwd } from "../dto/user.dto";
+import { verifyDtoMiddleware } from "../middlewares/dto.middleware";
 
 export const AuthRoutes = [ 
 
@@ -12,7 +13,8 @@ export const AuthRoutes = [
     route: "/auth/register",
     controller: UserController,
     action: "create",
-    middlewares: [{name: 'dto', classDto: UserDto}]
+    // middlewares: [verifyDtoMiddleware],
+    dto: UserDto
   },
   { 
     method: "put",
