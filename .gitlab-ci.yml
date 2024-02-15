@@ -1,7 +1,6 @@
 stages:
   - publish
   - deploy
-  - dast
 
 workflow:
   rules: 
@@ -29,6 +28,12 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker container rm -f back_chappy_prod || true"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose up -d"
 
-dast:
-  stage: dast
-  dependencies: []
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_WEBSITE: "https://app-chappy.ddns.net"
+  DAST_FULL_SCAN_ENABLED: "true"
+  DAST_AUTH_URL: "https://app-chappy.ddns.net/login"
+  DAST_AUTH_USERNAME: “mathieu.bourkel@gmail.com”
+  DAST_AUTH_PASSWORD: “password”
