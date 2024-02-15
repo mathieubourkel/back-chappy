@@ -21,7 +21,7 @@ export class UserEntity {
     @Column({type:"varchar"})
     email: string;
 
-    @Column({type:"varchar"})
+    @Column({type:"varchar", select:false})
     password: string;
 
     @Column({type: "varchar"})
