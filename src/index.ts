@@ -5,6 +5,7 @@ import { AppDataSource } from "./data-source";
 import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
 import fs from "fs";
+import path from "path";
 
 const app = express();
 
@@ -32,9 +33,12 @@ AppDataSource.initialize()
   .catch((error) => console.log("Unable to start DB", error));
 
 if (process.env.NODE_ENV === "production") {
+  const privateKeyPath = path.join(__dirname, 'certs', 'live', process.env.VITE_BACK_HOST, 'privkey.pem');
+  const certPath = path.join(__dirname, 'certs', 'live', process.env.VITE_BACK_HOST, 'cert.pem');
+
   const options = {
-    key: fs.readFileSync(`${__dirname}/certs/live/${process.env.VITE_BACK_HOST}/privkey.pem`),
-    cert: fs.readFileSync(`${__dirname}/certs/live/${process.env.VITE_BACK_HOST}/cert.pem`),
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certPath),
   };
   const server = https.createServer(options, app);
   server.listen(process.env.VITE_BACK_PORT, () => {
