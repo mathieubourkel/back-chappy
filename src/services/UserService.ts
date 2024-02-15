@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from "express";
 import { dataBaseSource } from "../data-source";
 import { UpdateUserDto, UserDto } from "../dto/user.dto";
 import { UserEntity } from "../entities/user.entity";
@@ -50,10 +51,10 @@ export class UserService {
   }
 
 
-  async update(id:number, body: UpdateUserDto): Promise<UserEntity>{
+  async update(req:Request, body: UpdateUserDto): Promise<UserEntity>{
    
     try {
-    const userUpdate = await this.getById(id);
+    const userUpdate = await this.getById(+req.params.id);
     // const userUpdate = await this.userRepository.findOne({where: {id}});
     console.log("🚀 ~ UserService ~ update ~ userUpdate:", userUpdate)
     const passwordMatch = await bcrypt.compare(body.password, userUpdate.password);

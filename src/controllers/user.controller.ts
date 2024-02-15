@@ -48,8 +48,10 @@ export class UserController {
     }
   }
 
-  async update (id: number, req: Request, res: Response, next: NextFunction):Promise<any> {
+  async update (req: Request, res: Response, next: NextFunction):Promise<UserEntity> {
     try {
+      const id: any = parseInt(req.params.id, 10);
+      console.log("🚀 ~ UserController ~ update ~ id:", id)
       const existingUser = await this.userService.getById(id);
       console.log("🚀 ~ UserController ~ update ~ existingUser:", existingUser)
       if (!existingUser) {
@@ -67,17 +69,15 @@ export class UserController {
         return;
       }
 
+      console.log("🚀 ~ UserController ~ update ~ id:", id)
       
       // req.body.password = await this.userService.hashPassword(bodyToValidate.password);
-      return {
-        user: await this.userService.update(+req.params.id, bodyToValidate),
-        message: "Utilisateur créé avec succès",
-        date: new Date(),
-      };
+      return await this.userService.update(id, bodyToValidate)
+      
      
     } catch (error) {
       console.error("Erreur lors de la modification de l'utilisateur:", error);
-      return {message: error.message}
+      return error.message
     }
   }
   
