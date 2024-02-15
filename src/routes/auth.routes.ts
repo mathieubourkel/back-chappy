@@ -21,7 +21,7 @@ export const AuthRoutes = [
     route: "/api/user/:id",
     controller: UserController,
     action: "update",
-    middlewares: [{name: "dto", classDto: UserDto}]
+    // middlewares: [{name: "dto", classDto: UserDto}]
   },
   // {name: 'checkToken'},
   { 

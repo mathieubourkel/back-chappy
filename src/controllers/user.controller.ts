@@ -50,9 +50,8 @@ export class UserController {
 
   async update (req: Request, res: Response, next: NextFunction):Promise<UserEntity> {
     try {
-      const id: any = parseInt(req.params.id, 10);
-      console.log("🚀 ~ UserController ~ update ~ id:", id)
-      const existingUser = await this.userService.getById(id);
+     
+      const existingUser = await this.userService.getById(+req.params.id);
       console.log("🚀 ~ UserController ~ update ~ existingUser:", existingUser)
       if (!existingUser) {
         throw new Error("Utilisateur introuvable");
@@ -69,10 +68,9 @@ export class UserController {
         return;
       }
 
-      console.log("🚀 ~ UserController ~ update ~ id:", id)
       
       // req.body.password = await this.userService.hashPassword(bodyToValidate.password);
-      return await this.userService.update(id, bodyToValidate)
+      return await this.userService.update(+req.params.id, bodyToValidate)
       
      
     } catch (error) {
