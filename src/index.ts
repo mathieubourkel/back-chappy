@@ -5,7 +5,6 @@ import { AppDataSource } from "./data-source";
 import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
 import fs from "fs";
-import path from "path";
 
 const app = express();
 

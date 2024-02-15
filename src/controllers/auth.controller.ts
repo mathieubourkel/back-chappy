@@ -42,11 +42,11 @@ export class AuthController extends GlobalController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     await this.handleGlobal(req, res, next, async () => {
-      const user:UserEntity = await this.userService.getOneBySearchOptions({email:req.body.email});
+      const user:UserEntity = await this.userService.getOneBySearchOptions({email:req.body.email}, [], {id: true, password: true, email:true});
       if (!user) throw new CustomError("AUTH-C", 401, "Bad Credentials");
-      const isPasswordMatched:boolean = await this.__decryptPassword(req.body.password,user.password);
+      const isPasswordMatched:boolean = await this.__decryptPassword(req.body.password, user.password);
       if (!isPasswordMatched) throw new CustomError("AUTH-C", 401, "Bad Credentials");
-      return await this.__createTokens(user.id, req.body.email, res);
+      return await this.__createTokens(user.id, user.email, res);
     });
   }
 
