@@ -35,8 +35,8 @@ AppDataSource.initialize()
 if (process.env.NODE_ENV === "production") {
 
   const options = {
-    key: fs.readFileSync('privkey.pem'),
-    cert: fs.readFileSync('cert.pem'),
+    key: fs.readFileSync('./privkey.pem'),
+    cert: fs.readFileSync('./cert.pem'),
   };
   
   const server = https.createServer(options, app);
