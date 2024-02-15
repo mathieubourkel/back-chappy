@@ -1,53 +1,85 @@
 import { Trim } from "class-sanitizer";
-import { IsEmail, IsInt, IsNotEmpty, IsString, Length, MinLength } from "class-validator";
+import { IsEmail, IsInt, IsNotEmpty, IsNumber, IsString, Length, MinLength } from "class-validator";
 
 export class UserDto {
     @IsString()
-    // @Length(1, 25, {message: "l'erreur vient du firstname"})
+    @Length(1, 25, {message: "l'erreur vient du firstname"})
+    @Trim()
     @IsNotEmpty()
     firstname: string 
     @IsString()
+    @Trim()
     @IsNotEmpty()
-    // @Length(1, 50, {message: "l'erreur vient du lastname"})
+    @Length(1, 50, {message: "l'erreur vient du lastname"})
     lastname: string
     @IsString()
     @IsEmail()
+    @Trim()
     @IsNotEmpty()
     email: string
     @IsString()
+    @Trim()
     @IsNotEmpty()
 //    @Length(12, 30)
     password: string
     @IsString()
-    // @Length(1, 250, {message: "l'erreur vient de address"})
-    // @Trim()
+    @Length(1, 250, {message: "l'erreur vient de address"})
+    @Trim()
     @IsNotEmpty()
     address: string
     @IsString()
     @IsNotEmpty()
-    // @Trim()
-    // @MinLength(5, {message: "l'erreur vient du zip"})
+    @Trim()
+    @MinLength(5, {message: "l'erreur vient du zip"})
     zip: string
     @IsString()
-    // @Length(1,50, {message: "l'erreur vient de city"})
-    // @Trim()
+    @Length(1,50, {message: "l'erreur vient de city"})
+    @Trim()
     @IsNotEmpty()
     city: string
     @IsString()
-    // @Trim()
+    @Trim()
     @IsNotEmpty()
     phone: string
 
-   constructor(body:UserDto){
-    this.firstname = body.firstname;
-    this.lastname = body.lastname;
-    this.email = body.email;
-    this.password = body.password;
-    this.phone = body.phone;
-    this.zip = body.zip;
-    this.city = body.city;
-    this.address = body.address;
-   }
+}
+
+export class UpdateUserDto {
+    @IsString()
+    @Length(1, 25, {message: "l'erreur vient du firstname"})
+    @Trim()
+    @IsNotEmpty()
+    firstname: string 
+    @IsString()
+    @Trim()
+    @IsNotEmpty()
+    @Length(1, 50, {message: "l'erreur vient du lastname"})
+    lastname: string
+    @IsString()
+    @Trim()
+    @IsNotEmpty()
+//    @Length(12, 30)
+    password: string
+    @IsString()
+    @Length(1, 250, {message: "l'erreur vient de address"})
+    @Trim()
+    @IsNotEmpty()
+    address: string
+    @IsString()
+    @IsNotEmpty()
+    @Trim()
+    @MinLength(5, {message: "l'erreur vient du zip"})
+    zip: string
+    @IsString()
+    @Length(1,50, {message: "l'erreur vient de city"})
+    @Trim()
+    @IsNotEmpty()
+    city: string
+    @IsString()
+    @Trim()
+    @IsNotEmpty()
+    phone: string
+
 }
 
 export class CreateUserWithCompany extends UserDto {

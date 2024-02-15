@@ -6,8 +6,9 @@ import bcrypt from "bcrypt";
 import { CompanyEntity } from "../entities/company.entity";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { UserService } from "../services/UserService";
-import { UserDto } from "../dto/user.dto";
+import { UpdateUserDto, UserDto } from "../dto/user.dto";
 import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
 
 export class UserController {
   private userService: UserService;
@@ -18,21 +19,24 @@ export class UserController {
 
   async create(req: Request, res: Response, next: NextFunction):Promise<{user: UserEntity, message: string, date: Date}> {
     try {
-      let errors = await validate(new UserDto(req.body))
+      const bodyToValidate = plainToInstance(UserDto, req.body)
+      let errors = await validate(bodyToValidate)
+      // let errors = await validate(new UserDto(req.body))
       if(errors.length> 0 ){
         const array = errors.map(error=>{
           return error.constraints;
         })
-        res.status(404).send(array)
+        res.status(400).send(array)
         return;
+        // throw new Error(JSON.stringify(array))
       }
-      const existingUser = await this.userService.getByEmail(req.body.email);
+      const existingUser = await this.userService.getByEmail(bodyToValidate.email);
       if (existingUser) {
         throw new Error("Cette adresse e-mail est déjà utilisée.");
       }
-      req.body.password = await this.userService.hashString(req.body.password);
+      req.body.password = await this.userService.hashPassword(bodyToValidate.password);
       return {
-        user: await this.userService.create( req.body),
+        user: await this.userService.create(bodyToValidate),
         message: "Utilisateur créé avec succès",
         date: new Date(),
       };
@@ -44,19 +48,33 @@ export class UserController {
     }
   }
 
-  async update (req: Request, res: Response, next: NextFunction) {
+  async update (id: number, req: Request, res: Response, next: NextFunction):Promise<any> {
     try {
-      const userDto: UserDto = req.body;
-      const updateUser = await this.userService.update(
-        +req.params.id,
-        userDto
-      );
-      const response = {
-        message: "Modification apporté avec succès",
-        company: updateUser,
-        date: new Date
+      const existingUser = await this.userService.getById(id);
+      console.log("🚀 ~ UserController ~ update ~ existingUser:", existingUser)
+      if (!existingUser) {
+        throw new Error("Utilisateur introuvable");
+      }
+      const bodyToValidate = plainToInstance(UpdateUserDto, req.body)
+      console.log("🚀 ~ UserController ~ update ~ bodyToValidate:", bodyToValidate)
+      let errors = await validate(bodyToValidate)
+      // let errors = await validate(new UserDto(req.body))
+      if(errors.length> 0 ){
+        const array = errors.map(error=>{
+          return error.constraints;
+        })
+        res.status(400).send(array)
+        return;
+      }
+
+      
+      // req.body.password = await this.userService.hashPassword(bodyToValidate.password);
+      return {
+        user: await this.userService.update(+req.params.id, bodyToValidate),
+        message: "Utilisateur créé avec succès",
+        date: new Date(),
       };
-      return response;
+     
     } catch (error) {
       console.error("Erreur lors de la modification de l'utilisateur:", error);
       return {message: error.message}

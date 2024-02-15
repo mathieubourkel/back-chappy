@@ -1,5 +1,5 @@
 import { dataBaseSource } from "../data-source";
-import { UserDto } from "../dto/user.dto";
+import { UpdateUserDto, UserDto } from "../dto/user.dto";
 import { UserEntity } from "../entities/user.entity";
 import * as bcrypt from "bcrypt";
 import { validate } from "class-validator";
@@ -30,32 +30,39 @@ export class UserService {
       throw Error(error);
     }
   }
-  async hashString(string :string):Promise<string>{
+  async hashPassword(password :string):Promise<string>{
     try {
-      return await bcrypt.hash(string, 10)
+      return await bcrypt.hash(password, 10)
     } catch (error) {
       
       throw new Error(error);
     }
   }
 
-  async update(id: number, body:any): Promise<UserEntity>{
+  async getById(id:number):Promise<UserEntity>{
+    try {
+      return await this.userRepository.findOne({
+        where: { id },
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+
+  async update(id:number, body: UpdateUserDto): Promise<UserEntity>{
    
     try {
-      const errors = await validate(body);
-      if (errors.length > 0) {
-        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
-        throw new Error(validationErrors);
-      }
-      const userUpdate = await this.userRepository.findOne({where: {id}});
-    if (!userUpdate) {
-      throw new Error("Utilisateur introuvable");
-    }
+    const userUpdate = await this.getById(id);
+    // const userUpdate = await this.userRepository.findOne({where: {id}});
+    console.log("🚀 ~ UserService ~ update ~ userUpdate:", userUpdate)
     const passwordMatch = await bcrypt.compare(body.password, userUpdate.password);
+    console.log("🚀 ~ UserService ~ update ~ passwordMatch:", passwordMatch)
     if (passwordMatch) {
         delete body.password; 
     } else {
         const hashedPassword = await bcrypt.hash(body.password, 10);
+        console.log("🚀 ~ UserService ~ update ~ hashedPassword:", hashedPassword)
         body.password = hashedPassword;
     }
 
