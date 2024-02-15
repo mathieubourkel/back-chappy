@@ -32,6 +32,11 @@ deploy:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_IMAGE: registry.alt-tools.tech/chappy/back-chappy:production
+
 # dast:
 #   variables:
 #     DAST_WEBSITE: "https://app-chappy.ddns.net"
