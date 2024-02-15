@@ -1,6 +1,7 @@
 stages:
   - publish
   - deploy
+  - test
 
 workflow:
   rules: 
