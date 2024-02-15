@@ -1,41 +1,41 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-  - publish
-  - deploy
-  - test
-
+- publish
+- deploy
+- test
 workflow:
-  rules: 
-    - if: $CI_COMMIT_BRANCH == "main"
-
+  rules:
+  - if: $CI_COMMIT_BRANCH == "main"
 publish:
   image: docker:stable
   stage: publish
-  services: 
-    - docker:dind
+  services:
+  - docker:dind
   before_script:
-    - docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" 
+  - docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
   script:
-    - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
-    - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
-
+  - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
+  - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
 deploy:
   image: alpine:latest
   stage: deploy
   script:
-    - chmod og= $ID_RSA
-    - apk update && apk add openssh-client
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker login $CI_REGISTRY -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD'"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker pull $CI_REGISTRY_IMAGE:$TAG_PROD"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker container rm -f back_chappy_prod || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose up -d"
-
+  - chmod og= $ID_RSA
+  - apk update && apk add openssh-client
+  - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker login $CI_REGISTRY
+    -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD'"
+  - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker pull $CI_REGISTRY_IMAGE:$TAG_PROD"
+  - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker container
+    rm -f back_chappy_prod || true"
+  - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose
+    up -d"
 include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Security/Container-Scanning.gitlab-ci.yml
-# dast:
-#   variables:
-#     DAST_WEBSITE: "https://app-chappy.ddns.net"
-#     DAST_FULL_SCAN_ENABLED: "true"
-#     DAST_AUTH_URL: "https://app-chappy.ddns.net/login"
-#     DAST_AUTH_USERNAME: “mathieu.bourkel@gmail.com”
-#     DAST_AUTH_PASSWORD: “password”
+- template: Jobs/SAST.gitlab-ci.yml
+- template: Security/Container-Scanning.gitlab-ci.yml
+- template: Security/Secret-Detection.gitlab-ci.yml
