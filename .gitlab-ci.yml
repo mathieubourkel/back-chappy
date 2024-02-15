@@ -30,4 +30,5 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose up -d"
 
 dast:
+  stage: dast
   dependencies: []
