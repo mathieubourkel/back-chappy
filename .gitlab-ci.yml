@@ -1,7 +1,7 @@
 stages:
   - publish
-  - deploy
   - test
+  - deploy
 
 workflow:
   rules: 
@@ -18,6 +18,14 @@ publish:
     - docker build --target=production -t $CI_REGISTRY_IMAGE:$TAG_PROD .
     - docker push $CI_REGISTRY_IMAGE:$TAG_PROD
 
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_IMAGE: registry.alt-tools.tech/chappy/back-chappy:production
+
 deploy:
   image: alpine:latest
   stage: deploy
@@ -28,14 +36,6 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker pull $CI_REGISTRY_IMAGE:$TAG_PROD"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker container rm -f back_chappy_prod || true"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $AWS_USER@$AWS_DNS "docker-compose up -d"
-
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Security/Container-Scanning.gitlab-ci.yml
-
-container_scanning:
-  variables:
-    CS_IMAGE: registry.alt-tools.tech/chappy/back-chappy:production
 
 # dast:
 #   variables:
