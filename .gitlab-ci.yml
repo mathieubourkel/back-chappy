@@ -31,6 +31,7 @@ deploy:
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 # dast:
 #   variables:
 #     DAST_WEBSITE: "https://app-chappy.ddns.net"
