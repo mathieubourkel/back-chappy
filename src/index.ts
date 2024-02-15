@@ -34,8 +34,8 @@ AppDataSource.initialize()
 if (process.env.NODE_ENV === "production") {
 
   const options = {
-    key: fs.readFileSync(process.env.BACK_URL_KEY),
-    cert: fs.readFileSync(process.env.BACK_URL_CERT),
+    key: fs.readFileSync(process.env.BACK_URL_KEY, 'utf-8'),
+    cert: fs.readFileSync(process.env.BACK_URL_CERT, 'utf-8'),
   };
   
   const server = https.createServer(options, app);
