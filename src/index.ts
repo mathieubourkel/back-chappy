@@ -33,10 +33,12 @@ AppDataSource.initialize()
   .catch((error) => console.log("Unable to start DB", error));
 
 if (process.env.NODE_ENV === "production") {
+  const privateKeyPath = path.join(__dirname, 'privkey.pem');
+  const certPath = path.join(__dirname, 'cert.pem');
 
   const options = {
-    key: fs.readFileSync('./privkey.pem'),
-    cert: fs.readFileSync('./cert.pem'),
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certPath),
   };
   
   const server = https.createServer(options, app);
