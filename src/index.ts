@@ -5,6 +5,7 @@ import { Routes } from "./routes/";
 import { applyMiddlewares } from "./middlewares/manage.middlewares";
 import { verifyDtoMiddleware } from "./middlewares/dto.middleware";
 import bodyParser from "body-parser";
+import { CustomError } from "./middlewares/error.handler.middleware";
 
 const app = express();
 const routeClass = new Routes()
@@ -41,6 +42,18 @@ dataBaseSource.AppDataSource.initialize()
     })
   })
   .catch((error) => console.log("Unable to start DB", error));
+
+  // Middleware de gestion d'erreurs
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof CustomError) {
+    // Si l'erreur est une instance de CustomError, utilisez sa méthode sendError pour envoyer la réponse d'erreur
+    err.sendError(res);
+  } else {
+    // Si ce n'est pas une instance de CustomError, logguez l'erreur et renvoyez une réponse d'erreur générique
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  }
+});
 
 app.listen(process.env.VITE_BACK_PORT);
 console.log(`Server Up on this URL : ${process.env.VITE_PROTOCOL}://${process.env.VITE_BACK_HOST}:${process.env.VITE_BACK_PORT}`)

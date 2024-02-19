@@ -1,9 +1,8 @@
-import { NextFunction, Request, Response } from "express";
 import { dataBaseSource } from "../data-source";
 import { UpdateUserDto, UserDto } from "../dto/user.dto";
 import { UserEntity } from "../entities/user.entity";
 import * as bcrypt from "bcrypt";
-import { validate } from "class-validator";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class UserService {
   private userRepository =
@@ -16,7 +15,8 @@ export class UserService {
         where: { email },
       });
     } catch (error) {
-      throw new Error(error)
+      console.log("🚀 ~ UserService ~ getByEmail ~ error:", error)
+      throw new CustomError("EMAIL_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données")
     }
   }
   async create(body: UserDto): Promise<UserEntity> {
@@ -28,7 +28,7 @@ export class UserService {
       return user;
     } catch (error) {
       console.log("error", error);
-      throw Error(error);
+      throw new CustomError("CU-FAILED", 400, "Une erreur c'est produite lors de la création de votre compte");
     }
   }
   async hashPassword(password :string):Promise<string>{
@@ -46,7 +46,7 @@ export class UserService {
         where: { id },
       });
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError("ID_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données")
     }
   }
 
@@ -55,21 +55,17 @@ export class UserService {
    
     try {
     const userUpdate = await this.getById(id);
-    // const userUpdate = await this.userRepository.findOne({where: {id}});
-    console.log("🚀 ~ UserService ~ update ~ userUpdate:", userUpdate)
     const passwordMatch = await bcrypt.compare(body.password, userUpdate.password);
-    console.log("🚀 ~ UserService ~ update ~ passwordMatch:", passwordMatch)
     if (passwordMatch) {
         delete body.password; 
     } else {
         const hashedPassword = await bcrypt.hash(body.password, 10);
-        console.log("🚀 ~ UserService ~ update ~ hashedPassword:", hashedPassword)
         body.password = hashedPassword;
     }
 
     return this.userRepository.save(this.userRepository.merge(userUpdate, body));
     } catch (error) {
-      throw Error(error)
+      throw new CustomError("UU-FAILED", 400, "Une erreur c'est produite lors de la modification de votre compte");
     }
   }
 
@@ -79,10 +75,10 @@ export class UserService {
       return user;
     } catch (error) {
       console.error(
-        "Erreur lors de la récupération de toutes les entreprises :",
+        "Erreor",
         error
       );
-      throw new Error("Échec de la récupération de toutes les entreprises");
+      throw new CustomError("GU-FAILED", 400, "Échec de la récupération de toutes les utilisateurs");
     }
   }
 

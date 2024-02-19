@@ -1,9 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { UserEntity } from "../entities/user.entity";
-import { Service } from "../services/Service";
-import { GlobalController } from "./controller";
-import bcrypt from "bcrypt";
-import { CompanyEntity } from "../entities/company.entity";
 import { CustomError } from "../middlewares/error.handler.middleware";
 import { UserService } from "../services/UserService";
 import { UpdateUserDto, UserDto } from "../dto/user.dto";
@@ -17,68 +13,98 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async create(req: Request, res: Response, next: NextFunction):Promise<{user: UserEntity, message: string, date: Date}> {
+  async create(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<{ user: UserEntity; message: string; date: Date }> {
     try {
-      const bodyToValidate = plainToInstance(UserDto, req.body)
-      let errors = await validate(bodyToValidate)
+      const bodyToValidate = plainToInstance(UserDto, req.body);
+      let errors = await validate(bodyToValidate);
       // let errors = await validate(new UserDto(req.body))
-      if(errors.length> 0 ){
-        const array = errors.map(error=>{
+      if (errors.length > 0) {
+        const array = errors.map((error) => {
           return error.constraints;
-        })
-        res.status(400).send(array)
-        return;
+        });
+        console.log(array);
+        throw new CustomError(
+          "UC-Failed-DTO",
+          400,
+          "Veuillez vérifier vos informations"
+        );
+        // res.status(400).send(array)
+        // return;
         // throw new Error(JSON.stringify(array))
       }
-      const existingUser = await this.userService.getByEmail(bodyToValidate.email);
+      const existingUser = await this.userService.getByEmail(
+        bodyToValidate.email
+      );
       if (existingUser) {
-        throw new Error("Cette adresse e-mail est déjà utilisée.");
+        throw new CustomError(
+          "EMAIL_ALREADY_EXISTS_ERROR",
+          400,
+          "une erreur c'est produite lors de la création de votre compte"
+        );
       }
-      req.body.password = await this.userService.hashPassword(bodyToValidate.password);
+      req.body.password = await this.userService.hashPassword(
+        bodyToValidate.password
+      );
       return {
         user: await this.userService.create(bodyToValidate),
         message: "Utilisateur créé avec succès",
         date: new Date(),
       };
-   
     } catch (error) {
-      console.log("error", error)
-      const message = error.message ? error.message : error
-      res.status(400).send(message) 
+      // Utilisez votre CustomError pour envoyer une réponse d'erreur appropriée
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
     }
   }
 
-  async update (req: Request, res: Response, next: NextFunction):Promise<UserEntity> {
+  async update(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<UserEntity> {
     try {
-     
       const existingUser = await this.userService.getById(+req.params.id);
-      console.log("🚀 ~ UserController ~ update ~ existingUser:", existingUser)
       if (!existingUser) {
-        throw new Error("Utilisateur introuvable");
+        throw new CustomError("USER_DOESN'T_EXISTS", 400,"Une erreur c'est produite lors de la modification de vos informations");
       }
-      const bodyToValidate = plainToInstance(UpdateUserDto, req.body)
-      console.log("🚀 ~ UserController ~ update ~ bodyToValidate:", bodyToValidate)
-      let errors = await validate(bodyToValidate)
+      const bodyToValidate = plainToInstance(UpdateUserDto, req.body);
+      let errors = await validate(bodyToValidate);
       // let errors = await validate(new UserDto(req.body))
-      if(errors.length> 0 ){
-        const array = errors.map(error=>{
+      if (errors.length > 0) {
+        const array = errors.map((error) => {
           return error.constraints;
-        })
-        res.status(400).send(array)
-        return;
+        });
+        throw new CustomError("UC-Failed-DTO", 400, "Veuillez vérifier vos informations")
+        // res.status(400).send(array);
+        // return;
       }
 
-      
       // req.body.password = await this.userService.hashPassword(bodyToValidate.password);
-      return await this.userService.update(+req.params.id, bodyToValidate)
-      
-     
+      return await this.userService.update(+req.params.id, bodyToValidate);
     } catch (error) {
-      console.error("Erreur lors de la modification de l'utilisateur:", error);
-      return error.message
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
     }
   }
-  
+
   async getAll(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const users = await this.userService.getAll();
@@ -88,38 +114,46 @@ export class UserController {
         date: new Date(),
       };
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération de tous les utilisateurs :",
-        error
-      );
-      return {message: error.message}
-    }
-  };
-
-  async delete(req: Request, res: Response, next: NextFunction) {
-    const {id} = req.params;
-    try {
-      const deletedUser = await this.userService.delete(parseInt(id));
-      if (!deletedUser) {
-        res.status(404).json({ message: "L'utilisateur n'a pas été trouvé." });
-        return;
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
       }
-      return { message: 'L\'utilisateur a été supprimée avec succès.'};
-    } catch (error) {
-      console.error('Erreur lors de la suppression de l\'utilisateur :', error);
-      return {message: error.message}
     }
   }
 
- 
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const deletedUser = await this.userService.delete(parseInt(id));
+      if (!deletedUser) {
+        throw new CustomError("USER_DOESN'T_EXISTS_ERROR", 400, "Une erreur est survenue lors de la suppression de votre compte")
+        // res.status(404).json({ message: "L'utilisateur n'a pas été trouvé." });
+        // return;
+      }
+      return { message: "L'utilisateur a été supprimée avec succès." };
+    } catch (error) {
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
+    }
+  }
 
   // async getInfosUserConnected(req:Request, res:Response, next:NextFunction) {
   //   await this.handleGlobal(req, res, next, async ()=> {
   //     return this.userService.getOneById(+req.user.userId, [ "projects", "myOwnTasks", "participations", "company", "myCompany"]);
   //   })
   // }
-
-  
 
   // async update(req: Request, res: Response, next: NextFunction) {
   //   await this.handleGlobal(req, res, next, async () => {
