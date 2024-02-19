@@ -32,7 +32,9 @@ export class CompanyController {
           "Veuillez vérifier vos informations"
         );
       }
-      const existingCompany = await this.companyService.getByName(companyToValidate.name)
+      const existingCompany = await this.companyService.getByName(
+        companyToValidate.name
+      );
       if (existingCompany) {
         throw new CustomError(
           "COMPANY_ALREADY_EXISTS_ERROR",
@@ -58,21 +60,56 @@ export class CompanyController {
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async update(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<CompanyEntity> {
     try {
-      const companyDto: CompanyDto = req.body;
-      const updateCompany = await this.companyService.update(
-        +req.params.id,
-        companyDto
+      const existingCompany = await this.companyService.getById(+req.params.id);
+      if (!existingCompany) {
+        throw new CustomError(
+          "COMPANY_DOESN'T_EXISTS",
+          400,
+          "Une erreur c'est produite lors de la modification de vos informations"
+        );
+      }
+      const companyToValidate = plainToInstance(CompanyDto, req.body);
+      let errors = await validate(companyToValidate);
+      if (errors.length > 0) {
+        const array = errors.map((error) => {
+          return error.constraints;
+        });
+        console.log(array);
+        throw new CustomError(
+          "CC-Failed-DTO",
+          400,
+          "Veuillez vérifier vos informations"
+        );
+      }
+      const existingCompanyByName = await this.companyService.getByName(
+        req.body.name
       );
-      const response = {
-        message: "Modification apporté avec succès",
-        company: updateCompany,
-      };
-      return response;
+      if (existingCompanyByName !== req.body.name) {
+        
+        } else {
+          return await this.companyService.update(+req.params.id, companyToValidate);
+        }
+        delete req.body.name;
+      
+
+      return await this.companyService.update(+req.params.id, companyToValidate);
     } catch (error) {
-      console.error("Erreur lors de la modification de l'entreprise:", error);
-      return { message: error.message };
+      console.error("Error", error);
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
     }
   }
 
@@ -90,11 +127,16 @@ export class CompanyController {
         date: new Date(),
       };
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération de toutes les entreprises :",
-        error
-      );
-      return { message: error.message };
+      console.error("Error", error);
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
     }
   }
 
@@ -103,12 +145,24 @@ export class CompanyController {
     try {
       const deletedCompany = await this.companyService.delete(parseInt(id));
       if (!deletedCompany) {
-        return { message: "L'entreprise n'a pas été trouvée." };
+        throw new CustomError(
+          "COMPANY_DOESN'T_EXISTS_ERROR",
+          400,
+          "Une erreur est survenue lors de la suppression de votre entreprise"
+        );
       }
       return { message: "L'entreprise a été supprimée avec succès." };
     } catch (error) {
-      console.error("Erreur lors de la suppression de l'entreprise :", error);
-      return { message: error.message };
+      console.error("Error", error);
+      if (error instanceof CustomError) {
+        error.sendError(res);
+      } else {
+        console.error("error", error);
+        const message = error.message
+          ? error.message
+          : "Une erreur s'est produite lors du traitement de votre demande.";
+        res.status(500).send(message);
+      }
     }
   }
 

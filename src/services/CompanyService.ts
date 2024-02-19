@@ -1,4 +1,3 @@
-import { validate } from "class-validator";
 import { dataBaseSource } from "../data-source";
 import { CompanyEntity } from "../entities/company.entity";
 import { CompanyDto } from "../dto/company.dto";
@@ -8,7 +7,7 @@ export class CompanyService {
   private companyRepository =
     dataBaseSource.AppDataSource.getRepository<CompanyEntity>(CompanyEntity);
 
-  async create(body: CompanyDto): Promise<CompanyEntity> {
+  async create(body: {name:string, siret: string, description: string }): Promise<CompanyEntity> {
     try {
       const company = await this.companyRepository.save(
         this.companyRepository.create(body)
@@ -43,18 +42,11 @@ export class CompanyService {
 
   async update(
     id: number,
-    name:string,
-    body: CompanyDto
+    body: {name: string, siret: string, description: string}
   ): Promise<CompanyEntity> {
     try {
       const companyUpdate =await this.getById(id)
-      if (!companyUpdate) {
-        throw new CustomError("COMPANY_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données");
-      }
-      const existingCompany = await this.getByName(name)
-      if (existingCompany && existingCompany.id !== id) {
-        throw new CustomError("COMPANY_NAME_ALREADY_EXISTS_ERROR", 400, "Veuillez vérifier vos informations");
-      }
+      console.log("🚀 ~ CompanyService ~ companyUpdate:", companyUpdate)
       return this.companyRepository.save(
         this.companyRepository.merge(companyUpdate, body)
       );
