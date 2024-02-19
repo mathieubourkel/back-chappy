@@ -1,22 +1,15 @@
 import { validate } from "class-validator";
 import { dataBaseSource } from "../data-source";
 import { CompanyEntity } from "../entities/company.entity";
+import { CompanyDto } from "../dto/company.dto";
+import { CustomError } from "../middlewares/error.handler.middleware";
 
 export class CompanyService {
   private companyRepository =
     dataBaseSource.AppDataSource.getRepository<CompanyEntity>(CompanyEntity);
 
-  async create(body: {
-    name: string;
-    siret: string;
-    description: string;
-  }): Promise<CompanyEntity> {
+  async create(body: CompanyDto): Promise<CompanyEntity> {
     try {
-      const errors = await validate(body);
-      if (errors.length > 0) {
-        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
-      throw new Error(validationErrors);
-      }
       const company = await this.companyRepository.save(
         this.companyRepository.create(body)
       );
@@ -24,42 +17,50 @@ export class CompanyService {
       return company;
     } catch (error) {
       console.log("error", error);
-      throw new Error(error.message)
+      throw new CustomError("CC-FAILED", 400, "Une erreur c'est produite lors de l'enregistrement de votre entreprise");
+    }
+  }
+
+  async getById(id:number):Promise<CompanyEntity>{
+    try {
+      return await this.companyRepository.findOne({
+        where: { id },
+      });
+    } catch (error) {
+      throw new CustomError("ID_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données")
+    }
+  }
+
+  async getByName(name:string):Promise<CompanyEntity>{
+    try {
+      return await this.companyRepository.findOne({
+        where: { name },
+      });
+    } catch (error) {
+      throw new CustomError("NAME_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données")
     }
   }
 
   async update(
     id: number,
-    body: {
-      name: string;
-      siret: string;
-      description: string;
-    }
+    name:string,
+    body: CompanyDto
   ): Promise<CompanyEntity> {
     try {
-      const errors = await validate(body);
-      if (errors.length > 0) {
-        const validationErrors = errors.map(error => Object.values(error.constraints)).join(', ');
-      throw new Error(validationErrors);
-      }
-      const companyUpdate = await this.companyRepository.findOne({
-        where: { id },
-      });
+      const companyUpdate =await this.getById(id)
       if (!companyUpdate) {
-        throw new Error("Company not found");
+        throw new CustomError("COMPANY_NOT_FOUND", 400, "Une erreur c'est produite lors de la récupération de vos données");
       }
-      const existingCompany = await this.companyRepository.findOne({
-        where: { name: body.name },
-      });
+      const existingCompany = await this.getByName(name)
       if (existingCompany && existingCompany.id !== id) {
-        throw new Error("Company name already exists");
+        throw new CustomError("COMPANY_NAME_ALREADY_EXISTS_ERROR", 400, "Veuillez vérifier vos informations");
       }
       return this.companyRepository.save(
         this.companyRepository.merge(companyUpdate, body)
       );
     } catch (error) {
       console.log("error", error);
-      throw new Error(error.message)
+      throw new CustomError("UC-FAILED", 400, "Une erreur c'est produite lors de la modification de votre entreprise");
     }
   }
 
@@ -69,10 +70,10 @@ export class CompanyService {
       return company;
     } catch (error) {
       console.error(
-        "Erreur lors de la récupération de toutes les entreprises :",
+        "error",
         error
       );
-      throw new Error("Échec de la récupération de toutes les entreprises");
+      throw new CustomError("GC-FAILED", 400, "Échec de la récupération de toutes les entreprises");
     }
   }
 

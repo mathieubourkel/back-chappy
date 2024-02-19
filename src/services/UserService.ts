@@ -78,7 +78,7 @@ export class UserService {
         "Erreor",
         error
       );
-      throw new CustomError("GU-FAILED", 400, "Échec de la récupération de toutes les utilisateurs");
+      throw new CustomError("GU-FAILED", 400, "Échec de la récupération de tous les utilisateurs");
     }
   }
 
